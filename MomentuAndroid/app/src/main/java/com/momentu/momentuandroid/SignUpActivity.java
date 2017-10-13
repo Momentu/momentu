@@ -7,6 +7,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.momentu.momentuandroid.Model.User;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import javax.net.ssl.HttpsURLConnection;
+
 public class SignUpActivity extends AppCompatActivity {
 
     EditText usernameInput, passwordInput, firstNameInput, lastNameInput, emailInput;
@@ -34,10 +42,17 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     //On click method for sign up button
-    public void onClickSignUp(View v){
+    public void onClickSignUp(View v) throws IOException {
 
         if (checkFields()){
-            Toast.makeText(this,"Registration is complete",Toast.LENGTH_LONG).show();
+            User newUser = new User();
+            newUser.setUsername(usernameInput.getText().toString());
+            newUser.setPassword(passwordInput.getText().toString());
+            newUser.setFirstName(firstNameInput.getText().toString());
+            newUser.setLastName(lastNameInput.getText().toString());
+            newUser.setGender(gender.toString());
+            newUser.setEmail(emailInput.getText().toString());
+            Toast.makeText(this,newUser.toString(),Toast.LENGTH_LONG).show();
         }
 
     }
