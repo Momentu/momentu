@@ -29,7 +29,7 @@ import android.widget.TextView;
  */
 public class LoginActivity extends Activity {
 
-    private User myUser;
+//    private User myUser;
 
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -172,33 +172,35 @@ public class LoginActivity extends Activity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            DBTools dbTools = null;
+//            DBTools dbTools = null;
 
             try {
                 // Simulate network access.
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
-                e.printStackTrace();}
+                e.printStackTrace();
+            }
 
             // Check if user exit, if yes, check the password, if not, create new account.
-            try {
-                dbTools = new DBTools(mContext);
-                myUser = dbTools.getUser(mUsername);
-
-                if (myUser.userId > 0) {
-                    // Account exists, check password.
-                    if (myUser.password.equals(mPassword))
-                        return true;
-                    else
-                        return false;
-                } else {
-                    myUser.password = mPassword;
-                    return true;
-                }
-            } finally {
-                if (dbTools != null)
-                    dbTools.close();
-            }
+//            try {
+//                dbTools = new DBTools(mContext);
+//                myUser = dbTools.getUser(mUsername);
+//
+//                if (myUser.userId > 0) {
+//                    // Account exists, check password.
+//                    if (myUser.password.equals(mPassword))
+//                        return true;
+//                    else
+//                        return false;
+//                } else {
+//                    myUser.password = mPassword;
+//                    return true;
+//                }
+//            } finally {
+//               if (dbTools != null)
+//                   dbTools.close();
+//            }
+            return true;
         }
 
         @Override
@@ -206,59 +208,60 @@ public class LoginActivity extends Activity {
             mAuthTask = null;
             showProgress(false);
 
-            if (success) {
-                if (myUser.userId > 0) {
-                    finish();
-                    // TODO: go to the next page when it is ready.
-                    Intent myIntent = new Intent(LoginActivity.this, LoginActivity.class);
-                    Log.d("Passing User ",  myUser.username);
-//                    myIntent.putExtra("newUser", FALSE);
-//                    myIntent.putExtra("userName", myUser.username);
-                    LoginActivity.this.startActivity(myIntent);
-                } else {
-                    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            switch (which) {
-                                case DialogInterface.BUTTON_POSITIVE:
-                                    DBTools dbTools = null;
-                                    // Switch to the sign up page to create a new account.
-                                    try {
-                                        dbTools = new DBTools(mContext);
-                                        myUser = dbTools.insertUser(myUser);
-                                        finish();
-                                        Intent myIntent = new Intent(LoginActivity.this, SignUpActivity.class);
-                                        Log.d("Passing User ",  myUser.username);
-                                        LoginActivity.this.startActivity(myIntent);
-                                    } finally {
-                                        if (dbTools != null)
-                                            dbTools.close();
-                                    }
-                                    break;
+//            if (success) {
+//                if (myUser.userId > 0) {
+//                    finish();
+//                    // TODO: go to the next page when it is ready.
+//                    Intent myIntent = new Intent(LoginActivity.this, LoginActivity.class);
+//                    Log.d("Passing User ",  myUser.username);
+////                    myIntent.putExtra("newUser", FALSE);
+////                    myIntent.putExtra("userName", myUser.username);
+//                    LoginActivity.this.startActivity(myIntent);
+//                } else {
+//                    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            switch (which) {
+//                                case DialogInterface.BUTTON_POSITIVE:
+//                                    DBTools dbTools = null;
+//                                    // Switch to the sign up page to create a new account.
+//                                    try {
+//                                        dbTools = new DBTools(mContext);
+//                                        myUser = dbTools.insertUser(myUser);
+//                                        finish();
+//                                        Intent myIntent = new Intent(LoginActivity.this, SignUpActivity.class);
+//                                        Log.d("Passing User ",  myUser.username);
+//                                        LoginActivity.this.startActivity(myIntent);
+//                                    } finally {
+//                                        if (dbTools != null)
+//                                            dbTools.close();
+//                                    }
+//                                    break;
+//
+//                                case DialogInterface.BUTTON_NEGATIVE:
+//                                    mUsernameView.setError(getString(R.string.username_not_exist));
+////                                    mPasswordView.setError(getString(R.string.error_incorrect_password));
+//                                    mUsernameView.requestFocus();
+//                                    break;
+//                            }
+//                        }
+//                    };
+//
+//                    AlertDialog.Builder builder = new AlertDialog.Builder(this.mContext);
+//                    builder.setMessage(R.string.confirm_registry).setPositiveButton(R.string.yes, dialogClickListener)
+//                            .setNegativeButton(R.string.no, dialogClickListener).show();
+//                }
+//            } else {
+//                mPasswordView.setError(getString(R.string.error_incorrect_password));
+//                mPasswordView.requestFocus();
+//            }
+//        }
 
-                                case DialogInterface.BUTTON_NEGATIVE:
-                                    mUsernameView.setError(getString(R.string.username_not_exist));
-//                                    mPasswordView.setError(getString(R.string.error_incorrect_password));
-                                    mUsernameView.requestFocus();
-                                    break;
-                            }
-                        }
-                    };
-
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this.mContext);
-                    builder.setMessage(R.string.confirm_registry).setPositiveButton(R.string.yes, dialogClickListener)
-                            .setNegativeButton(R.string.no, dialogClickListener).show();
-                }
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
+//        @Override
+//        protected void onCancelled() {
+//            mAuthTask = null;
+//            showProgress(false);
+//        }
         }
     }
 }
