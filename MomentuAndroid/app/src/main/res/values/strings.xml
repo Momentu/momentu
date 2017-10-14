@@ -1,3 +1,62 @@
 <resources>
     <string name="app_name">Momentu Android</string>
+
+    <!-- Strings for login -->
+    <string name="login_title">Momentu</string>
+    <string name="prompt_username">Username</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_log_in">Login</string>
+    <string name="username_not_exist">This user does not exist</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="confirm_registry">User name not found. You want to create a new account?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
+    <!-- Strings for term and policy -->
+    <string name="term_and_policy_text">
+        <![CDATA[
+
+       <h2>Welcome!</h2>
+       <p>We’ve drafted these Terms of Service (which we call the “Terms”) so you’ll know the rules
+       that govern our relationship with you. Although we have tried our best to strip the legalese
+       from the Terms, there are places where these Terms may still read like a traditional
+       contract. There’s a good reason for that: These Terms do indeed form a legally binding
+       contract between you and Momentu Inc. So please read them carefully.</p>
+       <p>By using Momentu or any of our other products or services that link to these Terms
+       (we refer to these simply as the “Services”), you agree to the Terms. Of course, if you
+       don’t agree with them, then don’t use the Services.</p>
+       <p>ARBITRATION NOTICE: THESE TERMS CONTAIN AN ARBITRATION CLAUSE</a> A LITTLE LATER ON.
+       EXCEPT FOR CERTAIN TYPES OF DISPUTES MENTIONED IN THAT ARBITRATION CLAUSE, YOU AND MOMENTU
+       INC. AGREE THAT DISPUTES BETWEEN US WILL BE RESOLVED BY MANDATORY BINDING ARBITRATION,
+       AND YOU AND MOMENTU INC. WAIVE ANY RIGHT TO PARTICIPATE IN A CLASS-ACTION LAWSUIT OR
+       CLASS-WIDE ARBITRATION.</p>
+
+       <h2>1. Who Can Use the Services</h2>
+       <p>No one under 13 is allowed to create an account or use the Services. We may offer
+       additional Services with additional terms that may require you to be even older to use
+       them. So please read all terms carefully.</p>
+       <p>By using the Services, you state that:</p>
+       <ul>
+            <li>You can form a binding contract with Momentu Inc.</li>
+            <li>You are not a person who is barred from receiving the Services under the laws of
+            the United States or any other applicable jurisdiction—meaning that you do not appear
+            on the U.S. Treasury Department’s list of Specially Designated Nationals or face any
+            other similar prohibition.</li>
+            <li>  You will comply with these Terms and all applicable local, state, national, and
+            international laws, rules, and regulations.</li>
+       </ul>
+       <p>If you are using the Services on behalf of a business or some other entity, you state
+       that you are authorized to grant all licenses set forth in these Terms and to agree to these
+       Terms on behalf of the business or entity. If you are using the Services on behalf of an
+       entity of the U.S. Government, you agree to the Amendment to Momentu Inc. Terms of Service
+       for U.S. Government Users.</p>
+
+       <h2>Contact us</h2>
+       <p>We welcome comments, questions, concerns, or suggestions.</p>
+
+        ]]>
+    </string>
+
+
 </resources>
