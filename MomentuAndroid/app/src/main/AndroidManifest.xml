@@ -4,6 +4,8 @@
     //Ibrahim Added this line:(this to allow the app to connect to the internet)
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"

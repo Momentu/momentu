@@ -120,7 +120,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:fontFamily="casual"
-                                android:inputType="textPersonName"
+                                android:inputType="textPassword"
                                 android:selectAllOnFocus="false"
                                 android:textColor="@android:color/white"
                                 android:textStyle="bold" />
