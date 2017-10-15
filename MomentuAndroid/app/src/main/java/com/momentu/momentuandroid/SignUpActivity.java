@@ -2,6 +2,7 @@ package com.momentu.momentuandroid;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -64,20 +65,30 @@ public class SignUpActivity extends AppCompatActivity {
 
     //Check method to check the correctness of all data attribute entered by users
     public boolean checkFields() {
-
-        if (usernameInput.getText().toString().isEmpty()) {
+        View focusView=null;
+        if (TextUtils.isEmpty(usernameInput.getText().toString())) {
+            usernameInput.setError(getString(R.string.error_field_required));
+            focusView = usernameInput;
             Toast.makeText(this, "Username can't be empty", Toast.LENGTH_LONG).show();
             return false;
-        } else if (passwordInput.getText().toString().isEmpty()) {
+        } else if (TextUtils.isEmpty(passwordInput.getText().toString())) {
+            passwordInput.setError(getString(R.string.error_field_required));
+            focusView = passwordInput;
             Toast.makeText(this, "Password can't be empty", Toast.LENGTH_LONG).show();
             return false;
-        } else if (firstNameInput.getText().toString().isEmpty()) {
+        } else if (TextUtils.isEmpty(firstNameInput.getText().toString())) {
+            firstNameInput.setError(getString(R.string.error_field_required));
+            focusView = firstNameInput;
             Toast.makeText(this, "First name can't be empty", Toast.LENGTH_LONG).show();
             return false;
-        } else if (lastNameInput.getText().toString().isEmpty()) {
+        } else if (TextUtils.isEmpty(lastNameInput.getText().toString())) {
+            lastNameInput.setError(getString(R.string.error_field_required));
+            focusView = lastNameInput;
             Toast.makeText(this, "Last name can't be empty", Toast.LENGTH_LONG).show();
             return false;
-        } else if (emailInput.getText().toString().isEmpty()) {
+        } else if (TextUtils.isEmpty(emailInput.getText().toString())) {
+            emailInput.setError(getString(R.string.error_field_required));
+            focusView = emailInput;
             Toast.makeText(this, "Email name can't be empty", Toast.LENGTH_LONG).show();
             return false;
         } else if (gender.toString().isEmpty()) {
