@@ -1,6 +1,9 @@
 package com.momentu.momentuapi.entities;
 
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -12,6 +15,14 @@ public class User extends AbstractEntity {
     private String email;
     private String gender;
     private String password;
+
+    @OneToMany
+    @JoinColumn(name = "userId", referencedColumnName = "id")
+    private List<UserRole> roles;
+
+    public List<UserRole> getRoles() {
+        return roles;
+    }
 
     public String getUsername() {
         return username;
