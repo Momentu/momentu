@@ -8,13 +8,16 @@ import org.springframework.security.core.GrantedAuthority;
 import java.util.Collection;
 
 public class JwtAuthenticationToken extends AbstractAuthenticationToken {
+    private UserContext userContext;
 
     public JwtAuthenticationToken(RawAccessJwtToken unsafeToken) {
         super(null);
     }
 
     public JwtAuthenticationToken(UserContext userContext, Collection<? extends GrantedAuthority> authorities) {
-        super(null);
+        super(authorities);
+        this.eraseCredentials();
+        this.userContext = userContext;
     }
 
     @Override
