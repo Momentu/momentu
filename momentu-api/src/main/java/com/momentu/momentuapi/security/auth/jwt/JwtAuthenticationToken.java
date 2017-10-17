@@ -9,34 +9,46 @@ import java.util.Collection;
 
 public class JwtAuthenticationToken extends AbstractAuthenticationToken {
     private UserContext userContext;
+    private RawAccessJwtToken rawAccessJwtToken;
 
     public JwtAuthenticationToken(RawAccessJwtToken unsafeToken) {
         super(null);
+        this.rawAccessJwtToken = unsafeToken;
+        this.setAuthenticated(false);
     }
 
     public JwtAuthenticationToken(UserContext userContext, Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
         this.eraseCredentials();
         this.userContext = userContext;
+        super.setAuthenticated(true);
     }
 
+    /**
+     * Called with false when constructed with unsafeToken, otherwise super.setAuthenticated(...) is used
+     */
     @Override
     public void setAuthenticated(boolean authenticated) {
-        super.setAuthenticated(authenticated);
+        if (authenticated) {
+            throw new IllegalArgumentException(
+                    "Cannot set token to trusted. Use constructor taking GrantedAuthority collection instead.");
+        }
+        super.setAuthenticated(false);
     }
 
     @Override
     public Object getCredentials() {
-        return null;
+        return this.rawAccessJwtToken;
     }
 
     @Override
     public Object getPrincipal() {
-        return null;
+        return this.userContext;
     }
 
     @Override
     public void eraseCredentials() {
         super.eraseCredentials();
+        this.rawAccessJwtToken = null;
     }
 }
