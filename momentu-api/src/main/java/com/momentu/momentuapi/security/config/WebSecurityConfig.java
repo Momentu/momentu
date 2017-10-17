@@ -3,6 +3,8 @@ package com.momentu.momentuapi.security.config;
 import com.momentu.momentuapi.security.RestAuthenticationEntryPoint;
 import com.momentu.momentuapi.security.auth.jwt.JwtAuthenticationProvider;
 import com.momentu.momentuapi.security.auth.jwt.JwtTokenAuthenticationProcessingFilter;
+import com.momentu.momentuapi.security.auth.jwt.SkipPathRequestMatcher;
+import com.momentu.momentuapi.security.auth.jwt.extractor.TokenExtractor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +12,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -23,13 +29,26 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
 
     @Autowired
+    private AuthenticationFailureHandler authenticationFailureHandler;
+
+    @Autowired
     JwtAuthenticationProvider jwtAuthenticationProvider;
 
     @Autowired
     AuthenticationManager authenticationManager;
 
+    @Autowired
+    TokenExtractor tokenExtractor;
+
     protected JwtTokenAuthenticationProcessingFilter buildJwtTokenAuthenticationProcessingFilter() throws Exception {
-        return null;
+        List<String> pathsToSkip = Arrays.asList(TOKEN_REFRESH_ENTRY_POINT, FORM_LOGIN_ENTRY_POINT);
+        SkipPathRequestMatcher matcher = new SkipPathRequestMatcher(pathsToSkip, TOKEN_AUTH_ENTRY_POINT);
+
+        JwtTokenAuthenticationProcessingFilter processingFilter =
+                new JwtTokenAuthenticationProcessingFilter(authenticationFailureHandler, tokenExtractor, matcher);
+        processingFilter.setAuthenticationManager(this.authenticationManager);
+
+        return processingFilter;
     }
 
     @Bean

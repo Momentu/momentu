@@ -1,5 +1,6 @@
 package com.momentu.momentuapi.security.auth.jwt;
 
+import com.momentu.momentuapi.security.auth.jwt.extractor.TokenExtractor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -15,11 +16,13 @@ import java.io.IOException;
 
 public class JwtTokenAuthenticationProcessingFilter extends AbstractAuthenticationProcessingFilter {
     private final AuthenticationFailureHandler failureHandler;
+    private final TokenExtractor tokenExtractor;
 
     @Autowired
-    public JwtTokenAuthenticationProcessingFilter(AuthenticationFailureHandler failureHandler, RequestMatcher requestMatcher) {
+    public JwtTokenAuthenticationProcessingFilter(AuthenticationFailureHandler failureHandler, TokenExtractor tokenExtractor, RequestMatcher requestMatcher) {
         super(requestMatcher);
         this.failureHandler = failureHandler;
+        this.tokenExtractor = tokenExtractor;
     }
 
     @Override
