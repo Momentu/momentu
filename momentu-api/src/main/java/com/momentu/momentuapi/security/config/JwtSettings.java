@@ -1,4 +1,4 @@
-package com.momentu.momentuapi.config;
+package com.momentu.momentuapi.security.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;

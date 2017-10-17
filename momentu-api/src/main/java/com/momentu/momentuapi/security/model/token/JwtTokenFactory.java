@@ -1,10 +1,8 @@
-package com.momentu.momentuapi.model.token;
+package com.momentu.momentuapi.security.model.token;
 
-import com.momentu.momentuapi.config.JwtSettings;
-import com.momentu.momentuapi.model.Scopes;
-import com.momentu.momentuapi.model.UserContext;
-import com.momentu.momentuapi.model.token.AccessJwtToken;
-import com.momentu.momentuapi.model.token.JwtToken;
+import com.momentu.momentuapi.security.config.JwtSettings;
+import com.momentu.momentuapi.security.model.Scopes;
+import com.momentu.momentuapi.security.model.UserContext;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

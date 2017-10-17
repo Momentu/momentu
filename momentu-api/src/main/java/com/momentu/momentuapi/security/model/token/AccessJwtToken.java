@@ -1,4 +1,4 @@
-package com.momentu.momentuapi.model.token;
+package com.momentu.momentuapi.security.model.token;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.jsonwebtoken.Claims;

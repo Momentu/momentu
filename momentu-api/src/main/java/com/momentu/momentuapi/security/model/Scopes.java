@@ -1,4 +1,4 @@
-package com.momentu.momentuapi.model;
+package com.momentu.momentuapi.security.model;
 
 public enum Scopes {
     REFRESH_TOKEN;
