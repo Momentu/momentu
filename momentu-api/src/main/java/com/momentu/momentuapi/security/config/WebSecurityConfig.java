@@ -45,6 +45,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     TokenExtractor tokenExtractor;
 
+
     protected JsonLoginProcessingFilter buildJsonLoginProcessingFilter() throws Exception {
         return null;
     }

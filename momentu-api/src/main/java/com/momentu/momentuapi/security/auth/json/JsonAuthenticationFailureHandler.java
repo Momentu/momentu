@@ -1,4 +1,4 @@
-package com.momentu.momentuapi.security.auth;
+package com.momentu.momentuapi.security.auth.json;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.momentu.momentuapi.security.exceptions.JwtExpiredTokenException;
