@@ -1,5 +1,6 @@
 package com.momentu.momentuapi.security.config;
 
+import com.momentu.momentuapi.security.CustomCorsFilter;
 import com.momentu.momentuapi.security.RestAuthenticationEntryPoint;
 import com.momentu.momentuapi.security.auth.jwt.JwtAuthenticationProvider;
 import com.momentu.momentuapi.security.auth.jwt.JwtTokenAuthenticationProcessingFilter;
@@ -82,6 +83,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .authorizeRequests()
                         .antMatchers(TOKEN_AUTH_ENTRY_POINT).authenticated()
                 .and()
+                    .addFilterBefore(new CustomCorsFilter(), UsernamePasswordAuthenticationFilter.class)
                     .addFilterBefore(buildJwtTokenAuthenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
