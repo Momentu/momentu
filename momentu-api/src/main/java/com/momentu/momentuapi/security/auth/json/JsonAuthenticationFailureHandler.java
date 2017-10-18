@@ -1,6 +1,8 @@
 package com.momentu.momentuapi.security.auth.json;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.momentu.momentuapi.common.ErrorCode;
+import com.momentu.momentuapi.common.ErrorResponse;
 import com.momentu.momentuapi.security.exceptions.JwtExpiredTokenException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,9 +32,11 @@ public class JsonAuthenticationFailureHandler implements AuthenticationFailureHa
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
         if (exception instanceof BadCredentialsException) {
-            // TODO: Output response for exception
+            objectMapper.writeValue(response.getWriter(),
+                    ErrorResponse.of("Invalid Username or Password", ErrorCode.AUTHENTICATION, HttpStatus.UNAUTHORIZED));
         } else if (exception instanceof JwtExpiredTokenException) {
-            // TODO: Output response for exception
+            objectMapper.writeValue(response.getWriter(),
+                    ErrorResponse.of("Token has expired", ErrorCode.JWT_TOKEN_EXPIRED, HttpStatus.UNAUTHORIZED));
         }
     }
 }
