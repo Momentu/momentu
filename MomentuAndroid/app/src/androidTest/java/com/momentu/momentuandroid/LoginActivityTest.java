@@ -98,9 +98,9 @@ public class LoginActivityTest {
         onView(withId(R.id.login_button)).perform(click());
 
         //check if the the term and policy button screen is displayed by asserting that the term and policy text (TextView) is displayed
-        onView(withId(R.id.login_form)).check(matches(typeTextIntoFocusedView("This field is required")));
+        onView(withId(R.id.username)).perform(hasFocus().matches())
     }
-*/
+    */
     private static Matcher<View> childAtPosition(
             final Matcher<View> parentMatcher, final int position) {
 
