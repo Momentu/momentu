@@ -2,6 +2,7 @@ package com.momentu.momentuapi.security.config;
 
 import com.momentu.momentuapi.security.CustomCorsFilter;
 import com.momentu.momentuapi.security.RestAuthenticationEntryPoint;
+import com.momentu.momentuapi.security.auth.json.JsonLoginProcessingFilter;
 import com.momentu.momentuapi.security.auth.jwt.JwtAuthenticationProvider;
 import com.momentu.momentuapi.security.auth.jwt.JwtTokenAuthenticationProcessingFilter;
 import com.momentu.momentuapi.security.auth.jwt.SkipPathRequestMatcher;
@@ -44,6 +45,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     TokenExtractor tokenExtractor;
 
+    protected JsonLoginProcessingFilter buildJsonLoginProcessingFilter() throws Exception {
+        return null;
+    }
+
     protected JwtTokenAuthenticationProcessingFilter buildJwtTokenAuthenticationProcessingFilter() throws Exception {
         List<String> pathsToSkip = Arrays.asList(TOKEN_REFRESH_ENTRY_POINT, FORM_LOGIN_ENTRY_POINT);
         SkipPathRequestMatcher matcher = new SkipPathRequestMatcher(pathsToSkip, TOKEN_AUTH_ENTRY_POINT);
@@ -84,6 +89,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         .antMatchers(TOKEN_AUTH_ENTRY_POINT).authenticated()
                 .and()
                     .addFilterBefore(new CustomCorsFilter(), UsernamePasswordAuthenticationFilter.class)
+                    .addFilterBefore(buildJsonLoginProcessingFilter(), UsernamePasswordAuthenticationFilter.class)
                     .addFilterBefore(buildJwtTokenAuthenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
