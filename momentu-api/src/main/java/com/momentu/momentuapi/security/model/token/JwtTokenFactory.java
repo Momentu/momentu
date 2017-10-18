@@ -8,6 +8,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -16,6 +17,7 @@ import java.util.Date;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Component
 public class JwtTokenFactory {
     private final JwtSettings settings;
 
@@ -24,7 +26,7 @@ public class JwtTokenFactory {
         this.settings = settings;
     }
 
-    public AccessJwtToken createAccessJwtTokent(UserContext userContext) {
+    public AccessJwtToken createAccessJwtToken(UserContext userContext) {
         if (StringUtils.isBlank(userContext.getUsername())) {
             throw new IllegalArgumentException("Cannot create JWT Token without username");
         }
