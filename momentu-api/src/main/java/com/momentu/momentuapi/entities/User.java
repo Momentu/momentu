@@ -1,6 +1,11 @@
 package com.momentu.momentuapi.entities;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -12,6 +17,14 @@ public class User extends AbstractEntity {
     private String email;
     private String gender;
     private String password;
+
+    @OneToMany
+    @JoinColumn(name = "userId", referencedColumnName = "id")
+    private List<UserRole> roles;
+
+    public List<UserRole> getRoles() {
+        return roles;
+    }
 
     public String getUsername() {
         return username;
@@ -58,7 +71,9 @@ public class User extends AbstractEntity {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encodedPassword = passwordEncoder.encode(password);
+        this.password = encodedPassword;
     }
 
     @Override
