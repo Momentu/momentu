@@ -40,7 +40,7 @@ public class JsonAuthenticationSuccessHandler  implements AuthenticationSuccessH
 
         Map<String, String> tokenMap = new HashMap<String, String>();
         tokenMap.put("token", accessToken.getToken());
-        tokenMap.put("token", refreshToken.getToken());
+        tokenMap.put("refreshToken", refreshToken.getToken());
 
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
