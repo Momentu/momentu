@@ -30,6 +30,7 @@ import java.util.List;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public static final String JWT_TOKEN_HEADER_KEY = "Authorization";
     public static final String FORM_LOGIN_ENTRY_POINT = "/api/login";
+    public static final String FORM_REGISTER_ENTRY_POINT = "/api/register";
     public static final String TOKEN_AUTH_ENTRY_POINT = "/api/**";
     public static final String TOKEN_REFRESH_ENTRY_POINT = "/api/token";
 
@@ -67,7 +68,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     protected JwtTokenAuthenticationProcessingFilter buildJwtTokenAuthenticationProcessingFilter() throws Exception {
-        List<String> pathsToSkip = Arrays.asList(TOKEN_REFRESH_ENTRY_POINT, FORM_LOGIN_ENTRY_POINT);
+        List<String> pathsToSkip = Arrays.asList(TOKEN_REFRESH_ENTRY_POINT, FORM_LOGIN_ENTRY_POINT, FORM_REGISTER_ENTRY_POINT);
         SkipPathRequestMatcher matcher = new SkipPathRequestMatcher(pathsToSkip, TOKEN_AUTH_ENTRY_POINT);
 
         JwtTokenAuthenticationProcessingFilter processingFilter =
@@ -100,6 +101,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                     .authorizeRequests()
+                        .antMatchers(FORM_REGISTER_ENTRY_POINT).permitAll()
                         .antMatchers(FORM_LOGIN_ENTRY_POINT).permitAll()
                         .antMatchers(TOKEN_REFRESH_ENTRY_POINT).permitAll()
                 .and()
