@@ -1,7 +1,9 @@
 package com.momentu.momentuapi.security.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.momentu.momentuapi.security.CustomCorsFilter;
 import com.momentu.momentuapi.security.RestAuthenticationEntryPoint;
+import com.momentu.momentuapi.security.auth.json.JsonAuthenticationProvider;
 import com.momentu.momentuapi.security.auth.json.JsonLoginProcessingFilter;
 import com.momentu.momentuapi.security.auth.jwt.JwtAuthenticationProvider;
 import com.momentu.momentuapi.security.auth.jwt.JwtTokenAuthenticationProcessingFilter;
@@ -17,6 +19,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.util.Arrays;
@@ -34,7 +37,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
 
     @Autowired
+    private AuthenticationSuccessHandler authenticationSuccessHandler;
+
+    @Autowired
     private AuthenticationFailureHandler authenticationFailureHandler;
+
+    @Autowired
+    JsonAuthenticationProvider jsonAuthenticationProvider;
 
     @Autowired
     JwtAuthenticationProvider jwtAuthenticationProvider;
@@ -45,9 +54,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     TokenExtractor tokenExtractor;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
 
     protected JsonLoginProcessingFilter buildJsonLoginProcessingFilter() throws Exception {
-        return null;
+        JsonLoginProcessingFilter processingFilter =
+                new JsonLoginProcessingFilter(FORM_LOGIN_ENTRY_POINT, authenticationSuccessHandler,
+                        authenticationFailureHandler, objectMapper);
+        processingFilter.setAuthenticationManager(this.authenticationManager);
+        return processingFilter;
     }
 
     protected JwtTokenAuthenticationProcessingFilter buildJwtTokenAuthenticationProcessingFilter() throws Exception {
@@ -70,6 +86,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(jwtAuthenticationProvider);
+        auth.authenticationProvider(jsonAuthenticationProvider);
     }
 
     @Override
@@ -93,9 +110,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .addFilterBefore(buildJsonLoginProcessingFilter(), UsernamePasswordAuthenticationFilter.class)
                     .addFilterBefore(buildJwtTokenAuthenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
     }
-
-
-
-
-
 }

@@ -11,6 +11,6 @@ import java.util.Optional;
 @RepositoryRestResource
 public interface UserRepository extends CrudRepository<User, Long> {
 
-    @Query("select u from User u left join fetch u.user_role r where u.username=:username")
+    @Query("select u from User u left join fetch u.roles r where u.username=:username")
     public Optional<User> findByUsername(@Param("username") String username);
 }
