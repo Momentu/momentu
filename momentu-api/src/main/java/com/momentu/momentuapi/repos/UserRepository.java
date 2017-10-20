@@ -17,4 +17,5 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     @Query("select u from User u left join fetch u.roles r where u.email=:email")
     public Optional<User> findByEmail(@Param("email") String email);
+    
 }
