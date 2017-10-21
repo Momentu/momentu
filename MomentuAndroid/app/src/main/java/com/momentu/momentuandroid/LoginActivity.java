@@ -20,6 +20,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -54,10 +55,15 @@ public class LoginActivity extends Activity {
         // Get user password input from the password field.
         mPasswordView = (EditText) findViewById(R.id.password);
 
-        Button mUsernameSignInButton = (Button) findViewById(R.id.login_button);
-        mUsernameSignInButton.setOnClickListener(new OnClickListener() {
+        Button mUsernameLogInButton = (Button) findViewById(R.id.login_button);
+        mUsernameLogInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                InputMethodManager inputManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                inputManager.hideSoftInputFromWindow((null == getCurrentFocus()) ? null :
+                        getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                 attemptLogin();
             }
         });
