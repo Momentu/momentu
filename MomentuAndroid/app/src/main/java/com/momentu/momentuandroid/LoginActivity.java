@@ -1,4 +1,5 @@
 package com.momentu.momentuandroid;
+
 /**
  * Created by Jane on 10/12/2017.
  */
@@ -7,23 +8,17 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 /**
  * A login screen that offers login via username/password.
@@ -214,16 +209,16 @@ public class LoginActivity extends Activity {
             mAuthTask = null;
             showProgress(false);
 
-//            if (success) {
+            if (success) {
 //                if (myUser.userId > 0) {
-//                    finish();
-//                    // TODO: go to the next page when it is ready.
-//                    Intent myIntent = new Intent(LoginActivity.this, LoginActivity.class);
+                  // TODO: If user exists, then go to the search page.
+                      Intent search = new Intent(LoginActivity.this, SearchActivity.class);
 //                    Log.d("Passing User ",  myUser.username);
-////                    myIntent.putExtra("newUser", FALSE);
-////                    myIntent.putExtra("userName", myUser.username);
-//                    LoginActivity.this.startActivity(myIntent);
+//                    myIntent.putExtra("newUser", FALSE);
+//                    myIntent.putExtra("userName", myUser.username);
+                    startActivity(search);
 //                } else {
+                  // TODO: If user does not exist, then go to the sign in page.
 //                    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
 //                        @Override
 //                        public void onClick(DialogInterface dialog, int which) {
@@ -261,7 +256,7 @@ public class LoginActivity extends Activity {
 //                mPasswordView.setError(getString(R.string.error_incorrect_password));
 //                mPasswordView.requestFocus();
 //            }
-//        }
+        }
 
 //        @Override
 //        protected void onCancelled() {
