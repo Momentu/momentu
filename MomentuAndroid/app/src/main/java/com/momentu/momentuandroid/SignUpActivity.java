@@ -18,6 +18,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -91,11 +93,23 @@ public class SignUpActivity extends AppCompatActivity {
             focusView = emailInput;
             Toast.makeText(this, "Email name can't be empty", Toast.LENGTH_LONG).show();
             return false;
+        } else if (!isEmailValid(emailInput.getText().toString())) {
+                emailInput.setError("Invalid email format");
+                focusView = emailInput;
+                return false;
         } else if (gender.toString().isEmpty()) {
             Toast.makeText(this, "Please choose you gender", Toast.LENGTH_LONG).show();
             return false;
         }
         return true;
+    }
+
+    //This method is to check the format of an email that the user enters.
+    public static boolean isEmailValid(String email) {
+        String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
+        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
     }
 
 
