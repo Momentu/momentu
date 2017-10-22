@@ -78,6 +78,11 @@ public class SignUpActivity extends AppCompatActivity {
             focusView = passwordInput;
             Toast.makeText(this, "Password can't be empty", Toast.LENGTH_LONG).show();
             return false;
+
+        }else if (passwordInput.getText().length()<=8) {
+            passwordInput.setError("Password length must be greater than 8 characters");
+            focusView = passwordInput;
+            return false;
         } else if (TextUtils.isEmpty(firstNameInput.getText().toString())) {
             firstNameInput.setError(getString(R.string.error_field_required));
             focusView = firstNameInput;
