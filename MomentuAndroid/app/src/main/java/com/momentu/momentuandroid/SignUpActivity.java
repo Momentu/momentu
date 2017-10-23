@@ -3,6 +3,7 @@ package com.momentu.momentuandroid;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -10,18 +11,23 @@ import android.widget.Toast;
 
 import com.momentu.momentuandroid.Model.User;
 
-import java.io.BufferedReader;
+import org.json.JSONObject;
+
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.net.ssl.HttpsURLConnection;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -53,14 +59,25 @@ public class SignUpActivity extends AppCompatActivity {
     public void onClickSignUp(View v) throws IOException {
 
         if (checkFields()) {
-            User newUser = new User();
-            newUser.setUsername(usernameInput.getText().toString());
-            newUser.setPassword(passwordInput.getText().toString());
-            newUser.setFirstName(firstNameInput.getText().toString());
-            newUser.setLastName(lastNameInput.getText().toString());
-            newUser.setGender(gender.toString());
-            newUser.setEmail(emailInput.getText().toString());
-            Toast.makeText(SignUpActivity.this, newUser.toString(), Toast.LENGTH_LONG).show();
+//            User newUser = new User();
+//            newUser.setUsername(usernameInput.getText().toString());
+//            newUser.setPassword(passwordInput.getText().toString());
+//            newUser.setFirstName(firstNameInput.getText().toString());
+//            newUser.setLastName(lastNameInput.getText().toString());
+//            newUser.setGender(gender.toString());
+//            newUser.setEmail(emailInput.getText().toString());
+//
+//            Toast.makeText(SignUpActivity.this, newUser.toString(), Toast.LENGTH_LONG).show();
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("username", usernameInput.getText().toString());
+            params.put("password", passwordInput.getText().toString());
+            params.put("firstName", firstNameInput.getText().toString());
+            params.put("lastName", lastNameInput.getText().toString());
+            params.put("gender", gender.toString());
+            params.put("email",emailInput.getText().toString());
+
+            httpHanler(params);
         }
 
     }
@@ -117,5 +134,32 @@ public class SignUpActivity extends AppCompatActivity {
         return matcher.matches();
     }
 
+    private void httpHanler(Map<String, String > params)
+    {
+        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+
+
+        JSONObject parameter = new JSONObject(params);
+        OkHttpClient client = new OkHttpClient();
+
+        RequestBody body = RequestBody.create(JSON, parameter.toString());
+        Request request = new Request.Builder()
+                .url( "http://192.168.157.1:8080/register")
+                .post(body)
+                .addHeader("content-type", "application/json; charset=utf-8")
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.e("response", call.request().body().toString());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Log.d("response", response.body().string());
+            }
+        });
+    }
 
 }
