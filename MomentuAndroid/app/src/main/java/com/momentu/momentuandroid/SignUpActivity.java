@@ -144,7 +144,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         RequestBody body = RequestBody.create(JSON, parameter.toString());
         Request request = new Request.Builder()
-                .url( "http://192.168.157.1:8080/register")
+                .url( "http://192.168.157.1:8080/api/register")
                 .post(body)
                 .addHeader("content-type", "application/json; charset=utf-8")
                 .build();

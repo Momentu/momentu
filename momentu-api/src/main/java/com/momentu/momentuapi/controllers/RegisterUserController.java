@@ -15,9 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
-@RestController
+
 @RepositoryRestController
-//@RequestMapping("/api")
+@RequestMapping("/api")
 public class RegisterUserController {
 
     @Autowired
@@ -26,14 +26,9 @@ public class RegisterUserController {
     @Autowired
     private UserRoleRepository userRoleRepository;
 
-    @Autowired
-    public void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public ResponseEntity<User> register(@RequestBody User user)
-                                                            //,PersistentEntityResourceAssembler persistentEntityResourceAssembler)
+    public ResponseEntity<PersistentEntityResource> register(@RequestBody User user
+                                                            ,PersistentEntityResourceAssembler persistentEntityResourceAssembler)
     {
 
         if(StringUtils.isBlank(user.getUsername())) {
@@ -54,7 +49,6 @@ public class RegisterUserController {
         UserRole roleAssociation = new UserRole(user.getId(), Role.MEMBER);
         userRoleRepository.save(roleAssociation);
 
-  //      return ResponseEntity.ok(persistentEntityResourceAssembler.toResource(user));
-        return new ResponseEntity<User>(newUser, HttpStatus.OK);
+        return ResponseEntity.ok(persistentEntityResourceAssembler.toResource(user));
     }
 }
