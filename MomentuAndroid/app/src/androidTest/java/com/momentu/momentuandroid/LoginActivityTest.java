@@ -1,6 +1,7 @@
 package com.momentu.momentuandroid;
 
 
+import android.app.Activity;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -30,6 +31,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withParent;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
+import static org.junit.Assert.assertNotNull;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
@@ -38,43 +40,12 @@ public class LoginActivityTest {
     @Rule
     public ActivityTestRule<WelcomeActivity> mActivityTestRule = new ActivityTestRule<>(WelcomeActivity.class);
 
+    @Rule
+    public ActivityTestRule<LoginActivity> loginActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
+
+    //This is an auto generated test using record espresso test.
     @Test
     public void loginActivityTest() {
-
-        ViewInteraction button = onView(
-                allOf(withId(R.id.loginButton), withText("Login"), isDisplayed()));
-        button.perform(click());
-
-        ViewInteraction textView = onView(
-                allOf(withId(R.id.tWelcomeUser), withText("Momentu"),
-                        childAtPosition(
-                                allOf(withId(R.id.email_login_form),
-                                        childAtPosition(
-                                                withId(R.id.login_form),
-                                                0)),
-                                0),
-                        isDisplayed()));
-        textView.check(matches(isDisplayed()));
-
-        ViewInteraction editText = onView(
-                allOf(withId(R.id.username),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.email_login_form),
-                                        1),
-                                0),
-                        isDisplayed()));
-        editText.perform(replaceText("fahad"));
-
-        ViewInteraction editText2 = onView(
-                allOf(withId(R.id.password),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.email_login_form),
-                                        2),
-                                0),
-                        isDisplayed()));
-        editText2.perform(replaceText("123456"));
 
         ViewInteraction editText5 = onView(
                 withId(R.id.username));
@@ -91,7 +62,21 @@ public class LoginActivityTest {
         button2.perform(scrollTo(), click());
 
     }
+
+    //This is an UI Test that these the existence of all the activity widgets
+    @Test
+    public void termAndPolicyActivityUITest(){
+
+        Activity activity = loginActivityTestRule.getActivity();
+        assertNotNull(activity.findViewById(R.id.tWelcomeUser));
+        assertNotNull(activity.findViewById(R.id.username));
+        assertNotNull(activity.findViewById(R.id.password));
+        assertNotNull(activity.findViewById(R.id.login_button));
+
+    }
+
     /*
+    This method will be refactor after implementing the authentication.
     @Test
     public void clickLoginButton_WithNoUsernameAndPassowrd() {
         //locate and click on the term and policy button

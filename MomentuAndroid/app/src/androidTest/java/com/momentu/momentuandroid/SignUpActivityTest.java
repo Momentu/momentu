@@ -1,6 +1,7 @@
 package com.momentu.momentuandroid;
 
 
+import android.app.Activity;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -8,6 +9,7 @@ import android.test.suitebuilder.annotation.LargeTest;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.widget.TextView;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -29,6 +31,8 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
@@ -37,6 +41,11 @@ public class SignUpActivityTest {
     @Rule
     public ActivityTestRule<WelcomeActivity> mActivityTestRule = new ActivityTestRule<>(WelcomeActivity.class);
 
+    @Rule
+    public ActivityTestRule<SignUpActivity> signUpActivityTestRule = new ActivityTestRule<>(SignUpActivity.class);
+
+
+    //This is an auto generated test using record espresso test.
     @Test
     public void signUpActivityTest() {
 
@@ -133,17 +142,6 @@ public class SignUpActivityTest {
                                 0),
                         isDisplayed()));
         button2.check(matches(isDisplayed()));
-        /*
-        ViewInteraction editText = onView(
-                allOf(withId(R.id.usernameInput),
-                        childAtPosition(
-                                childAtPosition(
-                                        IsInstanceOf.<View>instanceOf(android.widget.TableLayout.class),
-                                        0),
-                                1),
-                        isDisplayed()));
-        editText.check(matches(hasFocus(se("This field is required"))));
-        */
 
         ViewInteraction editText2 = onView(
                 allOf(withId(R.id.usernameInput),
@@ -195,34 +193,32 @@ public class SignUpActivityTest {
         appCompatEditText.perform(replaceText("falharbi88"), closeSoftKeyboard());
 
         pressBack();
-        /*
-        ViewInteraction appCompatEditText2 = onView(
-                allOf(withId(R.id.passwordInput), isDisplayed()));
-        appCompatEditText2.perform(replaceText("123456"), closeSoftKeyboard());
+
+    }
 
 
-        ViewInteraction appCompatEditText3 = onView(
-                allOf(withId(R.id.firstNameInput), isDisplayed()));
-        appCompatEditText3.perform(replaceText("fahad"), closeSoftKeyboard());
+    //This is an UI Test that these the existence of all the activity widgets
+    @Test
+    public void termAndPolicyActivityUITest(){
 
-        ViewInteraction appCompatEditText5 = onView(
-                allOf(withId(R.id.lastNameInput), isDisplayed()));
-        appCompatEditText5.perform(replaceText("alharbi"), closeSoftKeyboard());
+        Activity activity = signUpActivityTestRule.getActivity();
+        assertNotNull(activity.findViewById(R.id.signUpText));
+        assertNotNull(activity.findViewById(R.id.createAnAccountText));
+        assertNotNull(activity.findViewById(R.id.usernameInput));
+        assertNotNull(activity.findViewById(R.id.username));
+        assertNotNull(activity.findViewById(R.id.passwordInput));
+        assertNotNull(activity.findViewById(R.id.password));
+        assertNotNull(activity.findViewById(R.id.firstNameInput));
+        assertNotNull(activity.findViewById(R.id.firstName));
+        assertNotNull(activity.findViewById(R.id.lastNameInput));
+        assertNotNull(activity.findViewById(R.id.lastName));
+        assertNotNull(activity.findViewById(R.id.gender));
+        assertNotNull(activity.findViewById(R.id.maleRadioButton));
+        assertNotNull(activity.findViewById(R.id.femaleRadioButton));
+        assertNotNull(activity.findViewById(R.id.email));
+        assertNotNull(activity.findViewById(R.id.emailInput));
+        assertNotNull(activity.findViewById(R.id.signUpButton));
 
-        ViewInteraction appCompatRadioButton = onView(
-                allOf(withId(R.id.maleRadioButton), withText("Male"), isDisplayed()));
-        appCompatRadioButton.perform(click());
-
-        ViewInteraction appCompatRadioButton2 = onView(
-                allOf(withId(R.id.femaleRadioButton), withText("Female"), isDisplayed()));
-        appCompatRadioButton2.perform(click());
-
-        ViewInteraction appCompatEditText6 = onView(
-                allOf(withId(R.id.emailInput), isDisplayed()));
-        appCompatEditText6.perform(replaceText("falharbi88@gmail.com"), closeSoftKeyboard());
-
-        pressBack();
-        */
     }
 
     private static Matcher<View> childAtPosition(

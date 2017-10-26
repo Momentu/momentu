@@ -1,13 +1,17 @@
 package com.momentu.momentuandroid;
 
 
+import android.app.Activity;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
+import android.text.Html;
+import android.text.Spanned;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.widget.TextView;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -24,6 +28,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
+import static org.junit.Assert.*;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
@@ -32,6 +37,10 @@ public class TermAndPolicyActivityTest {
     @Rule
     public ActivityTestRule<WelcomeActivity> mActivityTestRule = new ActivityTestRule<>(WelcomeActivity.class);
 
+    @Rule
+    public ActivityTestRule<TermAndPolicyActivity> termAndPolicyActivityTestRule = new ActivityTestRule<>(TermAndPolicyActivity.class);
+
+    //This is an auto generated test using record espresso test.
     @Test
     public void termAndPolicyActivityTest() {
         ViewInteraction button = onView(
@@ -68,6 +77,18 @@ public class TermAndPolicyActivityTest {
         scrollView.check(matches(isDisplayed()));
 
     }
+
+    //This is an UI Test that these the existence of all the activity widgets
+    @Test
+    public void termAndPolicyActivityUITest(){
+
+       Activity activity = termAndPolicyActivityTestRule.getActivity();
+        assertNotNull(activity.findViewById(R.id.term_and_policy_text_view));
+        TextView termAndPolicyText = (TextView) activity.findViewById(R.id.term_and_policy_text_view);
+        assertTrue(termAndPolicyText.isShown());
+
+    }
+
 
     private static Matcher<View> childAtPosition(
             final Matcher<View> parentMatcher, final int position) {

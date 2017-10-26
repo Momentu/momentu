@@ -1,6 +1,7 @@
 package com.momentu.momentuandroid;
 
 
+import android.app.Activity;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -16,6 +17,7 @@ import org.hamcrest.core.IsInstanceOf;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import static org.junit.Assert.*;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -33,6 +35,7 @@ public class WelcomeActivityTest {
     @Rule
     public ActivityTestRule<WelcomeActivity> mActivityTestRule = new ActivityTestRule<>(WelcomeActivity.class);
 
+    //This is an auto generated test using record espresso test.
     @Test
     public void welcomeActivityTest() {
         ViewInteraction textView = onView(
@@ -97,6 +100,20 @@ public class WelcomeActivityTest {
 
     }
 
+    //This is an UI Test that these the existence of all the activity widgets
+    @Test
+    public void welcomeActivityUITest(){
+        Activity activity = mActivityTestRule.getActivity();
+        assertNotNull(activity.findViewById(R.id.mementuText));
+        assertNotNull(activity.findViewById(R.id.depaulUniversity));
+        assertNotNull(activity.findViewById(R.id.textView8));
+        assertNotNull(activity.findViewById(R.id.signUpButton));
+        assertNotNull(activity.findViewById(R.id.termAndPolicyButton));
+        assertNotNull(activity.findViewById(R.id.loginButton));
+
+    }
+
+    //This is a test to check what happen after clicking on sign up button.
     @Test
     public void clickSignUpButton_opensSignUpActivity() {
         //locate and click on the sign up button
@@ -106,6 +123,7 @@ public class WelcomeActivityTest {
         onView(withId(R.id.signUpText)).check(matches(isDisplayed()));
     }
 
+    //This is a test to check what happen after clicking on login  button.
     @Test
     public void clickLoginButton_opensLoginActivity() {
         //locate and click on the login button
@@ -115,6 +133,7 @@ public class WelcomeActivityTest {
         onView(withId(R.id.tWelcomeUser)).check(matches(isDisplayed()));
     }
 
+    //This is a test to check what happen after clicking on term and policy button.
     @Test
     public void clickTermAndPolicyButton_opensTermAndPolicyActivity() {
         //locate and click on the term and policy button
@@ -123,7 +142,6 @@ public class WelcomeActivityTest {
         //check if the the term and policy button screen is displayed by asserting that the term and policy text (TextView) is displayed
         onView(withId(R.id.term_and_policy_text_view)).check(matches(isDisplayed()));
     }
-
 
     private static Matcher<View> childAtPosition(
             final Matcher<View> parentMatcher, final int position) {
