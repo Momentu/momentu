@@ -1,0 +1,10 @@
+INSERT INTO momentu.user(email, first_name, last_name, gender, password, username) VALUES ('johnsmith040@gmail.com', 'John', 'Smith', 'Male', '$2a$10$3oaqD7CIe3TQWk4/Mx2yn.ddUBFJ97b1N9gEDP.pFFhwUFjrEgdgq', 'jsmith040');
+INSERT INTO momentu.user_role(user_id, role) VALUES (1, 'MEMBER');
+INSERT INTO momentu.user(email, first_name, last_name, gender, password, username) VALUES ('jdoe5000@gmail.com', 'Jane', 'Doe', 'Female', '$2a$10$IN6uDvXIhWsz4mjAFknLAuACN4iRxbFtVGFBeOS3OKcVIhXDRZBQy', 'janedoe5');
+INSERT INTO momentu.user_role(user_id, role) VALUES (2, 'MEMBER');
+INSERT INTO momentu.user_role(user_id, role) VALUES (1, 'ADMIN');
+INSERT INTO momentu.user(email, first_name, last_name, gender, password, username) VALUES ('testuser@gmail.com', 'Test', 'User', 'Male', '$2a$10$DigLno.ZIaS6rVcGoZzUtexfo4kEBvyfjlDR6HeS01M1UI2p7WtHq', 'testuser');
+INSERT INTO momentu.user_role(user_id, role) VALUES (3, 'MEMBER');
+INSERT INTO momentu.user(email, first_name, last_name, gender, password, username) VALUES ('testadminuser@gmail.com', 'Test', 'User', 'Male', '$2a$10$FJvJTJZTqOnEToNeN2inge73g4/65Ub73mkP0CroynsXVVWBXGCvi', 'testadminuser');
+INSERT INTO momentu.user_role(user_id, role) VALUES (4, 'MEMBER');
+INSERT INTO momentu.user_role(user_id, role) VALUES (4, 'ADMIN');
