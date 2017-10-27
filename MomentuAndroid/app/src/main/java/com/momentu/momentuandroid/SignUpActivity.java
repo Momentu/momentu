@@ -1,7 +1,10 @@
 package com.momentu.momentuandroid;
 
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -9,15 +12,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.momentu.momentuandroid.Model.User;
-
 import org.json.JSONObject;
 
 import java.io.IOException;
-
 import java.util.HashMap;
 import java.util.Map;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -77,7 +76,7 @@ public class SignUpActivity extends AppCompatActivity {
             params.put("gender", gender.toString());
             params.put("email",emailInput.getText().toString());
 
-            httpHanler(params);
+            httpHandler(params);
         }
 
     }
@@ -116,9 +115,9 @@ public class SignUpActivity extends AppCompatActivity {
             Toast.makeText(this, "Email name can't be empty", Toast.LENGTH_LONG).show();
             return false;
         } else if (!isEmailValid(emailInput.getText().toString())) {
-                emailInput.setError("Invalid email format");
-                focusView = emailInput;
-                return false;
+            emailInput.setError("Invalid email format");
+            focusView = emailInput;
+            return false;
         } else if (gender.toString().isEmpty()) {
             Toast.makeText(this, "Please choose you gender", Toast.LENGTH_LONG).show();
             return false;
@@ -134,7 +133,7 @@ public class SignUpActivity extends AppCompatActivity {
         return matcher.matches();
     }
 
-    private void httpHanler(Map<String, String > params)
+    private void httpHandler(Map<String, String > params)
     {
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
@@ -153,13 +152,27 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.e("response", call.request().body().toString());
+//                Toast.makeText(this,"Sorry cannot sign you up",Toast.LENGTH_SHORT).show();
+
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 Log.d("response", response.body().string());
+                if(response.code()==200){
+                    Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                }
+                else{
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            Toast.makeText(SignUpActivity.this, "Either user or password is already being used", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
             }
         });
     }
-
 }

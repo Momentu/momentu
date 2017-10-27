@@ -10,15 +10,35 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * A login screen that offers login via username/password.
@@ -30,7 +50,7 @@ public class LoginActivity extends Activity {
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-    private UserLoginTask mAuthTask = null;
+//    private UserLoginTask mAuthTask = null;
 
     // UI references.
     private EditText mUsernameView;
@@ -48,7 +68,7 @@ public class LoginActivity extends Activity {
         // Get user password input from the password field.
         mPasswordView = (EditText) findViewById(R.id.password);
         // Get user password input from the password field.
-        mPasswordView = (EditText) findViewById(R.id.password);
+      //  mPasswordView = (EditText) findViewById(R.id.password);
 
         Button mUsernameLogInButton = (Button) findViewById(R.id.login_button);
         mUsernameLogInButton.setOnClickListener(new OnClickListener() {
@@ -73,9 +93,9 @@ public class LoginActivity extends Activity {
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
-        if (mAuthTask != null) {
-            return;
-        }
+//        if (mAuthTask != null) {
+//            return;
+//        }
 
         // Reset errors.
         mUsernameView.setError(null);
@@ -110,8 +130,11 @@ public class LoginActivity extends Activity {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(username, password, this);
-            mAuthTask.execute((Void) null);
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("username", mUsernameView.getText().toString());
+            params.put("password", mPasswordView.getText().toString());
+
+            httpHandler(params);
         }
     }
 
@@ -159,110 +182,194 @@ public class LoginActivity extends Activity {
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-
-        private final String mUsername;
-        private final String mPassword;
-        private final Context mContext;
-
-        UserLoginTask(String username, String password, Context context) {
-            mUsername = username;
-            mPassword = password;
-            mContext = context;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-//            DBTools dbTools = null;
-
-            try {
-                // Simulate network access.
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            // Check if user exit, if yes, check the password, if not, create new account.
+//    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+//
+//        private final String mUsername;
+//        private final String mPassword;
+//        private final Context mContext;
+//
+//        UserLoginTask(String username, String password, Context context) {
+//            mUsername = username;
+//            mPassword = password;
+//            mContext = context;
+//        }
+//
+//        @Override
+//        protected Boolean doInBackground(Void... params) {
+////            DBTools dbTools = null;
+//
+//                Map<String, String> params1 = new HashMap<String, String>();
+//                params1.put("username", mUsername);
+//                params1.put("password", mPassword);
+//            Response response = null;
 //            try {
-//                dbTools = new DBTools(mContext);
-//                myUser = dbTools.getUser(mUsername);
-//
-//                if (myUser.userId > 0) {
-//                    // Account exists, check password.
-//                    if (myUser.password.equals(mPassword))
-//                        return true;
-//                    else
-//                        return false;
-//                } else {
-//                    myUser.password = mPassword;
-//                    return true;
-//                }
-//            } finally {
-//               if (dbTools != null)
-//                   dbTools.close();
+//                response = new OkHttpHandler().httpHanler(1, params1);
+//            } catch (IOException e) {
+//                e.printStackTrace();
 //            }
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
-
-            if (success) {
-//                if (myUser.userId > 0) {
-                  // TODO: If user exists, then go to the search page.
-                      Intent search = new Intent(LoginActivity.this, SearchActivity.class);
-//                    Log.d("Passing User ",  myUser.username);
-//                    myIntent.putExtra("newUser", FALSE);
-//                    myIntent.putExtra("userName", myUser.username);
-                    startActivity(search);
-//                } else {
-                  // TODO: If user does not exist, then go to the sign in page.
-//                    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            switch (which) {
-//                                case DialogInterface.BUTTON_POSITIVE:
-//                                    DBTools dbTools = null;
-//                                    // Switch to the sign up page to create a new account.
-//                                    try {
-//                                        dbTools = new DBTools(mContext);
-//                                        myUser = dbTools.insertUser(myUser);
-//                                        finish();
-//                                        Intent myIntent = new Intent(LoginActivity.this, SignUpActivity.class);
-//                                        Log.d("Passing User ",  myUser.username);
-//                                        LoginActivity.this.startActivity(myIntent);
-//                                    } finally {
-//                                        if (dbTools != null)
-//                                            dbTools.close();
-//                                    }
-//                                    break;
 //
-//                                case DialogInterface.BUTTON_NEGATIVE:
-//                                    mUsernameView.setError(getString(R.string.username_not_exist));
-////                                    mPasswordView.setError(getString(R.string.error_incorrect_password));
-//                                    mUsernameView.requestFocus();
-//                                    break;
-//                            }
-//                        }
-//                    };
 //
-//                    AlertDialog.Builder builder = new AlertDialog.Builder(this.mContext);
-//                    builder.setMessage(R.string.confirm_registry).setPositiveButton(R.string.yes, dialogClickListener)
-//                            .setNegativeButton(R.string.no, dialogClickListener).show();
-//                }
+//            // Check if user exit, if yes, check the password, if not, create new account.
+////            try {
+////                dbTools = new DBTools(mContext);
+////                myUser = dbTools.getUser(mUsername);
+////
+////                if (myUser.userId > 0) {
+////                    // Account exists, check password.
+////                    if (myUser.password.equals(mPassword))
+////                        return true;
+////                    else
+////                        return false;
+////                } else {
+////                    myUser.password = mPassword;
+////                    return true;
+////                }
+////            } finally {
+////               if (dbTools != null)
+////                   dbTools.close();
+////            }
+//            return true;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(final Boolean success) {
+//            mAuthTask = null;
+//            showProgress(false);
+//
+//            if (success) {
+////                if (myUser.userId > 0) {
+//                  // TODO: If user exists, then go to the search page.
+//                      Intent search = new Intent(LoginActivity.this, SearchActivity.class);
+////                    Log.d("Passing User ",  myUser.username);
+////                    myIntent.putExtra("newUser", FALSE);
+////                    myIntent.putExtra("userName", myUser.username);
+//                    startActivity(search);
+////                } else {
+//                  // TODO: If user does not exist, then go to the sign in page.
+////                    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+////                        @Override
+////                        public void onClick(DialogInterface dialog, int which) {
+////                            switch (which) {
+////                                case DialogInterface.BUTTON_POSITIVE:
+////                                    DBTools dbTools = null;
+////                                    // Switch to the sign up page to create a new account.
+////                                    try {
+////                                        dbTools = new DBTools(mContext);
+////                                        myUser = dbTools.insertUser(myUser);
+////                                        finish();
+////                                        Intent myIntent = new Intent(LoginActivity.this, SignUpActivity.class);
+////                                        Log.d("Passing User ",  myUser.username);
+////                                        LoginActivity.this.startActivity(myIntent);
+////                                    } finally {
+////                                        if (dbTools != null)
+////                                            dbTools.close();
+////                                    }
+////                                    break;
+////
+////                                case DialogInterface.BUTTON_NEGATIVE:
+////                                    mUsernameView.setError(getString(R.string.username_not_exist));
+//////                                    mPasswordView.setError(getString(R.string.error_incorrect_password));
+////                                    mUsernameView.requestFocus();
+////                                    break;
+////                            }
+////                        }
+////                    };
+////
+////                    AlertDialog.Builder builder = new AlertDialog.Builder(this.mContext);
+////                    builder.setMessage(R.string.confirm_registry).setPositiveButton(R.string.yes, dialogClickListener)
+////                            .setNegativeButton(R.string.no, dialogClickListener).show();
+////                }
 //            } else {
 //                mPasswordView.setError(getString(R.string.error_incorrect_password));
 //                mPasswordView.requestFocus();
 //            }
-        }
-
-//        @Override
-//        protected void onCancelled() {
-//            mAuthTask = null;
-//            showProgress(false);
+////        }
+//
+////        @Override
+////        protected void onCancelled() {
+////            mAuthTask = null;
+////            showProgress(false);
+////        }
 //        }
+//    }
+
+    private void httpHandler(Map<String, String > params) {
+        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+
+
+        JSONObject parameter = new JSONObject(params);
+        OkHttpClient client = new OkHttpClient();
+
+        RequestBody body = RequestBody.create(JSON, parameter.toString());
+        final Request request = new Request.Builder()
+                .url("http://192.168.157.1:8080/api/login")
+                .post(body)
+                .addHeader("content-type", "application/json; charset=utf-8")
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.e("response", call.request().body().toString());
+//                Toast.makeText(this,"Sorry cannot sign you up",Toast.LENGTH_SHORT).show();
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Log.d("response", response.body().string());
+                if (response.code() == 200) {
+                   String token = parse(response);
+
+                    Intent intent = new Intent(LoginActivity.this, SearchActivity.class);
+                    intent.putExtra("token", token);
+                    startActivity(intent);
+                } else {
+                    //I'm not able to show a message of failure.
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            showProgress(false);
+                            Toast.makeText(LoginActivity.this, "Invalid Username or Password", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                }
+            }
+        });}
+        private String parse(Response response)
+    {
+        String result = null;
+        InputStream inputStream = null;
+        String token = null;
+        try {
+            inputStream = response.body().byteStream();
+
+            // json is UTF-8 by default
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"), 8);
+            StringBuilder sb = new StringBuilder();
+
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+            result = sb.toString();
+
+            JSONObject jObject = new JSONObject(result);
+            token = jObject.getString("token");
+            Log.d("Logintest", "Token After parsing process" + token);
+
+
+        } catch (Exception e) {
+            // Oops
+        } finally {
+            try {
+                if (inputStream != null) inputStream.close();
+            } catch (Exception squish) {
+            }
         }
+        return token;
     }
+
 }
