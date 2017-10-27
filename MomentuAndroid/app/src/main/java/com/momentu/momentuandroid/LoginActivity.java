@@ -310,8 +310,14 @@ public class LoginActivity extends Activity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.e("response", call.request().body().toString());
-//                Toast.makeText(this,"Sorry cannot sign you up",Toast.LENGTH_SHORT).show();
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        showProgress(false);
+                        Toast.makeText(LoginActivity.this, "Server is not responding", Toast.LENGTH_SHORT).show();
+                    }
+                });
 
             }
 
