@@ -302,7 +302,7 @@ public class LoginActivity extends Activity {
 
         RequestBody body = RequestBody.create(JSON, parameter.toString());
         final Request request = new Request.Builder()
-                .url("http://192.168.157.1:8080/api/login")
+                .url("http://www.momentu.xyz:8080/api/login")
                 .post(body)
                 .addHeader("content-type", "application/json; charset=utf-8")
                 .build();
