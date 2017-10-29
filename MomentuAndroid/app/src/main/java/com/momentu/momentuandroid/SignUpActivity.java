@@ -143,7 +143,11 @@ public class SignUpActivity extends AppCompatActivity {
 
         RequestBody body = RequestBody.create(JSON, parameter.toString());
         Request request = new Request.Builder()
+<<<<<<< HEAD
                 .url( "http://www.momentu.xyz:8080/api/register")
+=======
+                .url("http://www.momentu.xyz:8080/api/register")
+>>>>>>> 7b601cab65a31c467308910d1c20b84dc5359f81
                 .post(body)
                 .addHeader("content-type", "application/json; charset=utf-8")
                 .build();
