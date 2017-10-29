@@ -11,6 +11,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
@@ -31,6 +33,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.arlib.floatingsearchview.FloatingSearchView;
@@ -46,7 +49,7 @@ public class SearchActivity extends AppCompatActivity
 
     private final String TAG = "SearchActivity";
     private DrawerLayout mDrawerLayout;
-
+    private TextView mWhereAmI;
     /* Location */
     private List<Address> mAddresses;
     private String mProvider;
@@ -69,6 +72,7 @@ public class SearchActivity extends AppCompatActivity
         setContentView(R.layout.activity_search);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mWhereAmI= (TextView) findViewById(R.id.where_am_i);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -200,6 +204,8 @@ public class SearchActivity extends AppCompatActivity
                 mLocationName = "Unknown";
             }
         }
+
+        mWhereAmI.setText(((mCityName == null) ? "Where am I" : mCityName));
         Toast.makeText(getBaseContext(), "Current location: " + mLocationName,
                 Toast.LENGTH_LONG).show();
     }

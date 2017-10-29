@@ -5,9 +5,15 @@ package com.momentu.momentuandroid.Fragment;
  */
 
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
@@ -47,9 +53,12 @@ public class SlidingSearchResultsFragment extends BaseFragment {
 
     private FloatingSearchView mSearchView;
 
+    private static final long ANIM_DURATION = 350;
+
     private RecyclerView mSearchResultsList;
     private SearchResultsListAdapter mSearchResultsAdapter;
-
+    private View mDimSearchViewBackground;
+    private ColorDrawable mDimDrawable;
     private String mLastQuery = "";
 
     private int backPressCount = 1; // press back twice (no focus) will log out.
@@ -68,6 +77,15 @@ public class SlidingSearchResultsFragment extends BaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mSearchView = (FloatingSearchView) view.findViewById(R.id.floating_search_view);
+        mDimSearchViewBackground = view.findViewById(R.id.dim_background);
+        mDimDrawable = new ColorDrawable(Color.BLACK);
+        mDimDrawable.setAlpha(0);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            mDimSearchViewBackground.setBackground(mDimDrawable);
+        } else {
+            mDimSearchViewBackground.setBackgroundDrawable(mDimDrawable);
+        }
+
         mSearchResultsList = (RecyclerView) view.findViewById(R.id.search_results_list);
 
         setupFloatingSearch();
@@ -195,6 +213,18 @@ public class SlidingSearchResultsFragment extends BaseFragment {
             @Override
             public void onFocus() {
                 backPressCount = 1; //reset
+                int headerHeight = getResources().getDimensionPixelOffset(R.dimen.header_height);
+                ObjectAnimator anim1 = ObjectAnimator.ofFloat(mSearchView, "translationY",
+                        headerHeight, 0);
+                anim1.setDuration(350);
+                int headerBarHeight = getResources().getDimensionPixelOffset(R.dimen.header_bar_height);
+                ObjectAnimator anim2 = ObjectAnimator.ofFloat(mSearchResultsList, "translationY",
+                        headerBarHeight, 0);
+                anim2.setDuration(350);
+                fadeDimBackground(0, 150, null);
+                anim1.start();
+                anim2.start();
+
                 //show suggestions when search bar gains focus (typically history suggestions)
                 //TODO: This is hardcoded!
                 if(mLastQuery.equals(""))
@@ -213,6 +243,18 @@ public class SlidingSearchResultsFragment extends BaseFragment {
             @Override
             public void onFocusCleared() {
                 backPressCount = 1; //reset
+                int headerHeight = getResources().getDimensionPixelOffset(R.dimen.header_height);
+                ObjectAnimator anim1 = ObjectAnimator.ofFloat(mSearchView, "translationY",
+                        0, headerHeight);
+                anim1.setDuration(350);
+                int headerBarHeight = getResources().getDimensionPixelOffset(R.dimen.header_bar_height);
+                ObjectAnimator anim2 = ObjectAnimator.ofFloat(mSearchResultsList, "translationY",
+                        0, headerHeight);
+                anim2.setDuration(350);
+                anim1.start();
+                anim2.start();
+                fadeDimBackground(150, 0, null);
+
                 //set the title of the bar so that when focus is returned a new query begins
                 mSearchView.setSearchBarTitle(mLastQuery);
 
@@ -347,6 +389,21 @@ public class SlidingSearchResultsFragment extends BaseFragment {
         attachSearchViewActivityDrawer(mSearchView);
     }
 
+    private void fadeDimBackground(int from, int to, Animator.AnimatorListener listener) {
+        ValueAnimator anim = ValueAnimator.ofInt(from, to);
+        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
 
+                int value = (Integer) animation.getAnimatedValue();
+                mDimDrawable.setAlpha(value);
+            }
+        });
+        if (listener != null) {
+            anim.addListener(listener);
+        }
+        anim.setDuration(ANIM_DURATION);
+        anim.start();
+    }
 
 }
