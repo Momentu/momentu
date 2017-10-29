@@ -118,6 +118,8 @@ public class SearchActivity extends AppCompatActivity
                 Intent logout = new Intent(this, WelcomeActivity.class);
                 finish();
                 startActivity(logout);
+                Toast.makeText(SearchActivity.this, "You have been successfully logged out",
+                        Toast.LENGTH_LONG).show();
                 return true;
             default:
                 return true;
@@ -145,7 +147,7 @@ public class SearchActivity extends AppCompatActivity
                 new AlertDialog.Builder(this)
                         .setTitle(R.string.title_location_permission)
                         .setMessage(R.string.text_location_permission)
-                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 //Prompt the user once explanation has been shown

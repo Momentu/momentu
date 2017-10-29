@@ -6,6 +6,7 @@ package com.momentu.momentuandroid.Fragment;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -34,6 +35,7 @@ import com.momentu.momentuandroid.Data.MomentSuggestion;
 import com.momentu.momentuandroid.Data.MomentWrapper;
 import com.momentu.momentuandroid.Data.DataHelper;
 import com.momentu.momentuandroid.SearchActivity;
+import com.momentu.momentuandroid.WelcomeActivity;
 
 import java.util.List;
 
@@ -49,6 +51,8 @@ public class SlidingSearchResultsFragment extends BaseFragment {
     private SearchResultsListAdapter mSearchResultsAdapter;
 
     private String mLastQuery = "";
+
+    private int backPressCount = 1; // press back twice (no focus) will log out.
 
     public SlidingSearchResultsFragment() {
         // Required empty public constructor
@@ -69,6 +73,8 @@ public class SlidingSearchResultsFragment extends BaseFragment {
         setupFloatingSearch();
         setupResultsList();
         setupDrawer();
+
+        mSearchView.setSearchHint("Search hashtag...");
 
         final Button mTag1 = (Button) getView().findViewById(R.id.bTag1);
         final Button mTag2 = (Button) getView().findViewById(R.id.bTag2);
@@ -96,6 +102,7 @@ public class SlidingSearchResultsFragment extends BaseFragment {
     private View.OnClickListener mTrendingHashTagButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+            backPressCount = 1; //reset
             String mTrendingHastTag = ((Button) view).getText().toString();
             mSearchView.setSearchText(mTrendingHastTag);
             DataHelper.findMoments(getActivity(), ((Button) view).getText().toString(),
@@ -187,6 +194,7 @@ public class SlidingSearchResultsFragment extends BaseFragment {
         mSearchView.setOnFocusChangeListener(new FloatingSearchView.OnFocusChangeListener() {
             @Override
             public void onFocus() {
+                backPressCount = 1; //reset
                 //show suggestions when search bar gains focus (typically history suggestions)
                 //TODO: This is hardcoded!
                 if(mLastQuery.equals(""))
@@ -194,12 +202,17 @@ public class SlidingSearchResultsFragment extends BaseFragment {
                     mSearchView.setSearchText("#");
                 }
 
+                if(mSearchView.getQuery().equals(""))
+                {
+                    mSearchView.swapSuggestions(DataHelper.getHistory(getActivity(), 3));
+                }
+
                 Log.d(TAG, "onFocus()");
             }
 
             @Override
             public void onFocusCleared() {
-
+                backPressCount = 1; //reset
                 //set the title of the bar so that when focus is returned a new query begins
                 mSearchView.setSearchBarTitle(mLastQuery);
 
@@ -310,9 +323,24 @@ public class SlidingSearchResultsFragment extends BaseFragment {
         //returns false, we know that the search was already closed so the call didn't change the focus
         //state and it makes sense to call supper onBackPressed() and close the activity
         if (!mSearchView.setSearchFocused(false)) {
-            return false;
+            if(backPressCount < 2)
+            {
+                backPressCount ++;
+                Toast.makeText(getActivity(), "Press again will log out",
+                        Toast.LENGTH_SHORT).show();
+                return true;
+            } else {
+                backPressCount = 1;
+                Intent logout = new Intent(getActivity(), WelcomeActivity.class);
+                startActivity(logout);
+                Toast.makeText(getActivity(), "You have been successfully logged out",
+                        Toast.LENGTH_LONG).show();
+                return false;
+            }
+        } else {
+            backPressCount = 1;
+            return true;
         }
-        return true;
     }
 
     private void setupDrawer() {

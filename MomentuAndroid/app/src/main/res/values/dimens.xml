@@ -4,5 +4,6 @@
     <dimen name="sliding_search_view_header_height">250dp</dimen>
     <dimen name="camera_size">50dp</dimen>
     <dimen name="trending_tag_button_width">115dp</dimen>
+    <dimen name="trending_tag_button_height">20dp</dimen>
 
 </resources>
