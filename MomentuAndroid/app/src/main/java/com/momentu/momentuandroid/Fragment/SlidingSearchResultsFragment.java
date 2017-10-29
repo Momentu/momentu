@@ -5,6 +5,7 @@ package com.momentu.momentuandroid.Fragment;
  */
 
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -17,6 +18,8 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -66,7 +69,46 @@ public class SlidingSearchResultsFragment extends BaseFragment {
         setupFloatingSearch();
         setupResultsList();
         setupDrawer();
+
+        final Button mTag1 = (Button) getView().findViewById(R.id.bTag1);
+        final Button mTag2 = (Button) getView().findViewById(R.id.bTag2);
+        final Button mTag3 = (Button) getView().findViewById(R.id.bTag3);
+        final Button mTag4 = (Button) getView().findViewById(R.id.bTag4);
+        final Button mTag5 = (Button) getView().findViewById(R.id.bTag5);
+        final Button mTag6 = (Button) getView().findViewById(R.id.bTag6);
+
+        //TODO: Hard coded!
+        mTag1.setText("#Sixers");
+        mTag2.setText("#anniversary");
+        mTag3.setText("#Supernatural");
+        mTag4.setText("#scnews");
+        mTag5.setText("#AOMG");
+        mTag6.setText("#Scandal");
+
+        mTag1.setOnClickListener(mTrendingHashTagButtonListener);
+        mTag2.setOnClickListener(mTrendingHashTagButtonListener);
+        mTag3.setOnClickListener(mTrendingHashTagButtonListener);
+        mTag4.setOnClickListener(mTrendingHashTagButtonListener);
+        mTag5.setOnClickListener(mTrendingHashTagButtonListener);
+        mTag6.setOnClickListener(mTrendingHashTagButtonListener);
     }
+
+    private View.OnClickListener mTrendingHashTagButtonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            String mTrendingHastTag = ((Button) view).getText().toString();
+            mSearchView.setSearchText(mTrendingHastTag);
+            DataHelper.findMoments(getActivity(), ((Button) view).getText().toString(),
+                    new DataHelper.OnFindMomentsListener() {
+                        @Override
+                        public void onResults(List<MomentWrapper> results) {
+                            setupResultsList();
+                            mSearchResultsAdapter.swapData(results);
+                        }
+                    });
+            mLastQuery = mTrendingHastTag;
+        }
+    };
 
     private void setupFloatingSearch() {
         mSearchView.setOnQueryChangeListener(new FloatingSearchView.OnQueryChangeListener() {
@@ -76,6 +118,7 @@ public class SlidingSearchResultsFragment extends BaseFragment {
 
                 if (!oldQuery.equals("") && newQuery.equals("")) {
                     mSearchView.clearSuggestions();
+                    mLastQuery = "";
                 } else {
 
                     //shows the top left circular progress
@@ -113,13 +156,15 @@ public class SlidingSearchResultsFragment extends BaseFragment {
 
                             @Override
                             public void onResults(List<MomentWrapper> results) {
+                                setupResultsList();
                                 mSearchResultsAdapter.swapData(results);
                             }
 
                         });
                 Log.d(TAG, "onSuggestionClicked()");
-
                 mLastQuery = searchSuggestion.getBody();
+                mSearchView.clearSearchFocus();
+                mSearchView.setSearchBarTitle(mLastQuery);
             }
 
             @Override
@@ -142,9 +187,12 @@ public class SlidingSearchResultsFragment extends BaseFragment {
         mSearchView.setOnFocusChangeListener(new FloatingSearchView.OnFocusChangeListener() {
             @Override
             public void onFocus() {
-
                 //show suggestions when search bar gains focus (typically history suggestions)
-                mSearchView.swapSuggestions(DataHelper.getHistory(getActivity(), 3));
+                //TODO: This is hardcoded!
+                if(mLastQuery.equals(""))
+                {
+                    mSearchView.setSearchText("#");
+                }
 
                 Log.d(TAG, "onFocus()");
             }
@@ -243,7 +291,7 @@ public class SlidingSearchResultsFragment extends BaseFragment {
         mSearchView.setOnClearSearchActionListener(new FloatingSearchView.OnClearSearchActionListener() {
             @Override
             public void onClearSearchClicked() {
-
+                mSearchView.setSearchText("#");
                 Log.d(TAG, "onClearSearchClicked()");
             }
         });
@@ -270,5 +318,7 @@ public class SlidingSearchResultsFragment extends BaseFragment {
     private void setupDrawer() {
         attachSearchViewActivityDrawer(mSearchView);
     }
+
+
 
 }

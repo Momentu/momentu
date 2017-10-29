@@ -42,43 +42,55 @@
 
                     <Button
                         android:id="@+id/bTag1"
+                        android:textColor="@color/colorAccent"
+                        android:textAllCaps="false"
                         android:layout_height="wrap_content"
-                        android:layout_width="110dp"
+                        android:layout_width="@dimen/trending_tag_button_width"
                         android:text="#Tag1"/>
                     <Button
                         android:id="@+id/bTag2"
+                        android:textColor="@color/colorAccent"
+                        android:textAllCaps="false"
                         android:layout_toRightOf="@+id/bTag1"
                         android:layout_height="wrap_content"
-                        android:layout_width="110dp"
+                        android:layout_width="@dimen/trending_tag_button_width"
                         android:layout_marginLeft="10dp"
                         android:text="#Tag2"/>
                     <Button
                         android:id="@+id/bTag3"
+                        android:textColor="@color/colorAccent"
+                        android:textAllCaps="false"
                         android:layout_toRightOf="@+id/bTag2"
                         android:layout_height="wrap_content"
-                        android:layout_width="110dp"
+                        android:layout_width="@dimen/trending_tag_button_width"
                         android:layout_marginLeft="10dp"
                         android:text="#Tag3"/>
                     <Button
                         android:id="@+id/bTag4"
+                        android:textColor="@color/colorAccent"
+                        android:textAllCaps="false"
                         android:layout_height="wrap_content"
-                        android:layout_width="110dp"
+                        android:layout_width="@dimen/trending_tag_button_width"
                         android:text="#Tag4"
                         android:layout_below="@+id/bTag1"
                         android:layout_alignLeft="@+id/bTag1"
                         android:layout_alignStart="@+id/bTag1" />
                     <Button
                         android:id="@+id/bTag5"
+                        android:textColor="@color/colorAccent"
+                        android:textAllCaps="false"
                         android:layout_height="wrap_content"
-                        android:layout_width="110dp"
+                        android:layout_width="@dimen/trending_tag_button_width"
                         android:text="#Tag5"
                         android:layout_alignTop="@+id/bTag4"
                         android:layout_alignRight="@+id/bTag2"
                         android:layout_alignEnd="@+id/bTag2" />
                     <Button
                         android:id="@+id/bTag6"
+                        android:textColor="@color/colorAccent"
+                        android:textAllCaps="false"
                         android:layout_height="wrap_content"
-                        android:layout_width="110dp"
+                        android:layout_width="@dimen/trending_tag_button_width"
                         android:text="#Tag6"
                         android:layout_below="@+id/bTag3"
                         android:layout_alignRight="@+id/bTag3"
