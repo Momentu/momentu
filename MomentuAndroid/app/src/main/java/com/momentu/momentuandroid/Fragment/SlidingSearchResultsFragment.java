@@ -30,6 +30,7 @@ import com.momentu.momentuandroid.Adapter.SearchResultsListAdapter;
 import com.momentu.momentuandroid.Data.MomentSuggestion;
 import com.momentu.momentuandroid.Data.MomentWrapper;
 import com.momentu.momentuandroid.Data.DataHelper;
+import com.momentu.momentuandroid.SearchActivity;
 
 import java.util.List;
 
@@ -168,10 +169,10 @@ public class SlidingSearchResultsFragment extends BaseFragment {
             @Override
             public void onActionMenuItemSelected(MenuItem item) {
 
-                    //print action
-                    Toast.makeText(getActivity().getApplicationContext(), item.getTitle(),
-                            Toast.LENGTH_SHORT).show();
-
+                if(item.getTitle().equals("action location")){
+                    SearchActivity searchActivity = (SearchActivity) getActivity();
+                    searchActivity.checkLocation();
+                }
             }
         });
 

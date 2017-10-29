@@ -17,6 +17,8 @@
     <string name="action_voice_rec">action voice rec</string>
     <string name="action_location">action location</string>
     <string name="log_out">Log out</string>
+    <string name="title_location_permission">Request location permission</string>
+    <string name="text_location_permission">Allow Momentu to access your location?</string>
 
     <!-- Strings for term and policy -->
     <string name="term_and_policy_text">
