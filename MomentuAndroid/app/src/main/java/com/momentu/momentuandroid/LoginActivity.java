@@ -238,14 +238,12 @@ public class LoginActivity extends Activity {
 //
 //            if (success) {
 ////                if (myUser.userId > 0) {
-//                  // TODO: If user exists, then go to the search page.
 //                      Intent search = new Intent(LoginActivity.this, SearchActivity.class);
 ////                    Log.d("Passing User ",  myUser.username);
 ////                    myIntent.putExtra("newUser", FALSE);
 ////                    myIntent.putExtra("userName", myUser.username);
 //                    startActivity(search);
 ////                } else {
-//                  // TODO: If user does not exist, then go to the sign in page.
 ////                    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
 ////                        @Override
 ////                        public void onClick(DialogInterface dialog, int which) {

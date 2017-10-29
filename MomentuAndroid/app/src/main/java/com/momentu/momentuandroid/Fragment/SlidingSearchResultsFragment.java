@@ -5,7 +5,15 @@ package com.momentu.momentuandroid.Fragment;
  */
 
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
@@ -17,6 +25,8 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +40,8 @@ import com.momentu.momentuandroid.Adapter.SearchResultsListAdapter;
 import com.momentu.momentuandroid.Data.MomentSuggestion;
 import com.momentu.momentuandroid.Data.MomentWrapper;
 import com.momentu.momentuandroid.Data.DataHelper;
+import com.momentu.momentuandroid.SearchActivity;
+import com.momentu.momentuandroid.WelcomeActivity;
 
 import java.util.List;
 
@@ -41,10 +53,15 @@ public class SlidingSearchResultsFragment extends BaseFragment {
 
     private FloatingSearchView mSearchView;
 
+    private static final long ANIM_DURATION = 350;
+
     private RecyclerView mSearchResultsList;
     private SearchResultsListAdapter mSearchResultsAdapter;
-
+    private View mDimSearchViewBackground;
+    private ColorDrawable mDimDrawable;
     private String mLastQuery = "";
+
+    private int backPressCount = 1; // press back twice (no focus) will log out.
 
     public SlidingSearchResultsFragment() {
         // Required empty public constructor
@@ -60,12 +77,63 @@ public class SlidingSearchResultsFragment extends BaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mSearchView = (FloatingSearchView) view.findViewById(R.id.floating_search_view);
+        mDimSearchViewBackground = view.findViewById(R.id.dim_background);
+        mDimDrawable = new ColorDrawable(Color.BLACK);
+        mDimDrawable.setAlpha(0);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            mDimSearchViewBackground.setBackground(mDimDrawable);
+        } else {
+            mDimSearchViewBackground.setBackgroundDrawable(mDimDrawable);
+        }
+
         mSearchResultsList = (RecyclerView) view.findViewById(R.id.search_results_list);
 
         setupFloatingSearch();
         setupResultsList();
         setupDrawer();
+
+        mSearchView.setSearchHint("Search hashtag...");
+
+        final Button mTag1 = (Button) getView().findViewById(R.id.bTag1);
+        final Button mTag2 = (Button) getView().findViewById(R.id.bTag2);
+        final Button mTag3 = (Button) getView().findViewById(R.id.bTag3);
+        final Button mTag4 = (Button) getView().findViewById(R.id.bTag4);
+        final Button mTag5 = (Button) getView().findViewById(R.id.bTag5);
+        final Button mTag6 = (Button) getView().findViewById(R.id.bTag6);
+
+        //TODO: Hard coded!
+        mTag1.setText("#Sixers");
+        mTag2.setText("#anniversary");
+        mTag3.setText("#Supernatural");
+        mTag4.setText("#scnews");
+        mTag5.setText("#AOMG");
+        mTag6.setText("#Scandal");
+
+        mTag1.setOnClickListener(mTrendingHashTagButtonListener);
+        mTag2.setOnClickListener(mTrendingHashTagButtonListener);
+        mTag3.setOnClickListener(mTrendingHashTagButtonListener);
+        mTag4.setOnClickListener(mTrendingHashTagButtonListener);
+        mTag5.setOnClickListener(mTrendingHashTagButtonListener);
+        mTag6.setOnClickListener(mTrendingHashTagButtonListener);
     }
+
+    private View.OnClickListener mTrendingHashTagButtonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            backPressCount = 1; //reset
+            String mTrendingHastTag = ((Button) view).getText().toString();
+            mSearchView.setSearchText(mTrendingHastTag);
+            DataHelper.findMoments(getActivity(), ((Button) view).getText().toString(),
+                    new DataHelper.OnFindMomentsListener() {
+                        @Override
+                        public void onResults(List<MomentWrapper> results) {
+                            setupResultsList();
+                            mSearchResultsAdapter.swapData(results);
+                        }
+                    });
+            mLastQuery = mTrendingHastTag;
+        }
+    };
 
     private void setupFloatingSearch() {
         mSearchView.setOnQueryChangeListener(new FloatingSearchView.OnQueryChangeListener() {
@@ -75,6 +143,7 @@ public class SlidingSearchResultsFragment extends BaseFragment {
 
                 if (!oldQuery.equals("") && newQuery.equals("")) {
                     mSearchView.clearSuggestions();
+                    mLastQuery = "";
                 } else {
 
                     //shows the top left circular progress
@@ -112,13 +181,15 @@ public class SlidingSearchResultsFragment extends BaseFragment {
 
                             @Override
                             public void onResults(List<MomentWrapper> results) {
+                                setupResultsList();
                                 mSearchResultsAdapter.swapData(results);
                             }
 
                         });
                 Log.d(TAG, "onSuggestionClicked()");
-
                 mLastQuery = searchSuggestion.getBody();
+                mSearchView.clearSearchFocus();
+                mSearchView.setSearchBarTitle(mLastQuery);
             }
 
             @Override
@@ -141,15 +212,48 @@ public class SlidingSearchResultsFragment extends BaseFragment {
         mSearchView.setOnFocusChangeListener(new FloatingSearchView.OnFocusChangeListener() {
             @Override
             public void onFocus() {
+                backPressCount = 1; //reset
+                int headerHeight = getResources().getDimensionPixelOffset(R.dimen.header_height);
+                ObjectAnimator anim1 = ObjectAnimator.ofFloat(mSearchView, "translationY",
+                        headerHeight, 0);
+                anim1.setDuration(350);
+                int headerBarHeight = getResources().getDimensionPixelOffset(R.dimen.header_bar_height);
+                ObjectAnimator anim2 = ObjectAnimator.ofFloat(mSearchResultsList, "translationY",
+                        headerBarHeight, 0);
+                anim2.setDuration(350);
+                fadeDimBackground(0, 150, null);
+                anim1.start();
+                anim2.start();
 
                 //show suggestions when search bar gains focus (typically history suggestions)
-                mSearchView.swapSuggestions(DataHelper.getHistory(getActivity(), 3));
+                //TODO: This is hardcoded!
+                if(mLastQuery.equals(""))
+                {
+                    mSearchView.setSearchText("#");
+                }
+
+                if(mSearchView.getQuery().equals(""))
+                {
+                    mSearchView.swapSuggestions(DataHelper.getHistory(getActivity(), 3));
+                }
 
                 Log.d(TAG, "onFocus()");
             }
 
             @Override
             public void onFocusCleared() {
+                backPressCount = 1; //reset
+                int headerHeight = getResources().getDimensionPixelOffset(R.dimen.header_height);
+                ObjectAnimator anim1 = ObjectAnimator.ofFloat(mSearchView, "translationY",
+                        0, headerHeight);
+                anim1.setDuration(350);
+                int headerBarHeight = getResources().getDimensionPixelOffset(R.dimen.header_bar_height);
+                ObjectAnimator anim2 = ObjectAnimator.ofFloat(mSearchResultsList, "translationY",
+                        0, headerHeight);
+                anim2.setDuration(350);
+                anim1.start();
+                anim2.start();
+                fadeDimBackground(150, 0, null);
 
                 //set the title of the bar so that when focus is returned a new query begins
                 mSearchView.setSearchBarTitle(mLastQuery);
@@ -168,10 +272,10 @@ public class SlidingSearchResultsFragment extends BaseFragment {
             @Override
             public void onActionMenuItemSelected(MenuItem item) {
 
-                    //print action
-                    Toast.makeText(getActivity().getApplicationContext(), item.getTitle(),
-                            Toast.LENGTH_SHORT).show();
-
+                if(item.getTitle().equals("action location")){
+                    SearchActivity searchActivity = (SearchActivity) getActivity();
+                    searchActivity.checkLocation();
+                }
             }
         });
 
@@ -242,7 +346,7 @@ public class SlidingSearchResultsFragment extends BaseFragment {
         mSearchView.setOnClearSearchActionListener(new FloatingSearchView.OnClearSearchActionListener() {
             @Override
             public void onClearSearchClicked() {
-
+                mSearchView.setSearchText("#");
                 Log.d(TAG, "onClearSearchClicked()");
             }
         });
@@ -261,13 +365,45 @@ public class SlidingSearchResultsFragment extends BaseFragment {
         //returns false, we know that the search was already closed so the call didn't change the focus
         //state and it makes sense to call supper onBackPressed() and close the activity
         if (!mSearchView.setSearchFocused(false)) {
-            return false;
+            if(backPressCount < 2)
+            {
+                backPressCount ++;
+                Toast.makeText(getActivity(), "Press again will log out",
+                        Toast.LENGTH_SHORT).show();
+                return true;
+            } else {
+                backPressCount = 1;
+                Intent logout = new Intent(getActivity(), WelcomeActivity.class);
+                startActivity(logout);
+                Toast.makeText(getActivity(), "You have been successfully logged out",
+                        Toast.LENGTH_LONG).show();
+                return false;
+            }
+        } else {
+            backPressCount = 1;
+            return true;
         }
-        return true;
     }
 
     private void setupDrawer() {
         attachSearchViewActivityDrawer(mSearchView);
+    }
+
+    private void fadeDimBackground(int from, int to, Animator.AnimatorListener listener) {
+        ValueAnimator anim = ValueAnimator.ofInt(from, to);
+        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+
+                int value = (Integer) animation.getAnimatedValue();
+                mDimDrawable.setAlpha(value);
+            }
+        });
+        if (listener != null) {
+            anim.addListener(listener);
+        }
+        anim.setDuration(ANIM_DURATION);
+        anim.start();
     }
 
 }

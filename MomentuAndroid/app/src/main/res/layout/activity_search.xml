@@ -6,10 +6,41 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-    <FrameLayout
-        android:id="@+id/fragment_container"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/where_am_i"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:textColor="@color/colorAccent"
+            android:background="@color/white"
+            android:fontFamily="casual"
+            android:paddingLeft="10dp"
+            android:text="Where am I" />
+
+        <FrameLayout
+            android:id="@+id/fragment_container"
+            android:layout_below="@+id/where_am_i"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <ImageButton
+            android:id="@+id/bCamera"
+            android:layout_width="@dimen/camera_size"
+            android:layout_height="@dimen/camera_size"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="10dp"
+            android:elevation="10dp"
+            android:background="@drawable/round_button"
+            android:src="@drawable/ic_camera_pink_40dp_pad5dp"/>
+
+    </RelativeLayout>
+
 
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"
