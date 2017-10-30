@@ -25,32 +25,14 @@ public class SearchResultsListAdapter extends RecyclerView.Adapter<SearchResults
     private List<MomentWrapper> mDataSet = new ArrayList<>();
 
     private int mLastAnimatedItemPosition = -1;
-
-    public interface OnItemClickListener{
-        void onClick(MomentWrapper colorWrapper);
-    }
-
     private OnItemClickListener mItemsOnClickListener;
-
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        public final TextView mHashTag;
-        public final TextView mContent;
-        public final View mTextContainer;
-
-        public ViewHolder(View view) {
-            super(view);
-            mHashTag = (TextView) view.findViewById(R.id.moment_hastag);
-            mContent = (TextView) view.findViewById(R.id.content);
-            mTextContainer = view.findViewById(R.id.text_container);
-        }
-    }
 
     public void swapData(List<MomentWrapper> mNewDataSet) {
         mDataSet = mNewDataSet;
         notifyDataSetChanged();
     }
 
-    public void setItemsOnClickListener(OnItemClickListener onClickListener){
+    public void setItemsOnClickListener(OnItemClickListener onClickListener) {
         this.mItemsOnClickListener = onClickListener;
     }
 
@@ -68,12 +50,12 @@ public class SearchResultsListAdapter extends RecyclerView.Adapter<SearchResults
         holder.mHashTag.setText(colorSuggestion.getHashtag());
         holder.mContent.setText(colorSuggestion.getContent());
 
-        if(mLastAnimatedItemPosition < position){
+        if (mLastAnimatedItemPosition < position) {
             animateItem(holder.itemView);
             mLastAnimatedItemPosition = position;
         }
 
-        if(mItemsOnClickListener != null){
+        if (mItemsOnClickListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -95,5 +77,22 @@ public class SearchResultsListAdapter extends RecyclerView.Adapter<SearchResults
                 .setInterpolator(new DecelerateInterpolator(3.f))
                 .setDuration(700)
                 .start();
+    }
+
+    public interface OnItemClickListener {
+        void onClick(MomentWrapper colorWrapper);
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        public final TextView mHashTag;
+        public final TextView mContent;
+        public final View mTextContainer;
+
+        public ViewHolder(View view) {
+            super(view);
+            mHashTag = (TextView) view.findViewById(R.id.moment_hastag);
+            mContent = (TextView) view.findViewById(R.id.hashtag_description);
+            mTextContainer = view.findViewById(R.id.text_container);
+        }
     }
 }

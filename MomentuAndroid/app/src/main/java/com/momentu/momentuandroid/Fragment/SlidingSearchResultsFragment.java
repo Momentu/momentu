@@ -6,10 +6,9 @@ package com.momentu.momentuandroid.Fragment;
 
 
 import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -25,7 +24,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -35,33 +33,31 @@ import com.arlib.floatingsearchview.FloatingSearchView;
 import com.arlib.floatingsearchview.suggestions.SearchSuggestionsAdapter;
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 import com.arlib.floatingsearchview.util.Util;
-import com.momentu.momentuandroid.R;
 import com.momentu.momentuandroid.Adapter.SearchResultsListAdapter;
+import com.momentu.momentuandroid.Data.DataHelper;
 import com.momentu.momentuandroid.Data.MomentSuggestion;
 import com.momentu.momentuandroid.Data.MomentWrapper;
-import com.momentu.momentuandroid.Data.DataHelper;
-import com.momentu.momentuandroid.SearchActivity;
+import com.momentu.momentuandroid.HashTagSearchActivity;
+import com.momentu.momentuandroid.R;
 import com.momentu.momentuandroid.WelcomeActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
 public class SlidingSearchResultsFragment extends BaseFragment {
-    private final String TAG = "BlankFragment";
-
     public static final long FIND_SUGGESTION_SIMULATED_DELAY = 250;
-
-    private FloatingSearchView mSearchView;
-
     private static final long ANIM_DURATION = 350;
-
+    private final String TAG = "BlankFragment";
+    private FloatingSearchView mSearchView;
     private RecyclerView mSearchResultsList;
+    private ViewGroup.MarginLayoutParams marginLayoutParamsSearchResults;
     private SearchResultsListAdapter mSearchResultsAdapter;
     private View mDimSearchViewBackground;
+    private AnimatorSet animSetSearchAndResults;
     private ColorDrawable mDimDrawable;
     private String mLastQuery = "";
-
-    private int backPressCount = 1; // press back twice (no focus) will log out.
+    private int backPressCount; // press back twice (no focus) will log out.
 
     public SlidingSearchResultsFragment() {
         // Required empty public constructor
@@ -70,6 +66,7 @@ public class SlidingSearchResultsFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        backPressCount = 1;
         return inflater.inflate(R.layout.fragment_sliding_search, container, false);
     }
 
@@ -87,6 +84,9 @@ public class SlidingSearchResultsFragment extends BaseFragment {
         }
 
         mSearchResultsList = (RecyclerView) view.findViewById(R.id.search_results_list);
+        marginLayoutParamsSearchResults = (ViewGroup.MarginLayoutParams) mSearchResultsList.getLayoutParams();
+
+        animSetSearchAndResults = new AnimatorSet(); // multiple view animation together
 
         setupFloatingSearch();
         setupResultsList();
@@ -213,27 +213,35 @@ public class SlidingSearchResultsFragment extends BaseFragment {
             @Override
             public void onFocus() {
                 backPressCount = 1; //reset
-                int headerHeight = getResources().getDimensionPixelOffset(R.dimen.header_height);
+
+                //Animation
+                int headerHeight = getResources().getDimensionPixelOffset(R.dimen.header_bar_height);
+                ArrayList<ObjectAnimator> arrayListObjectAnimators = new ArrayList<ObjectAnimator>(); //ArrayList of ObjectAnimators
+
+                //search bar view animation (floating up)
                 ObjectAnimator anim1 = ObjectAnimator.ofFloat(mSearchView, "translationY",
                         headerHeight, 0);
-                anim1.setDuration(350);
-                int headerBarHeight = getResources().getDimensionPixelOffset(R.dimen.header_bar_height);
-                ObjectAnimator anim2 = ObjectAnimator.ofFloat(mSearchResultsList, "translationY",
-                        headerBarHeight, 0);
-                anim2.setDuration(350);
-                fadeDimBackground(0, 150, null);
-                anim1.start();
-                anim2.start();
+                arrayListObjectAnimators.add(anim1);
 
-                //show suggestions when search bar gains focus (typically history suggestions)
-                //TODO: This is hardcoded!
-                if(mLastQuery.equals(""))
-                {
+                //search result view animation
+                marginLayoutParamsSearchResults.setMargins(0, 0, 0, 0);
+                mSearchResultsList.setLayoutParams(marginLayoutParamsSearchResults);
+                ObjectAnimator anim2 = ObjectAnimator.ofFloat(mSearchResultsList, "translationY",
+                        headerHeight, 0);
+                arrayListObjectAnimators.add(anim2);
+
+                fadeDimBackground(0, 150, null);
+                ObjectAnimator[] objectAnimators = arrayListObjectAnimators.toArray(new ObjectAnimator[arrayListObjectAnimators.size()]);
+                animSetSearchAndResults.playTogether(objectAnimators);
+                animSetSearchAndResults.setDuration(ANIM_DURATION);//1sec
+                animSetSearchAndResults.start();
+
+                //show suggestions when search bar gains focus (history suggestions)
+                if (mLastQuery.equals("")) {
                     mSearchView.setSearchText("#");
                 }
 
-                if(mSearchView.getQuery().equals(""))
-                {
+                if (mSearchView.getQuery().equals("")) {
                     mSearchView.swapSuggestions(DataHelper.getHistory(getActivity(), 3));
                 }
 
@@ -243,22 +251,33 @@ public class SlidingSearchResultsFragment extends BaseFragment {
             @Override
             public void onFocusCleared() {
                 backPressCount = 1; //reset
-                int headerHeight = getResources().getDimensionPixelOffset(R.dimen.header_height);
+
+                //Animation
+                int headerHeight = getResources().getDimensionPixelOffset(R.dimen.header_bar_height);
+                ArrayList<ObjectAnimator> arrayListObjectAnimators = new ArrayList<ObjectAnimator>(); //ArrayList of ObjectAnimators
+
+                //search bar view animation (floating down)
                 ObjectAnimator anim1 = ObjectAnimator.ofFloat(mSearchView, "translationY",
                         0, headerHeight);
-                anim1.setDuration(350);
-                int headerBarHeight = getResources().getDimensionPixelOffset(R.dimen.header_bar_height);
+                arrayListObjectAnimators.add(anim1);
+
+                //search result view animation
+                marginLayoutParamsSearchResults.setMargins(0, headerHeight, 0, 0);
+                mSearchResultsList.setLayoutParams(marginLayoutParamsSearchResults);
                 ObjectAnimator anim2 = ObjectAnimator.ofFloat(mSearchResultsList, "translationY",
-                        0, headerHeight);
-                anim2.setDuration(350);
-                anim1.start();
-                anim2.start();
+                        headerHeight, 0);
+                arrayListObjectAnimators.add(anim2);
+
                 fadeDimBackground(150, 0, null);
+                ObjectAnimator[] objectAnimators = arrayListObjectAnimators.toArray(new ObjectAnimator[arrayListObjectAnimators.size()]);
+                animSetSearchAndResults.playTogether(objectAnimators);
+                animSetSearchAndResults.setDuration(ANIM_DURATION);//1sec
+                animSetSearchAndResults.start();
 
                 //set the title of the bar so that when focus is returned a new query begins
                 mSearchView.setSearchBarTitle(mLastQuery);
 
-                //you can also set setSearchText(...) to make keep the query there when not focused and when focus returns
+                //Can also set setSearchText(...) to make keep the query there when not focused and when focus returns
                 //mSearchView.setSearchText(searchSuggestion.getBody());
 
                 Log.d(TAG, "onFocusCleared()");
@@ -272,9 +291,9 @@ public class SlidingSearchResultsFragment extends BaseFragment {
             @Override
             public void onActionMenuItemSelected(MenuItem item) {
 
-                if(item.getTitle().equals("action location")){
-                    SearchActivity searchActivity = (SearchActivity) getActivity();
-                    searchActivity.checkLocation();
+                if (item.getTitle().equals("action location")) {
+                    HashTagSearchActivity hashTagSearchActivity = (HashTagSearchActivity) getActivity();
+                    hashTagSearchActivity.checkLocation();
                 }
             }
         });
@@ -365,9 +384,8 @@ public class SlidingSearchResultsFragment extends BaseFragment {
         //returns false, we know that the search was already closed so the call didn't change the focus
         //state and it makes sense to call supper onBackPressed() and close the activity
         if (!mSearchView.setSearchFocused(false)) {
-            if(backPressCount < 2)
-            {
-                backPressCount ++;
+            if (backPressCount < 2) {
+                backPressCount++;
                 Toast.makeText(getActivity(), "Press again will log out",
                         Toast.LENGTH_SHORT).show();
                 return true;

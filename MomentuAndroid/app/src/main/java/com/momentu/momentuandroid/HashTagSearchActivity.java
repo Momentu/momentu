@@ -11,8 +11,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
@@ -24,7 +22,6 @@ import android.provider.Settings;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
@@ -32,6 +29,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,13 +43,17 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-public class SearchActivity extends AppCompatActivity
+public class HashTagSearchActivity extends AppCompatActivity
         implements BaseFragment.BaseExampleFragmentCallbacks, NavigationView.OnNavigationItemSelectedListener, LocationListener {
 
-    private final String TAG = "SearchActivity";
+    private final String TAG = "HashTagSearchActivity";
     private DrawerLayout mDrawerLayout;
     private TextView mWhereAmI;
+
     /* Location */
+    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+    private static final int MINIMUM_TIME = 5000;
+    private static final int MINIMUM_DISTANCE = 10;
     private List<Address> mAddresses;
     private String mProvider;
     private String mCityName;
@@ -58,45 +61,32 @@ public class SearchActivity extends AppCompatActivity
     private String mCountryName;
     private Location mLocation;
     private LocationManager mLocationManager;
-    private static final int MINIMUM_TIME = 5000;
-    private static final int MINIMUM_DISTANCE = 10;
-    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
-
-    /* Camera */
-    public static final int CAMERA_REQUEST = 1888;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search);
+        setContentView(R.layout.activity_hashtag_search);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mWhereAmI= (TextView) findViewById(R.id.where_am_i);
+        mWhereAmI = (TextView) findViewById(R.id.where_am_i);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         //Display search fragment
         showFragment(new SlidingSearchResultsFragment());
 
-        //Location
+        //Get and display location info
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         checkLocation();
 
-        //Take picture/video
-        ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.CAMERA},
-                SearchActivity.CAMERA_REQUEST);
-
-        ImageButton cameraButton = (ImageButton) this.findViewById(R.id.bCamera);
-        cameraButton.setOnClickListener(new View.OnClickListener() {
+        //Add new tag button
+        ImageButton mAddHashTag = (ImageButton) findViewById(R.id.bAddHashTag);
+        mAddHashTag.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(cameraIntent, CAMERA_REQUEST);
+            public void onClick(View view) {
+                Toast.makeText(HashTagSearchActivity.this, "Add new hashtag", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 
     @Override
@@ -119,11 +109,26 @@ public class SearchActivity extends AppCompatActivity
         mDrawerLayout.closeDrawer(GravityCompat.START);
         switch (menuItem.getItemId()) {
             case R.id.log_out:
-                Intent logout = new Intent(this, WelcomeActivity.class);
-                finish();
-                startActivity(logout);
-                Toast.makeText(SearchActivity.this, "You have been successfully logged out",
-                        Toast.LENGTH_LONG).show();
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage(R.string.ask_log_out)
+                        .setCancelable(false)
+                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                Toast.makeText(HashTagSearchActivity.this, "You have been successfully logged out",
+                                        Toast.LENGTH_LONG).show();
+                                Intent logout = new Intent(HashTagSearchActivity.this, WelcomeActivity.class);
+                                finish();
+                                startActivity(logout);
+                            }
+                        })
+                        .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
+
                 return true;
             default:
                 return true;
@@ -139,13 +144,13 @@ public class SearchActivity extends AppCompatActivity
 
     public void checkLocation() {
         // Check location permission
-        if (ActivityCompat.checkSelfPermission(SearchActivity.this,
+        if (ActivityCompat.checkSelfPermission(HashTagSearchActivity.this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             Log.d("Permission_Check", "Bad!");
 
             // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(SearchActivity.this,
+            if (ActivityCompat.shouldShowRequestPermissionRationale(HashTagSearchActivity.this,
                     Manifest.permission.ACCESS_FINE_LOCATION)) {
                 Log.d("Permission_Check", "Rationale");
                 new AlertDialog.Builder(this)
@@ -155,7 +160,7 @@ public class SearchActivity extends AppCompatActivity
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 //Prompt the user once explanation has been shown
-                                ActivityCompat.requestPermissions(SearchActivity.this,
+                                ActivityCompat.requestPermissions(HashTagSearchActivity.this,
                                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                                         MY_PERMISSIONS_REQUEST_LOCATION);
                             }
@@ -165,7 +170,7 @@ public class SearchActivity extends AppCompatActivity
             } else {
                 // No explanation needed, we can request the permission.
                 Log.d("Permission_Check", "No explanation");
-                ActivityCompat.requestPermissions(SearchActivity.this,
+                ActivityCompat.requestPermissions(HashTagSearchActivity.this,
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSIONS_REQUEST_LOCATION);
             }
@@ -180,10 +185,10 @@ public class SearchActivity extends AppCompatActivity
             showLocation(mLocation);
         }
     }
-    private void showLocation(Location location){
+
+    private void showLocation(Location location) {
         String mLocationName;
-        if(location == null)
-        {
+        if (location == null) {
             mLocationName = "Unknown";
         } else {
             Geocoder gcd = new Geocoder(this, Locale.getDefault());
@@ -231,7 +236,7 @@ public class SearchActivity extends AppCompatActivity
         startActivity(intent);
     }
 
-    // When requesting permission
+    // When requesting location permission
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == MY_PERMISSIONS_REQUEST_LOCATION) {

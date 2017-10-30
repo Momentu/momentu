@@ -20,6 +20,7 @@
     <string name="log_out">Log out</string>
     <string name="title_location_permission">Oops! Where are you?</string>
     <string name="text_location_permission">Momentu will ask for your permission to access your location.</string>
+    <string name="ask_log_out">Are you sure you want to exit?</string>
 
     <!-- Strings for term and policy -->
     <string name="term_and_policy_text">

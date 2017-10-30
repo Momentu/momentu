@@ -325,7 +325,7 @@ public class LoginActivity extends Activity {
                 if (response.code() == 200) {
                    String token = parse(response);
 
-                    Intent intent = new Intent(LoginActivity.this, SearchActivity.class);
+                    Intent intent = new Intent(LoginActivity.this, HashTagSearchActivity.class);
                     intent.putExtra("token", token);
                     startActivity(intent);
                 } else {

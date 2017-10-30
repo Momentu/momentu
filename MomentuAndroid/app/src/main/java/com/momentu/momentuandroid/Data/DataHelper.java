@@ -38,14 +38,6 @@ public class DataHelper {
                     new MomentSuggestion("#AOMG"),
                     new MomentSuggestion("#scnews")));
 
-    public interface OnFindMomentsListener {
-        void onResults(List<MomentWrapper> results);
-    }
-
-    public interface OnFindSuggestionsListener {
-        void onResults(List<MomentSuggestion> results);
-    }
-
     public static List<MomentSuggestion> getHistory(Context context, int count) {
 
         List<MomentSuggestion> suggestionList = new ArrayList<>();
@@ -85,9 +77,9 @@ public class DataHelper {
                 if (!(constraint == null || constraint.length() == 0)) {
 
                     for (MomentSuggestion suggestion : sMomentSuggestions) {
+                        //TODO: Make this search algorithm smarter
                         if (suggestion.getBody().toUpperCase()
                                 .startsWith(constraint.toString().toUpperCase())) {
-
                             suggestionList.add(suggestion);
                             if (limit != -1 && suggestionList.size() == limit) {
                                 break;
@@ -119,7 +111,6 @@ public class DataHelper {
         }.filter(query);
 
     }
-
 
     public static void findMoments(Context context, String query, final OnFindMomentsListener listener) {
         initMomentWrapperList(context);
@@ -196,6 +187,14 @@ public class DataHelper {
         Type collectionType = new TypeToken<List<MomentWrapper>>() {
         }.getType();
         return gson.fromJson(jsonString, collectionType);
+    }
+
+    public interface OnFindMomentsListener {
+        void onResults(List<MomentWrapper> results);
+    }
+
+    public interface OnFindSuggestionsListener {
+        void onResults(List<MomentSuggestion> results);
     }
 
 }

@@ -19,7 +19,7 @@
         </activity>
         <activity android:name=".TermAndPolicyActivity" />
         <activity android:name=".LoginActivity" />
-        <activity android:name=".SearchActivity" />
+        <activity android:name=".HashTagSearchActivity" />
         <activity android:name=".SignUpActivity"></activity>
     </application>
 

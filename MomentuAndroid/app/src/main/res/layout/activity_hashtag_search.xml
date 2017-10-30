@@ -13,9 +13,9 @@
         <TextView
             android:id="@+id/where_am_i"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="40dp"
             android:textStyle="bold"
-            android:textSize="20sp"
+            android:textSize="25sp"
             android:textColor="@color/colorAccent"
             android:background="@color/white"
             android:fontFamily="casual"
@@ -29,15 +29,15 @@
             android:layout_height="match_parent"/>
 
         <ImageButton
-            android:id="@+id/bCamera"
-            android:layout_width="@dimen/camera_size"
-            android:layout_height="@dimen/camera_size"
-            android:layout_centerHorizontal="true"
+            android:id="@+id/bAddHashTag"
+            android:layout_width="@dimen/add_hashtag_size"
+            android:layout_height="@dimen/add_hashtag_size"
+            android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
-            android:layout_margin="10dp"
+            android:layout_margin="20dp"
             android:elevation="10dp"
             android:background="@drawable/round_button"
-            android:src="@drawable/ic_camera_pink_40dp_pad5dp"/>
+            android:src="@drawable/ic_add_pink_40dp_pad5dp"/>
 
     </RelativeLayout>
 
