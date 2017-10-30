@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.momentu.momentuandroid.Data.RestClient;
+
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -135,50 +137,6 @@ public class SignUpActivity extends AppCompatActivity {
 
     private void httpHandler(Map<String, String > params)
     {
-        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-
-
-        JSONObject parameter = new JSONObject(params);
-        OkHttpClient client = new OkHttpClient();
-
-        RequestBody body = RequestBody.create(JSON, parameter.toString());
-        Request request = new Request.Builder()
-
-                .url("http://www.momentu.xyz:8080/api/register")
-                .post(body)
-                .addHeader("content-type", "application/json; charset=utf-8")
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        Toast.makeText(SignUpActivity.this, "Server is not responding", Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                Log.d("response", response.body().string());
-                if(response.code()==200){
-                    Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
-                    startActivity(intent);
-                }
-                else{
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            Toast.makeText(SignUpActivity.this, "Either user or password is already being used", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-            }
-        });
+        RestClient.register(params, SignUpActivity.this);
     }
 }

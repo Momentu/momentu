@@ -23,6 +23,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.momentu.momentuandroid.Data.RestClient;
+
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -146,7 +148,7 @@ public class LoginActivity extends Activity {
      * Shows the progress UI and hides the login form.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    private void showProgress(final boolean show) {
+    public void showProgress(final boolean show) {
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
         // for very easy animations. If available, use these APIs to fade-in
         // the progress spinner.
@@ -292,88 +294,7 @@ public class LoginActivity extends Activity {
 //    }
 
     private void httpHandler(Map<String, String > params) {
-        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-
-
-        JSONObject parameter = new JSONObject(params);
-        OkHttpClient client = new OkHttpClient();
-
-        RequestBody body = RequestBody.create(JSON, parameter.toString());
-        final Request request = new Request.Builder()
-                .url("http://www.momentu.xyz:8080/api/login")
-                .post(body)
-                .addHeader("content-type", "application/json; charset=utf-8")
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        showProgress(false);
-                        Toast.makeText(LoginActivity.this, "Server is not responding", Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                Log.d("response", response.body().string());
-                if (response.code() == 200) {
-                   String token = parse(response);
-
-                    Intent intent = new Intent(LoginActivity.this, HashTagSearchActivity.class);
-                    intent.putExtra("token", token);
-                    startActivity(intent);
-                } else {
-                    //I'm not able to show a message of failure.
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            showProgress(false);
-                            Toast.makeText(LoginActivity.this, "Invalid Username or Password", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-
-                }
-            }
-        });}
-        private String parse(Response response)
-    {
-        String result = null;
-        InputStream inputStream = null;
-        String token = null;
-        try {
-            inputStream = response.body().byteStream();
-
-            // json is UTF-8 by default
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"), 8);
-            StringBuilder sb = new StringBuilder();
-
-            String line = null;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line + "\n");
-            }
-            result = sb.toString();
-
-            JSONObject jObject = new JSONObject(result);
-            token = jObject.getString("token");
-            Log.d("Logintest", "Token After parsing process" + token);
-
-
-        } catch (Exception e) {
-            // Oops
-        } finally {
-            try {
-                if (inputStream != null) inputStream.close();
-            } catch (Exception squish) {
-            }
-        }
-        return token;
+        RestClient.login(params, LoginActivity.this);
     }
 
 }
