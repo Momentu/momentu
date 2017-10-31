@@ -4,13 +4,14 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
+@Table(name="user_role")
 public class UserRole {
 
     @EmbeddedId
     Id id = new Id();
 
     @Enumerated(EnumType.STRING)
-    @Column(insertable=false, updatable=false)
+    @Column(name="role", insertable=false, updatable=false)
     protected Role role;
 
     public Role getRole() {
@@ -26,6 +27,7 @@ public class UserRole {
     @Embeddable
     public static class Id implements Serializable {
 
+        @Column(name="user_id")
         protected Long userId;
 
         public Id() { }
@@ -36,6 +38,7 @@ public class UserRole {
         }
 
         @Enumerated(EnumType.STRING)
+        @Column(name="role")
         protected Role role;
     }
 }
