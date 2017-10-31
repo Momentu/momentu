@@ -218,6 +218,7 @@ public class HashTagSearchActivity extends AppCompatActivity
     // LocationListener implementation
     @Override
     public void onLocationChanged(Location location) {
+        checkLocation();
         Log.d(TAG, "Location Changed");
     }
 
