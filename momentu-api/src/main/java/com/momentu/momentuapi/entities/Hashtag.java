@@ -7,6 +7,14 @@ import java.io.Serializable;
 @Table(name="hashtag")
 public class Hashtag {
 
+    public LabelLocationId getLabelLocationId() {
+        return labelLocationId;
+    }
+
+    public void setLabelLocationId(LabelLocationId labelLocationId) {
+        this.labelLocationId = labelLocationId;
+    }
+
     @EmbeddedId
     LabelLocationId labelLocationId;
 
@@ -30,6 +38,13 @@ public class Hashtag {
         @Column(name="location_id")
         private Long locationId;
 
+        public LabelLocationId() {}
+
+        public LabelLocationId(String label, Long locationId) {
+            this.label = label;
+            this.locationId = locationId;
+        }
+
         public String getLabel() {
             return label;
         }
@@ -45,5 +60,21 @@ public class Hashtag {
         public void setLocationId(Long locationId) {
             this.locationId = locationId;
         }
+    }
+
+    public String getLabel() {
+        return getLabelLocationId().getLabel();
+    }
+
+    public void setLabel(String label) {
+        this.getLabelLocationId().setLabel(label);
+    }
+
+    public Long getLocationId() {
+        return this.getLabelLocationId().getLocationId();
+    }
+
+    public void setLocationId(Long locationId) {
+        this.getLabelLocationId().setLocationId(locationId);
     }
 }

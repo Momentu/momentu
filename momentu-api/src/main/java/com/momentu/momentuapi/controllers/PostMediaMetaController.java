@@ -20,8 +20,8 @@ public class PostMediaMetaController {
     @Autowired
     private MediaMetaRepository mediaMetaRepository;
 
-    @Autowired
-    private HashtagRepository hashtagRepository;
+//    @Autowired
+//    private HashtagRepository hashtagRepository;
 
     @Autowired
     private LocationRepository locationRepository;
@@ -51,15 +51,15 @@ public class PostMediaMetaController {
             locationWithId = optionalLocation.get();
         }
 
-        Hashtag hashtagWithId = null;
-        Optional<Hashtag> optionalHashtag = hashtagRepository
-                .findByHashtagAndLocationId(hashtagAndLocation.getHashtag(), locationWithId.getId());
-        if(optionalHashtag.equals(Optional.empty())) {
-            // TODO: create hashtag, assign to hastagWithId, and store
-        }
-        else {
-            hashtagWithId = optionalHashtag.get();
-        }
+//        Hashtag hashtagWithId = null;
+//        Optional<Hashtag> optionalHashtag = hashtagRepository
+//                .findByLabelAndLocationId(hashtagAndLocation.getHashtag(), locationWithId.getId());
+//        if(optionalHashtag.equals(Optional.empty())) {
+//            // TODO: create hashtag, assign to hastagWithId, and store
+//        }
+//        else {
+//            hashtagWithId = optionalHashtag.get();
+//        }
 
         return null;
     }
