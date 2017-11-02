@@ -1,10 +1,14 @@
 package com.momentu.momentuapi.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
+
+import static javax.persistence.CascadeType.*;
 
 @Entity
 @Table(name="user")
@@ -28,10 +32,7 @@ public class User extends AbstractEntity {
     @Column(name="password")
     private String password;
 
-    @Column(name="demographic_id")
-    private Long demographicId;
-
-    @OneToMany
+    @OneToMany(targetEntity=UserRole.class)
     @JoinColumn(name="user_id", referencedColumnName="id")
     private List<UserRole> roles;
 
@@ -88,8 +89,6 @@ public class User extends AbstractEntity {
         String encodedPassword = passwordEncoder.encode(password);
         this.password = encodedPassword;
     }
-
-
 
     @Override
     public boolean equals(Object obj) {

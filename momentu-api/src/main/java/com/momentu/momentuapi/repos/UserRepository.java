@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Optional;
 
-@RepositoryRestResource
+@RepositoryRestResource(exported=false)
 public interface UserRepository extends CrudRepository<User, Long> {
 
     @Query("select u from User u left join fetch u.roles r where u.username=:username")
