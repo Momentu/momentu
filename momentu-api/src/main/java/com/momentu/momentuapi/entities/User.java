@@ -90,13 +90,13 @@ public class User extends AbstractEntity {
         this.password = encodedPassword;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        return Objects.equals(id, ((User) obj).id);
-    }
+//    @Override
+//    public boolean equals(Object obj) {
+//        return Objects.equals(id, ((User) obj).id);
+//    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(id);
+//    }
 }

@@ -11,8 +11,8 @@ public class MediaMeta extends AbstractEntity {
     @Column(name="user_id")
     private Long userId;
 
-    @Column(name="hashtag")
-    private String hashtag;
+    @Column(name="hashtag_label")
+    private String hashtagLabel;
 
     @Column(name="location_id")
     private Long locationId;
@@ -23,6 +23,16 @@ public class MediaMeta extends AbstractEntity {
     @Column(name="removed")
     private boolean removed;
 
+    public MediaMeta() {}
+
+    public MediaMeta(Long userId, String hashtagLabel, Long locationId) {
+        this.userId = userId;
+        this.hashtagLabel = hashtagLabel;
+        this.locationId = locationId;
+        setCreated(new Date());
+        setRemoved(false);
+    }
+
     public Long getUserId() {
         return userId;
     }
@@ -31,12 +41,12 @@ public class MediaMeta extends AbstractEntity {
         this.userId = userId;
     }
 
-    public String getHashtag() {
-        return hashtag;
+    public String getHashtagLabel() {
+        return hashtagLabel;
     }
 
-    public void setHashtag(String hashtag) {
-        this.hashtag = hashtag;
+    public void setHashtagLabel(String hashtagLabel) {
+        this.hashtagLabel = hashtagLabel;
     }
 
     public Long getLocationId() {

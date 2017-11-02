@@ -1,8 +1,10 @@
 package com.momentu.momentuapi.controllers;
 
 import com.momentu.momentuapi.entities.*;
+import com.momentu.momentuapi.entities.keys.HashtagKey;
 import com.momentu.momentuapi.models.HashtagAndLocation;
 import com.momentu.momentuapi.repos.*;
+import com.momentu.momentuapi.security.auth.jwt.extractor.ClaimExtractor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.PersistentEntityResource;
 import org.springframework.data.rest.webmvc.PersistentEntityResourceAssembler;
@@ -14,38 +16,45 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RepositoryRestController
-@RequestMapping("/api")
+@RequestMapping("/")
 public class PostMediaMetaController {
+    private final ClaimExtractor claimExtractor;
+    private final MediaMetaRepository mediaMetaRepository;
+    private final HashtagRepository hashtagRepository;
+    private final LocationRepository locationRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    private MediaMetaRepository mediaMetaRepository;
+    PostMediaMetaController(ClaimExtractor claimExtractor, MediaMetaRepository mediaMetaRepository, HashtagRepository hashtagRepository,
+                            LocationRepository locationRepository, UserRepository userRepository) {
+        this.claimExtractor = claimExtractor;
+        this.mediaMetaRepository = mediaMetaRepository;
+        this.hashtagRepository = hashtagRepository;
+        this.locationRepository = locationRepository;
+        this.userRepository = userRepository;
+    }
 
-    @Autowired
-    private HashtagRepository hashtagRepository;
-
-    @Autowired
-    private LocationRepository locationRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @RequestMapping(value = "/mediameta", method = RequestMethod.POST)
+    @RequestMapping(value = "/media", method = RequestMethod.POST)
     public ResponseEntity<PersistentEntityResource> postMediaMeta(@RequestBody HashtagAndLocation hashtagAndLocation,
                                                                   @RequestHeader HttpHeaders headers,
                                                                   PersistentEntityResourceAssembler persistentEntityResourceAssembler)
     {
-        // Default to user jsmith040 for now
-        // TODO: update to use token username or store/retrieve id from token
-        Optional<User> existingUser = userRepository.findByUsername("jsmith040");
+        String username = claimExtractor.extractUsername(headers);
+        User user = null;
+        Optional<User> existingUser = userRepository.findByUsername(username);
         if(existingUser.equals(Optional.empty())) {
             throw new IllegalArgumentException("User does not exist");
+        }
+        else {
+            user = existingUser.get();
         }
 
         Location locationWithId = null;
         Optional<Location> optionalLocation = locationRepository
                 .findByCityAndState(hashtagAndLocation.getCity(), hashtagAndLocation.getState());
         if(optionalLocation.equals(Optional.empty())) {
-            // TODO: create location, assign to locationWithId, and store
+            Location location = new Location(hashtagAndLocation.getCity(), hashtagAndLocation.getState());
+            locationWithId = locationRepository.save(location);
         }
         else {
             locationWithId = optionalLocation.get();
@@ -55,12 +64,22 @@ public class PostMediaMetaController {
         Optional<Hashtag> optionalHashtag = hashtagRepository
                 .findByLabelAndLocationId(hashtagAndLocation.getHashtagLabel(), locationWithId.getId());
         if(optionalHashtag.equals(Optional.empty())) {
-            // TODO: create hashtag, assign to hastagWithId, and store
+            HashtagKey hashtagKey = new HashtagKey(hashtagAndLocation.getHashtagLabel(), locationWithId.getId());
+            Hashtag hashtag = new Hashtag();
+            hashtag.setHashtagKey(hashtagKey);
+            hashtag.setCount(1L);
+
+            hashtagWithId = hashtagRepository.save(hashtag);
         }
         else {
+            //TODO: find safer way to increment
             hashtagWithId = optionalHashtag.get();
+            hashtagWithId.setCount(hashtagWithId.getCount() + 1);
+            hashtagWithId = hashtagRepository.save(hashtagWithId);
         }
 
-        return null;
+        MediaMeta mediaMeta = new MediaMeta(user.getId(), hashtagWithId.getHashtagKey().getLabel(), locationWithId.getId());
+        mediaMeta = mediaMetaRepository.save(mediaMeta);
+        return ResponseEntity.ok(persistentEntityResourceAssembler.toResource(mediaMeta));
     }
 }

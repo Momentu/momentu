@@ -14,6 +14,8 @@ public class Hashtag {
     @Column(name="count")
     private Long count;
 
+    public Hashtag() {}
+
     public Long getCount() {
         return count;
     }

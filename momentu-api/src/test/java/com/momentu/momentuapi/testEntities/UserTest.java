@@ -170,29 +170,31 @@ public class UserTest {
     }
 
     //Testing The hash code method
-    @Test
-    public void testHashCode() {
-        try {
-            Long id = 1L;
-            userTest.setId(id);
-            assertEquals(Objects.hash(1L), userTest.hashCode());
-        } catch (Exception e) {
-            fail("has code feature doesn't work properly");
-        }
-    }
+    //TODO: remove?
+//    @Test
+//    public void testHashCode() {
+//        try {
+//            Long id = 1L;
+//            userTest.setId(id);
+//            assertEquals(Objects.hash(1L), userTest.hashCode());
+//        } catch (Exception e) {
+//            fail("has code feature doesn't work properly");
+//        }
+//    }
 
     //Testing The equal object method
-    @Test
-    public void testEqaulObject() {
-        try {
-            Long id = 1L;
-            userTest.setId(id);
-            User userTest2 = new User();
-            userTest2.setId(id);
-            assertEquals(true, userTest.equals(userTest2));
-        } catch (Exception e) {
-            fail("equal object method doesn't work properly");
-        }
-    }
+    //TODO: remove?
+//    @Test
+//    public void testEqaulObject() {
+//        try {
+//            Long id = 1L;
+//            userTest.setId(id);
+//            User userTest2 = new User();
+//            userTest2.setId(id);
+//            assertEquals(true, userTest.equals(userTest2));
+//        } catch (Exception e) {
+//            fail("equal object method doesn't work properly");
+//        }
+//    }
 
 }

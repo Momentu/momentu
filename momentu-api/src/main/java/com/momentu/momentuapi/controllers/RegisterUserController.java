@@ -10,14 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.PersistentEntityResource;
 import org.springframework.data.rest.webmvc.PersistentEntityResourceAssembler;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
 @RepositoryRestController
-@RequestMapping("/api")
+@RequestMapping(name="/")
 public class RegisterUserController {
 
     @Autowired
@@ -26,7 +25,7 @@ public class RegisterUserController {
     @Autowired
     private UserRoleRepository userRoleRepository;
 
-    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    @RequestMapping(value = "register", method = RequestMethod.POST)
     public ResponseEntity<PersistentEntityResource> register(@RequestBody User user
                                                             ,PersistentEntityResourceAssembler persistentEntityResourceAssembler)
     {
