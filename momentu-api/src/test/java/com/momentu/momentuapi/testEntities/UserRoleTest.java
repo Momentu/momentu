@@ -2,6 +2,7 @@ package com.momentu.momentuapi.testEntities;
 
 import com.momentu.momentuapi.entities.Role;
 import com.momentu.momentuapi.entities.UserRole;
+import com.momentu.momentuapi.entities.keys.UserRoleKey;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -13,24 +14,24 @@ public class UserRoleTest {
     UserRole userRoleTest;
 
     //This is a test object from id static class in User Role class
-    UserRole.Id idTest;
+    UserRoleKey userRoleKeyTest;
 
     //This is a test object from Role Enum class
     Role roleTest;
 
-    //Testing Id static class in User Role Class
-    //Testing Id constructor
+    //Testing UserRoleKey static class in User Role Class
+    //Testing UserRoleKey constructor
     @Test
     public void testId(){
         try{
-            assertNull(idTest);
+            assertNull(userRoleKeyTest);
             roleTest = Role.MEMBER;
             Long userId= 1L;
-            idTest = new UserRole.Id(userId,roleTest);
+            userRoleKeyTest = new UserRoleKey(userId,roleTest);
             assertEquals(Role.MEMBER,roleTest);
-            assertNotNull(idTest);
+            assertNotNull(userRoleKeyTest);
         }catch (Exception e){
-            fail("Id constructor in the id static class in User Role class doesn't work properly");
+            fail("UserRoleKey constructor in the id static class in User Role class doesn't work properly");
         }
     }
 

@@ -1,16 +1,16 @@
 package com.momentu.momentuapi.models;
 
 public class HashtagAndLocation {
-    private String hashtag;
+    private String hashtagLabel;
     private String city;
     private String state;
 
-    public String getHashtag() {
-        return hashtag;
+    public String getHashtagLabel() {
+        return hashtagLabel;
     }
 
-    public void setHashtag(String hashtag) {
-        this.hashtag = hashtag;
+    public void setHashtagLabel(String hashtagLabel) {
+        this.hashtagLabel = hashtagLabel;
     }
 
     public String getCity() {

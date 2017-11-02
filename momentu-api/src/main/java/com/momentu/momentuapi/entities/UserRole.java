@@ -1,5 +1,7 @@
 package com.momentu.momentuapi.entities;
 
+import com.momentu.momentuapi.entities.keys.UserRoleKey;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -8,7 +10,7 @@ import java.io.Serializable;
 public class UserRole {
 
     @EmbeddedId
-    Id id = new Id();
+    UserRoleKey userRoleKey = new UserRoleKey();
 
     @Enumerated(EnumType.STRING)
     @Column(name="role", insertable=false, updatable=false)
@@ -21,24 +23,6 @@ public class UserRole {
     public UserRole() {}
 
     public UserRole(Long userId, Role role) {
-        id = new Id(userId, role);
-    }
-
-    @Embeddable
-    public static class Id implements Serializable {
-
-        @Column(name="user_id")
-        protected Long userId;
-
-        public Id() { }
-
-        public Id(Long userId, Role role) {
-            this.userId = userId;
-            this.role = role;
-        }
-
-        @Enumerated(EnumType.STRING)
-        @Column(name="role")
-        protected Role role;
+        userRoleKey = new UserRoleKey(userId, role);
     }
 }
