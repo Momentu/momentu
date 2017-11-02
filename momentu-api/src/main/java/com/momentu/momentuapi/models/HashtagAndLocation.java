@@ -1,18 +1,17 @@
-package com.momentu.momentuapi.entities;
+package com.momentu.momentuapi.models;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
-@Entity
-@Table(name="location")
-public class Location extends AbstractEntity {
-
-    @Column(name="city")
+public class HashtagAndLocation {
+    private String hashtag;
     private String city;
-
-    @Column(name="state")
     private String state;
+
+    public String getHashtag() {
+        return hashtag;
+    }
+
+    public void setHashtag(String hashtag) {
+        this.hashtag = hashtag;
+    }
 
     public String getCity() {
         return city;
