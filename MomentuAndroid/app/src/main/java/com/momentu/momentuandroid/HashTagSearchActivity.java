@@ -30,7 +30,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -66,6 +65,10 @@ public class HashTagSearchActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hashtag_search);
+        Intent intent = getIntent();
+        String token = intent.getStringExtra("token");
+        token = token.split(":")[1].split(",")[0];
+        Log.d("SearchPage", "" +token);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mWhereAmI = (TextView) findViewById(R.id.where_am_i);

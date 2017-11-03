@@ -1,12 +1,8 @@
 package com.momentu.momentuandroid;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,21 +10,11 @@ import android.widget.Toast;
 
 import com.momentu.momentuandroid.Data.RestClient;
 
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -78,7 +64,8 @@ public class SignUpActivity extends AppCompatActivity {
             params.put("gender", gender.toString());
             params.put("email",emailInput.getText().toString());
 
-            httpHandler(params);
+            new RestClient().register(params, SignUpActivity.this);
+
         }
 
     }
@@ -133,10 +120,5 @@ public class SignUpActivity extends AppCompatActivity {
         Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();
-    }
-
-    private void httpHandler(Map<String, String > params)
-    {
-        RestClient.register(params, SignUpActivity.this);
     }
 }
