@@ -93,47 +93,7 @@ public class SlidingSearchResultsFragment extends BaseFragment {
         setupDrawer();
 
         mSearchView.setSearchHint("Search hashtag...");
-
-        final Button mTag1 = (Button) getView().findViewById(R.id.bTag1);
-        final Button mTag2 = (Button) getView().findViewById(R.id.bTag2);
-        final Button mTag3 = (Button) getView().findViewById(R.id.bTag3);
-        final Button mTag4 = (Button) getView().findViewById(R.id.bTag4);
-        final Button mTag5 = (Button) getView().findViewById(R.id.bTag5);
-        final Button mTag6 = (Button) getView().findViewById(R.id.bTag6);
-
-        //TODO: Hard coded!
-        mTag1.setText("#Sixers");
-        mTag2.setText("#anniversary");
-        mTag3.setText("#Supernatural");
-        mTag4.setText("#scnews");
-        mTag5.setText("#AOMG");
-        mTag6.setText("#Scandal");
-
-        mTag1.setOnClickListener(mTrendingHashTagButtonListener);
-        mTag2.setOnClickListener(mTrendingHashTagButtonListener);
-        mTag3.setOnClickListener(mTrendingHashTagButtonListener);
-        mTag4.setOnClickListener(mTrendingHashTagButtonListener);
-        mTag5.setOnClickListener(mTrendingHashTagButtonListener);
-        mTag6.setOnClickListener(mTrendingHashTagButtonListener);
     }
-
-    private View.OnClickListener mTrendingHashTagButtonListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            backPressCount = 1; //reset
-            String mTrendingHastTag = ((Button) view).getText().toString();
-            mSearchView.setSearchText(mTrendingHastTag);
-            DataHelper.findMoments(getActivity(), ((Button) view).getText().toString(),
-                    new DataHelper.OnFindMomentsListener() {
-                        @Override
-                        public void onResults(List<MomentWrapper> results) {
-                            setupResultsList();
-                            mSearchResultsAdapter.swapData(results);
-                        }
-                    });
-            mLastQuery = mTrendingHastTag;
-        }
-    };
 
     private void setupFloatingSearch() {
         mSearchView.setOnQueryChangeListener(new FloatingSearchView.OnQueryChangeListener() {
@@ -237,10 +197,6 @@ public class SlidingSearchResultsFragment extends BaseFragment {
                 animSetSearchAndResults.start();
 
                 //show suggestions when search bar gains focus (history suggestions)
-                if (mLastQuery.equals("")) {
-                    mSearchView.setSearchText("#");
-                }
-
                 if (mSearchView.getQuery().equals("")) {
                     mSearchView.swapSuggestions(DataHelper.getHistory(getActivity(), 3));
                 }
@@ -365,7 +321,7 @@ public class SlidingSearchResultsFragment extends BaseFragment {
         mSearchView.setOnClearSearchActionListener(new FloatingSearchView.OnClearSearchActionListener() {
             @Override
             public void onClearSearchClicked() {
-                mSearchView.setSearchText("#");
+                mSearchView.setSearchText("");
                 Log.d(TAG, "onClearSearchClicked()");
             }
         });
@@ -424,4 +380,18 @@ public class SlidingSearchResultsFragment extends BaseFragment {
         anim.start();
     }
 
+    public void injectHashTag(String hashTag){
+        Log.d("Received", hashTag);
+        //this textview should be bound in the fragment onCreate as a member variable
+        mSearchView.setSearchText(hashTag);
+        DataHelper.findMoments(getActivity(), hashTag,
+                new DataHelper.OnFindMomentsListener() {
+                    @Override
+                    public void onResults(List<MomentWrapper> results) {
+                        setupResultsList();
+                        mSearchResultsAdapter.swapData(results);
+                    }
+                });
+        mLastQuery = hashTag;
+    }
 }

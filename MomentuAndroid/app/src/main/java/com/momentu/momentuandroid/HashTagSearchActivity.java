@@ -1,10 +1,5 @@
 package com.momentu.momentuandroid;
 
-/**
- * Created by Jane on 10/17/2017.
- */
-
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -12,99 +7,119 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
-import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.arlib.floatingsearchview.FloatingSearchView;
+import com.momentu.momentuandroid.Adapter.CardPagerAdapter;
+import com.momentu.momentuandroid.Animation.ShadowTransformer;
 import com.momentu.momentuandroid.Fragment.BaseFragment;
+import com.momentu.momentuandroid.Fragment.CommandFromActivity;
 import com.momentu.momentuandroid.Fragment.SlidingSearchResultsFragment;
+import com.momentu.momentuandroid.Model.TrendHashTagCard;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-public class HashTagSearchActivity extends AppCompatActivity
-        implements BaseFragment.BaseExampleFragmentCallbacks, NavigationView.OnNavigationItemSelectedListener, LocationListener {
+/**
+ * Created by akara on 11/4/2017.
+ */
 
-    private final String TAG = "HashTagSearchActivity";
-    private DrawerLayout mDrawerLayout;
-    private TextView mWhereAmI;
+public class HashTagSearchActivity extends AppCompatActivity implements BaseFragment.BaseExampleFragmentCallbacks, NavigationView.OnNavigationItemSelectedListener {
+
+    /* TrendHashTag ViewPager */
+    private ViewPager mViewPager;
+    private CardPagerAdapter mCardAdapter;
+    private ShadowTransformer mCardShadowTransformer;
+    private String[] cityWideHashTags = new String[6];
+    private String[] stateWideHashTags = new String[6];
+    private String[] nationWideHashTags = new String[6];
+
+    /* Search Fragment */
+    private Fragment currentFragment;
 
     /* Location */
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
-    private static final int MINIMUM_TIME = 5000;
-    private static final int MINIMUM_DISTANCE = 10;
+    private LocationManager mLocationManager = null;
     private List<Address> mAddresses;
-    private String mProvider;
     private String mCityName;
     private String mStateName;
     private String mCountryName;
     private Location mLocation;
-    private LocationManager mLocationManager;
 
+    /* Camera */
+    public static final int CAMERA_REQUEST = 1888;
+    private static final int LOCATION_INTERVAL = 1000;
+    private static final int LOCATION_DISTANCE = 10;
+    private final String TAG = "HashTagSearchActivity";
+    LocationListener[] mLocationListeners = new LocationListener[]{
+            new LocationListener(LocationManager.GPS_PROVIDER),
+            new LocationListener(LocationManager.NETWORK_PROVIDER)
+    };
+
+    private DrawerLayout mDrawerLayout;
+    private TextView mWhereAmI;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hashtag_search);
-        Intent intent = getIntent();
-        String token = intent.getStringExtra("token");
-        token = token.split(":")[1].split(",")[0];
-        Log.d("SearchPage", "" +token);
+//        Intent intent = getIntent();
+//        String token = intent.getStringExtra("token");
+//        token = token.split(":")[1].split(",")[0];
+//        Log.d("SearchPage", "" +token);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mWhereAmI = (TextView) findViewById(R.id.where_am_i);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        //Display search fragment
-        showFragment(new SlidingSearchResultsFragment());
+        showTrendHashtagPager();
 
-        //Get and display location info
-        mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        checkLocation();
+        showSearchFragment(new SlidingSearchResultsFragment());
 
-        //Add new tag button
-        ImageButton mAddHashTag = (ImageButton) findViewById(R.id.bAddHashTag);
-        mAddHashTag.setOnClickListener(new OnClickListener() {
+        initializeLocationManager();
+//        checkLocation();
+
+        //Take picture/video
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.CAMERA},
+                HashTagSearchActivity.CAMERA_REQUEST);
+
+        ImageButton cameraButton = (ImageButton) this.findViewById(R.id.bCamera);
+        cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Toast.makeText(HashTagSearchActivity.this, "Add new hashtag", Toast.LENGTH_SHORT).show();
+            public void onClick(View v) {
+                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(cameraIntent, CAMERA_REQUEST);
             }
         });
     }
 
+    ;
+
     @Override
     public void onAttachSearchViewToDrawer(FloatingSearchView searchView) {
         searchView.attachNavigationDrawerToMenuButton(mDrawerLayout);
-    }
-
-    @Override
-    public void onBackPressed() {
-        @SuppressLint("RestrictedApi") List fragments = getSupportFragmentManager().getFragments();
-        BaseFragment currentFragment = (BaseFragment) fragments.get(fragments.size() - 1);
-
-        if (!currentFragment.onActivityBackPress()) {
-            super.onBackPressed();
-        }
     }
 
     @Override
@@ -138,11 +153,110 @@ public class HashTagSearchActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        @SuppressLint("RestrictedApi") List fragments = getSupportFragmentManager().getFragments();
+        BaseFragment currentFragment = (BaseFragment) fragments.get(fragments.size() - 1);
+
+        if (!currentFragment.onActivityBackPress()) {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.e(TAG, "onDestroy");
+        super.onDestroy();
+        if (mLocationManager != null) {
+            for (int i = 0; i < mLocationListeners.length; i++) {
+                try {
+                    mLocationManager.removeUpdates(mLocationListeners[i]);
+                } catch (Exception ex) {
+                    Log.i(TAG, "fail to remove location listeners, ignore", ex);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == MY_PERMISSIONS_REQUEST_LOCATION) {
+            Log.i(TAG, "Received response for Location permission request.");
+            // Check if the only required permission has been granted
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Camera permission has been granted, preview can be displayed
+                Log.i(TAG, "Location permission has now been granted.");
+                try {
+                    mLocationManager.requestLocationUpdates(
+                            LocationManager.GPS_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
+                            mLocationListeners[0]);
+                    mLocation = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                } catch (java.lang.SecurityException ex) {
+                    Log.i(TAG, "fail to request location update, ignore", ex);
+                } catch (IllegalArgumentException ex) {
+                    Log.d(TAG, "gps provider does not exist " + ex.getMessage());
+                }
+                showLocation(mLocation);
+            } else {
+                Log.i(TAG, "Location permission was NOT granted.");
+            }
+        }
+    }
+
+    //Trend Hashtag pager
+    private void showTrendHashtagPager() {
+        mViewPager = (ViewPager) findViewById(R.id.viewPager);
+
+        mCardAdapter = new CardPagerAdapter();
+
+        //TODO: Hard Code!
+        cityWideHashTags[0] = "#Sixers";
+        cityWideHashTags[1] = "#anniversary";
+        cityWideHashTags[2] = "#Supernatural";
+        cityWideHashTags[3] = "#scnews";
+        cityWideHashTags[4] = "#AOMG";
+        cityWideHashTags[5] = "#Scandal";
+
+        stateWideHashTags[0] = "#AOMG";
+        stateWideHashTags[1] = "#anniversary";
+        stateWideHashTags[2] = "#AnOpenSecret";
+        stateWideHashTags[3] = "#Scandal";
+        stateWideHashTags[4] = "#Sixers";
+        stateWideHashTags[5] = "#scnews";
+
+        nationWideHashTags[0] = "#AllStars3";
+        nationWideHashTags[1] = "#Scandal";
+        nationWideHashTags[2] = "#Supernatural";
+        nationWideHashTags[3] = "#AppleMichiganAve";
+        nationWideHashTags[4] = "#AOMG";
+        nationWideHashTags[5] = "#anniversary";
+
+        mCardAdapter.addCardItem(new TrendHashTagCard(cityWideHashTags));
+        mCardAdapter.addCardItem(new TrendHashTagCard(stateWideHashTags));
+        mCardAdapter.addCardItem(new TrendHashTagCard(nationWideHashTags));
+
+        mCardShadowTransformer = new ShadowTransformer(mViewPager, mCardAdapter);
+
+        mViewPager.setAdapter(mCardAdapter);
+        mViewPager.setPageTransformer(false, mCardShadowTransformer);
+        mViewPager.setOffscreenPageLimit(3);
+        mCardShadowTransformer.enableScaling(true);
+    }
+
     // Create Fragment
-    private void showFragment(Fragment fragment) {
+    private void showSearchFragment(Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragment_container, fragment).commit();
+        currentFragment = fragment;
+    }
+
+    // Location
+    private void initializeLocationManager() {
+        Log.e(TAG, "initializeLocationManager");
+        if (mLocationManager == null) {
+            mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+        }
     }
 
     public void checkLocation() {
@@ -179,12 +293,16 @@ public class HashTagSearchActivity extends AppCompatActivity
             }
         } else {
             Log.d("Permission_Check", "Good!");
-            Criteria criteria = new Criteria();
-            criteria.setAccuracy(Criteria.ACCURACY_FINE);
-            mProvider = mLocationManager.getBestProvider(criteria, false);
-            Log.d("Provider", mProvider);
-            mLocationManager.requestLocationUpdates(mProvider, MINIMUM_TIME, MINIMUM_DISTANCE, this);
-            mLocation = mLocationManager.getLastKnownLocation(mProvider);
+            try {
+                mLocationManager.requestLocationUpdates(
+                        LocationManager.GPS_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
+                        mLocationListeners[0]);
+                mLocation = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            } catch (java.lang.SecurityException ex) {
+                Log.i(TAG, "fail to request location update, ignore", ex);
+            } catch (IllegalArgumentException ex) {
+                Log.d(TAG, "gps provider does not exist " + ex.getMessage());
+            }
             showLocation(mLocation);
         }
     }
@@ -201,7 +319,7 @@ public class HashTagSearchActivity extends AppCompatActivity
                 e.printStackTrace();
             }
 
-            if (mAddresses.size() > 0) {
+            if (mAddresses != null & mAddresses.size() > 0) {
                 mCityName = mAddresses.get(0).getLocality();
                 mStateName = mAddresses.get(0).getAdminArea();
                 mCountryName = mAddresses.get(0).getCountryName();
@@ -214,56 +332,50 @@ public class HashTagSearchActivity extends AppCompatActivity
         }
 
         mWhereAmI.setText(((mCityName == null) ? "Where am I" : mCityName));
-        Toast.makeText(getBaseContext(), "Current location: " + mLocationName,
+        Toast.makeText(getBaseContext(), "Current location:" + mLocationName,
                 Toast.LENGTH_LONG).show();
     }
 
-    // LocationListener implementation
-    @Override
-    public void onLocationChanged(Location location) {
-        checkLocation();
-        Log.d(TAG, "Location Changed");
+    public void clickToSearch(View view) {
+        String mTrendingHastTag = ((Button) view).getText().toString();
+//        Toast.makeText(getBaseContext(), "Clicked button " + mTrendingHastTag,
+//                Toast.LENGTH_SHORT).show();
+        //TODO: should pass the data to the feed preview page.
+        SlidingSearchResultsFragment fragment = (SlidingSearchResultsFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        fragment.injectHashTag(mTrendingHastTag);
     }
 
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-    }
+    private class LocationListener implements android.location.LocationListener {
+        Location mLastLocation;
 
-    @Override
-    public void onProviderEnabled(String provider) {
-    }
+        public LocationListener(String provider) {
+            Log.e(TAG, "LocationListener " + provider);
+            mLastLocation = new Location(provider);
+        }
 
-    @Override
-    public void onProviderDisabled(String provider) {
-        //if the provider is disabled, then open setting.
-        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-        startActivity(intent);
-    }
+        @Override
+        public void onLocationChanged(Location location) {
+            Log.e(TAG, "onLocationChanged: " + location);
+            mLastLocation.set(location);
+            checkLocation();
+        }
 
-    // When requesting location permission
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == MY_PERMISSIONS_REQUEST_LOCATION) {
-            Log.i(TAG, "Received response for Location permission request.");
-            // Check if the only required permission has been granted
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Camera permission has been granted, preview can be displayed
-                Log.i(TAG, "Location permission has now been granted.");
-                Criteria criteria = new Criteria();
-                criteria.setAccuracy(Criteria.ACCURACY_FINE);
-                mProvider = mLocationManager.getBestProvider(criteria, false);
-                Log.d("Provider", mProvider);
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                        && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    return;
-                }
-                mLocationManager.requestLocationUpdates(mProvider, MINIMUM_TIME, MINIMUM_DISTANCE, this);
-                mLocation = mLocationManager.getLastKnownLocation(mProvider);
-                showLocation(mLocation);
-            } else {
-                Log.i(TAG, "Location permission was NOT granted.");
-            }
+        @Override
+        public void onProviderDisabled(String provider) {
+            //if the provider is disabled, then open setting.
+            Log.e(TAG, "onProviderDisabled: " + provider);
+            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            startActivity(intent);
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+            Log.e(TAG, "onProviderEnabled: " + provider);
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+            Log.e(TAG, "onStatusChanged: " + provider);
         }
     }
-
 }

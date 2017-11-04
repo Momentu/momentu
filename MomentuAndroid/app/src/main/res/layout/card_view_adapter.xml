@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    app:cardUseCompatPadding="true">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <Button
+                android:id="@+id/bTag1"
+                android:onClick="clickToSearch"
+                android:layout_width="@dimen/trending_tag_button_width"
+                android:layout_height="@dimen/trending_tag_button_height"
+                android:background="@drawable/capsule_button"
+                android:text="#Tag1"
+                android:textAllCaps="false"
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/bTag2"
+                android:onClick="clickToSearch"
+                android:layout_width="@dimen/trending_tag_button_width"
+                android:layout_height="@dimen/trending_tag_button_height"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@+id/bTag1"
+                android:background="@drawable/capsule_button"
+                android:text="#Tag2"
+                android:textAllCaps="false"
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/bTag3"
+                android:onClick="clickToSearch"
+                android:layout_width="@dimen/trending_tag_button_width"
+                android:layout_height="@dimen/trending_tag_button_height"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@+id/bTag2"
+                android:background="@drawable/capsule_button"
+                android:text="#Tag3"
+                android:textAllCaps="false"
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/bTag4"
+                android:onClick="clickToSearch"
+                android:layout_width="@dimen/trending_tag_button_width"
+                android:layout_height="@dimen/trending_tag_button_height"
+                android:layout_alignLeft="@+id/bTag1"
+                android:layout_alignStart="@+id/bTag1"
+                android:layout_below="@+id/bTag1"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/capsule_button"
+                android:text="#Tag4"
+                android:textAllCaps="false"
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/bTag5"
+                android:onClick="clickToSearch"
+                android:layout_width="@dimen/trending_tag_button_width"
+                android:layout_height="@dimen/trending_tag_button_height"
+                android:layout_alignEnd="@+id/bTag2"
+                android:layout_alignRight="@+id/bTag2"
+                android:layout_alignTop="@+id/bTag4"
+                android:background="@drawable/capsule_button"
+                android:text="#Tag5"
+                android:textAllCaps="false"
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/bTag6"
+                android:onClick="clickToSearch"
+                android:layout_width="@dimen/trending_tag_button_width"
+                android:layout_height="@dimen/trending_tag_button_height"
+                android:layout_alignEnd="@+id/bTag3"
+                android:layout_alignRight="@+id/bTag3"
+                android:layout_alignTop="@+id/bTag4"
+                android:background="@drawable/capsule_button"
+                android:text="#Tag6"
+                android:textAllCaps="false"
+                android:textColor="@color/white" />
+        </RelativeLayout>
+
+    </FrameLayout>
+
+</android.support.v7.widget.CardView>
