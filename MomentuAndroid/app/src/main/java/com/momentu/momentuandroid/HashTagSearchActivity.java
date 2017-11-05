@@ -2,10 +2,13 @@ package com.momentu.momentuandroid;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -25,6 +28,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -66,7 +70,7 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
     private String mStateName;
     private String mCountryName;
     private Location mLocation;
-
+    public EditText hashtagInput;
     /* Camera */
     public static final int CAMERA_REQUEST = 1888;
     private static final int LOCATION_INTERVAL = 1000;
@@ -115,7 +119,48 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
         });
     }
 
-    ;
+    // The method is on activity result after capture a photo. A dialog will be displayed
+    // for user to enter the hashtag name.
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
+            final Dialog dialogToPost = new Dialog(this);
+            dialogToPost.setContentView(R.layout.dialog_to_post);
+            Button post = (Button) dialogToPost.findViewById(R.id.post);
+            Button cancel = (Button) dialogToPost.findViewById(R.id.cancel);
+            hashtagInput = (EditText) dialogToPost.findViewById(R.id.hashtagInput);
+
+            //On click listener for post button
+            post.setOnClickListener(new View.OnClickListener(){
+
+                @Override
+                public void onClick(View v) {
+                    if (hashtagInput.getText().toString().contains("#")) {
+                        dialogToPost.dismiss();
+                        Toast.makeText(HashTagSearchActivity.this, hashtagInput.getText().toString(), Toast.LENGTH_LONG).show();
+                    }else
+                    {
+                        Toast.makeText(HashTagSearchActivity.this, "Wrong Hashtag Format", Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+            dialogToPost.show();
+
+            //On click listener for cancel button
+            cancel.setOnClickListener(new View.OnClickListener(){
+
+                @Override
+                public void onClick(View v) {
+                    dialogToPost.dismiss();
+                    Toast.makeText(HashTagSearchActivity.this, "Post has been canceled", Toast.LENGTH_LONG).show();
+                }
+
+            });
+
+        }
+    }
+
+
 
     @Override
     public void onAttachSearchViewToDrawer(FloatingSearchView searchView) {
