@@ -1,8 +1,7 @@
 package com.momentu.momentuapi.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name="location")
@@ -13,6 +12,9 @@ public class Location extends AbstractEntity {
 
     @Column(name="state")
     private String state;
+
+    @OneToMany(mappedBy="hashtagKey.location")
+    private List<Hashtag> hashtags;
 
     public Location() {}
 
@@ -35,5 +37,9 @@ public class Location extends AbstractEntity {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public List<Hashtag> getHashtags() {
+        return this.hashtags;
     }
 }

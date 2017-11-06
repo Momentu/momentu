@@ -10,7 +10,7 @@ public interface MediaMetaRepository extends CrudRepository<MediaMeta, Long> {
 
     @Override
     @RestResource(exported=false)
-    public MediaMeta save(MediaMeta s);
+    MediaMeta save(MediaMeta s);
 
     @Override
     @RestResource(exported=false)

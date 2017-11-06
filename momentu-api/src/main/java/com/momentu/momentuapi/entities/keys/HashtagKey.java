@@ -1,7 +1,8 @@
 package com.momentu.momentuapi.entities.keys;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
+import com.momentu.momentuapi.entities.Location;
+
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Embeddable
@@ -10,14 +11,15 @@ public class HashtagKey implements Serializable {
     @Column(name="label")
     private String label;
 
-    @Column(name="location_id")
-    private Long locationId;
+    @ManyToOne(fetch= FetchType.EAGER)
+    @JoinColumn(name="location_id")
+    private Location location;
 
     public HashtagKey() {}
 
     public HashtagKey(String label, Long locationId) {
         this.label = label;
-        this.locationId = locationId;
+        this.location.setId(locationId);
     }
 
     public String getLabel() {
@@ -29,10 +31,18 @@ public class HashtagKey implements Serializable {
     }
 
     public Long getLocationId() {
-        return locationId;
+        return this.location.getId();
     }
 
     public void setLocationId(Long locationId) {
-        this.locationId = locationId;
+        this.location.setId(locationId);
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 }
