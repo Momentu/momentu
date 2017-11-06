@@ -51,7 +51,7 @@ public class PostMediaMetaController {
 
         Location locationWithId = null;
         Optional<Location> optionalLocation = locationRepository
-                .findByCityAndState(hashtagAndLocation.getCity(), hashtagAndLocation.getState());
+                .findByStateCity(hashtagAndLocation.getCity(), hashtagAndLocation.getState());
         if(optionalLocation.equals(Optional.empty())) {
             Location location = new Location(hashtagAndLocation.getCity(), hashtagAndLocation.getState());
             locationWithId = locationRepository.save(location);
@@ -64,7 +64,9 @@ public class PostMediaMetaController {
         Optional<Hashtag> optionalHashtag = hashtagRepository
                 .findByLabelAndLocationId(hashtagAndLocation.getHashtagLabel(), locationWithId.getId());
         if(optionalHashtag.equals(Optional.empty())) {
-            HashtagKey hashtagKey = new HashtagKey(hashtagAndLocation.getHashtagLabel(), locationWithId.getId());
+            HashtagKey hashtagKey = new HashtagKey();
+            hashtagKey.setLocation(locationWithId);
+            hashtagKey.setLabel(hashtagAndLocation.getHashtagLabel());
             Hashtag hashtag = new Hashtag();
             hashtag.setHashtagKey(hashtagKey);
             hashtag.setCount(1L);

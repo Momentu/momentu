@@ -12,12 +12,15 @@ import java.util.Optional;
 @RepositoryRestResource
 public interface LocationRepository extends CrudRepository<Location, Long> {
 
+    @Query("select l from Location l where l.state=:state")
+    Optional<Location> findByState(@Param("state") String state);
+
     @Query("select l from Location l where l.city=:city and l.state=:state")
-    Optional<Location> findByCityAndState(@Param("city") String city, @Param("state") String state);
+    Optional<Location> findByStateCity(@Param("city") String city, @Param("state") String state);
 
     @Override
     @RestResource(exported=false)
-    public Location save(Location s);
+    Location save(Location s);
 
     @Override
     @RestResource(exported = false)
