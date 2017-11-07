@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -18,7 +17,6 @@ import android.provider.Settings;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -27,9 +25,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,7 +37,6 @@ import com.arlib.floatingsearchview.FloatingSearchView;
 import com.momentu.momentuandroid.Adapter.CardPagerAdapter;
 import com.momentu.momentuandroid.Animation.ShadowTransformer;
 import com.momentu.momentuandroid.Fragment.BaseFragment;
-import com.momentu.momentuandroid.Fragment.CommandFromActivity;
 import com.momentu.momentuandroid.Fragment.SlidingSearchResultsFragment;
 import com.momentu.momentuandroid.Model.TrendHashTagCard;
 
@@ -64,6 +63,12 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
 
     /* Location */
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+    private static final int LOCATION_INTERVAL = 1000;
+    private static final int LOCATION_DISTANCE = 10;
+    LocationListener[] mLocationListeners = new LocationListener[]{
+            new LocationListener(LocationManager.GPS_PROVIDER),
+            new LocationListener(LocationManager.NETWORK_PROVIDER)
+    };
     private LocationManager mLocationManager = null;
     private List<Address> mAddresses;
     private String mCityName;
@@ -71,26 +76,24 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
     private String mCountryName;
     private Location mLocation;
     public EditText hashtagInput;
+
     /* Camera */
     public static final int CAMERA_REQUEST = 1888;
-    private static final int LOCATION_INTERVAL = 1000;
-    private static final int LOCATION_DISTANCE = 10;
     private final String TAG = "HashTagSearchActivity";
-    LocationListener[] mLocationListeners = new LocationListener[]{
-            new LocationListener(LocationManager.GPS_PROVIDER),
-            new LocationListener(LocationManager.NETWORK_PROVIDER)
-    };
 
+    /* Other Views */
+    private Button mChangeLocationDialog;
     private DrawerLayout mDrawerLayout;
     private TextView mWhereAmI;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hashtag_search);
-//        Intent intent = getIntent();
-//        String token = intent.getStringExtra("token");
-//        token = token.split(":")[1].split(",")[0];
-//        Log.d("SearchPage", "" +token);
+        Intent intent = getIntent();
+        String token = intent.getStringExtra("token");
+        token = token.split(":")[1].split(",")[0];
+        Log.d("SearchPage", "" +token);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mWhereAmI = (TextView) findViewById(R.id.where_am_i);
@@ -103,6 +106,61 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
 
         initializeLocationManager();
 //        checkLocation();
+
+        //Change location UI
+        mChangeLocationDialog = (Button) findViewById(R.id.bChangeLocation);
+        mChangeLocationDialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder mBuilder = new AlertDialog.Builder(HashTagSearchActivity.this);
+                View mView = getLayoutInflater().inflate(R.layout.dialog_change_location, null);
+                mBuilder.setTitle("Change location");
+                final Spinner mSpinnerState = (Spinner) mView.findViewById(R.id.spinner_state);
+                final Spinner mSpinnerCity = (Spinner) mView.findViewById(R.id.spinner_city);
+                //TODO: City needs to be linked with State.
+                ArrayAdapter<String> adapterState = new ArrayAdapter<String>(HashTagSearchActivity.this,
+                        android.R.layout.simple_spinner_item,
+                        getResources().getStringArray(R.array.States));
+                ArrayAdapter<String> adapterCity = new ArrayAdapter<String>(HashTagSearchActivity.this,
+                        android.R.layout.simple_spinner_item,
+                        getResources().getStringArray(R.array.Cities));
+                adapterState.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                adapterCity.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                mSpinnerState.setAdapter(adapterState);
+                mSpinnerCity.setAdapter(adapterCity);
+
+                mBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        String newStateName = mSpinnerState.getSelectedItem().toString();
+                        String newCityName = mSpinnerCity.getSelectedItem().toString();
+                        if(!newStateName.equalsIgnoreCase("Please select state…") &
+                                !newCityName.equalsIgnoreCase("Please select city…")){
+                            Toast.makeText(HashTagSearchActivity.this,
+                                    "Selected " + newStateName + " " + newCityName,
+                                    Toast.LENGTH_SHORT)
+                                    .show();
+                            mCityName = newCityName;
+                            mStateName = newStateName;
+                            mWhereAmI.setText(((mCityName == null) ? "Where am I" : mCityName));
+                            mViewPager.setCurrentItem(0); //ViewPager roll back to the first page (city-wide trend hashtag)
+                            dialogInterface.dismiss();
+                        }
+                    };
+                });
+
+                mBuilder.setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+
+                mBuilder.setView(mView);
+                AlertDialog dialog = mBuilder.create();
+                dialog.show();
+            }
+        });
 
         //Take picture/video
         ActivityCompat.requestPermissions(this,
@@ -251,6 +309,7 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
     //Trend Hashtag pager
     private void showTrendHashtagPager() {
         mViewPager = (ViewPager) findViewById(R.id.viewPager);
+        mViewPager.addOnPageChangeListener(new PageListener());
 
         mCardAdapter = new CardPagerAdapter();
 
@@ -287,6 +346,24 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
         mViewPager.setOffscreenPageLimit(3);
         mCardShadowTransformer.enableScaling(true);
     }
+
+    private class PageListener extends ViewPager.SimpleOnPageChangeListener {
+        public void onPageSelected(int position) {
+            Log.i("Trend HashTag", "page selected " + position);
+            switch (position) {
+                case 0:
+                    mWhereAmI.setText(((mCityName == null) ? "Where am I" : mCityName));
+                    break;
+                case 1:
+                    mWhereAmI.setText(((mStateName == null) ? "Where am I" : mStateName));
+                    break;
+                case 2:
+                    mWhereAmI.setText("United States");
+                    break;
+            }
+        }
+    }
+
 
     // Create Fragment
     private void showSearchFragment(Fragment fragment) {
@@ -377,10 +454,12 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
         }
 
         mWhereAmI.setText(((mCityName == null) ? "Where am I" : mCityName));
+        mViewPager.setCurrentItem(0); //When location updated, roll back to the first page (city-wide trend hashtag)
         Toast.makeText(getBaseContext(), "Current location:" + mLocationName,
                 Toast.LENGTH_LONG).show();
     }
 
+    //When Trend hashtag is clicked
     public void clickToSearch(View view) {
         String mTrendingHastTag = ((Button) view).getText().toString();
 //        Toast.makeText(getBaseContext(), "Clicked button " + mTrendingHastTag,

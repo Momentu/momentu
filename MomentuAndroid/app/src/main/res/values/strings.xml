@@ -22,6 +22,22 @@
     <string name="text_location_permission">Momentu will ask for your permission to access your location.</string>
     <string name="ask_log_out">Are you sure you want to exit?</string>
 
+    <!-- Strings for example state and city-->
+    <string-array name="States">
+        <item>Please select state…</item>
+        <item>Illinois</item>
+        <item>California</item>
+        <item>Ohio</item>
+    </string-array>
+
+    <string-array name="Cities">
+        <item>Please select city…</item>
+        <item>Chicago</item>
+        <item>Aurora</item>
+        <item>Joliet</item>
+        <item>Rockford</item>>
+    </string-array>
+
     <!-- Strings for term and policy -->
     <string name="term_and_policy_text">
         <![CDATA[
