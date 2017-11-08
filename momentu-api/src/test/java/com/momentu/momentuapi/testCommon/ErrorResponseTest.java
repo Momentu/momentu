@@ -4,6 +4,9 @@ import com.momentu.momentuapi.common.ErrorCode;
 import com.momentu.momentuapi.common.ErrorResponse;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
+
+import java.util.Date;
+
 import static org.junit.Assert.*;
 
 //This is a test class for Error Response class
@@ -77,10 +80,11 @@ public class ErrorResponseTest {
             HttpStatus httpStatus = HttpStatus.OK;
             String message = "Accepted";
             ErrorCode errorCode = ErrorCode.JWT_TOKEN_EXPIRED;
+            Date timestamp = new Date();
             errorResponseTest = new ErrorResponse(message, errorCode, httpStatus);
-            assertNotNull(errorResponseTest.getTimestamp());
+            assertEquals(timestamp,errorResponseTest.getTimestamp());
         }catch (Exception e){
-            fail("it is not creating data object correctly");
+            fail("it is not creating date object correctly");
         }
     }
 
