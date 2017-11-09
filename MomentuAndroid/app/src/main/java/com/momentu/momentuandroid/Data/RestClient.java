@@ -26,6 +26,7 @@ import okhttp3.Response;
 public class RestClient {
     private static final String LOGIN_ENDPOINT = "http://www.momentu.xyz:8080/login";
     private static final String REGISTER_ENDPOINT = "http://www.momentu.xyz:8080/register";
+    private static final String MEDIA_ENDPOINT = "http://www.momentu.xyz:8080/media";
     private static final String HASHTAGS_ENDPOINT = "http://www.momentu.xyz:8080/hashtags";
 
 
