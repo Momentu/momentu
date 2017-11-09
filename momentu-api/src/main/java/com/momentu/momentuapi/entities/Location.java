@@ -16,6 +16,9 @@ public class Location extends AbstractEntity {
     @OneToMany(mappedBy="hashtagKey.location")
     private List<Hashtag> hashtags;
 
+    @OneToMany(mappedBy="location")
+    private List<MediaMeta> mediaMetas;
+
     public Location() {}
 
     public Location(String city, String state) {
@@ -42,4 +45,6 @@ public class Location extends AbstractEntity {
     public List<Hashtag> getHashtags() {
         return this.hashtags;
     }
+
+    public List<MediaMeta> getLocations() { return this.mediaMetas; }
 }

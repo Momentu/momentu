@@ -30,25 +30,26 @@ public class MediaMetaTest {
     }
 
     //Testing MediaMeta constructor with parameters
-    @Test
-    public void testMediaMetaWithParameters() {
-        try {
-            assertTrue(mediaMetaTest == null);
-            Long userId = 1L;
-            String hashtagLabel = "hashtagLabelTest";
-            Long locationId = 2L;
-            mediaMetaTest = new MediaMeta(userId, hashtagLabel, locationId);
-            assertTrue(mediaMetaTest != null);
-            assertEquals(userId, mediaMetaTest.getUserId());
-            assertEquals(hashtagLabel, mediaMetaTest.getHashtagLabel());
-            assertEquals(locationId, mediaMetaTest.getLocationId());
-            TestCase.assertEquals(false, mediaMetaTest.isRemoved());
-            assertNotNull(mediaMetaTest.getCreated());
-
-        } catch (Exception e) {
-            fail("MediaMeta constructor with parameters can't be used");
-        }
-    }
+//    TODO: Remove? Changed to set values in setters for more flexibility with setting location
+//    @Test
+//    public void testMediaMetaWithParameters() {
+//        try {
+//            assertTrue(mediaMetaTest == null);
+//            Long userId = 1L;
+//            String hashtagLabel = "hashtagLabelTest";
+//            Long locationId = 2L;
+//            mediaMetaTest = new MediaMeta(userId, hashtagLabel, locationId);
+//            assertTrue(mediaMetaTest != null);
+//            assertEquals(userId, mediaMetaTest.getUserId());
+//            assertEquals(hashtagLabel, mediaMetaTest.getHashtagLabel());
+//            assertEquals(locationId, mediaMetaTest.getLocationId());
+//            TestCase.assertEquals(false, mediaMetaTest.isRemoved());
+//            assertNotNull(mediaMetaTest.getCreated());
+//
+//        } catch (Exception e) {
+//            fail("MediaMeta constructor with parameters can't be used");
+//        }
+//    }
 
     //Testing userId set method
     @Test

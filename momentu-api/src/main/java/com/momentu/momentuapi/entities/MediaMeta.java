@@ -1,8 +1,6 @@
 package com.momentu.momentuapi.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -14,8 +12,9 @@ public class MediaMeta extends AbstractEntity {
     @Column(name="hashtag_label")
     private String hashtagLabel;
 
-    @Column(name="location_id")
-    private Long locationId;
+    @ManyToOne(fetch= FetchType.EAGER)
+    @JoinColumn(name="location_id")
+    private Location location;
 
     @Column(name="created")
     private Date created;
@@ -24,14 +23,6 @@ public class MediaMeta extends AbstractEntity {
     private boolean removed;
 
     public MediaMeta() {}
-
-    public MediaMeta(Long userId, String hashtagLabel, Long locationId) {
-        this.userId = userId;
-        this.hashtagLabel = hashtagLabel;
-        this.locationId = locationId;
-        setCreated(new Date());
-        setRemoved(false);
-    }
 
     public Long getUserId() {
         return userId;
@@ -50,11 +41,17 @@ public class MediaMeta extends AbstractEntity {
     }
 
     public Long getLocationId() {
-        return locationId;
+        return this.location.getId();
     }
 
     public void setLocationId(Long locationId) {
-        this.locationId = locationId;
+        this.location.setId(locationId);
+    }
+
+    public Location getLocation() { return this.location; }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
     public Date getCreated() {

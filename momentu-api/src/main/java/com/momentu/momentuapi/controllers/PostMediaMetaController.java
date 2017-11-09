@@ -13,6 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.Optional;
 
 @RepositoryRestController
@@ -80,7 +81,13 @@ public class PostMediaMetaController {
             hashtagWithId = hashtagRepository.save(hashtagWithId);
         }
 
-        MediaMeta mediaMeta = new MediaMeta(user.getId(), hashtagWithId.getHashtagKey().getLabel(), locationWithId.getId());
+//        MediaMeta mediaMeta = new MediaMeta(user.getId(), hashtagWithId.getHashtagKey().getLabel(), locationWithId.getId());
+        MediaMeta mediaMeta = new MediaMeta();
+        mediaMeta.setUserId(user.getId());
+        mediaMeta.setCreated(new Date());
+        mediaMeta.setRemoved(false);
+        mediaMeta.setHashtagLabel(hashtagAndLocation.getHashtagLabel());
+        mediaMeta.setLocation(locationWithId);
         mediaMeta = mediaMetaRepository.save(mediaMeta);
         return ResponseEntity.ok(persistentEntityResourceAssembler.toResource(mediaMeta));
     }
