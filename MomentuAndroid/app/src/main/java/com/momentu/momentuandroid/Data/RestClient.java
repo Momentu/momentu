@@ -25,6 +25,8 @@ import okhttp3.Response;
 
 public class RestClient {
     private static final String LOGIN_ENDPOINT = "http://www.momentu.xyz:8080/login";
+    private static final String REGISTER_ENDPOINT = "http://www.momentu.xyz:8080/register";
+
     private String token;
 
     public void login(final Map<String, String> params, final Activity currentActivity) {
@@ -88,7 +90,7 @@ public class RestClient {
         RequestBody body = RequestBody.create(JSON, parameter.toString());
         Request request = new Request.Builder()
 
-                .url("http://www.momentu.xyz:8080/register")
+                .url(REGISTER_ENDPOINT)
                 .post(body)
                 .addHeader("content-type", "application/json; charset=utf-8")
                 .build();
