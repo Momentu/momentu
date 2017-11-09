@@ -36,13 +36,16 @@ import android.widget.Toast;
 import com.arlib.floatingsearchview.FloatingSearchView;
 import com.momentu.momentuandroid.Adapter.CardPagerAdapter;
 import com.momentu.momentuandroid.Animation.ShadowTransformer;
+import com.momentu.momentuandroid.Data.RestClient;
 import com.momentu.momentuandroid.Fragment.BaseFragment;
 import com.momentu.momentuandroid.Fragment.SlidingSearchResultsFragment;
 import com.momentu.momentuandroid.Model.TrendHashTagCard;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Created by akara on 11/4/2017.
@@ -86,13 +89,15 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
     private DrawerLayout mDrawerLayout;
     private TextView mWhereAmI;
 
+    static String token;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hashtag_search);
         Intent intent = getIntent();
-        String token = intent.getStringExtra("token");
-        token = token.split(":")[1].split(",")[0];
+        token = intent.getStringExtra("token");
+
         Log.d("SearchPage", "" +token);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -195,7 +200,16 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
                 public void onClick(View v) {
                     if (hashtagInput.getText().toString().contains("#")) {
                         dialogToPost.dismiss();
-                        Toast.makeText(HashTagSearchActivity.this, hashtagInput.getText().toString(), Toast.LENGTH_LONG).show();
+                        Map<String, String> params = new HashMap<String, String>();
+                        params.put("hashtagLabel", hashtagInput.getText().toString());
+                        params.put("city", mCityName);
+                        params.put("state", mStateName);
+
+                        int result = new RestClient().media(params, token, HashTagSearchActivity.this);
+                        if(result == 0)
+                            Toast.makeText(HashTagSearchActivity.this, hashtagInput.getText().toString() + " posted", Toast.LENGTH_LONG).show();
+                        else
+                            Toast.makeText(HashTagSearchActivity.this, hashtagInput.getText().toString() + " cann't be posted", Toast.LENGTH_LONG).show();
                     }else
                     {
                         Toast.makeText(HashTagSearchActivity.this, "Wrong Hashtag Format", Toast.LENGTH_LONG).show();
