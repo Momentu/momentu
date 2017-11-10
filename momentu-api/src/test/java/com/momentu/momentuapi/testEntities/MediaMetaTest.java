@@ -77,31 +77,33 @@ public class MediaMetaTest {
         }
     }
 
-    //Testing locationId set method
-    @Test
-    public void testSetLocationId() {
-        try {
-            mediaMetaTest = new MediaMeta();
-            Long locationId = 1L;
-            mediaMetaTest.setLocationId(locationId);
-            assertEquals(locationId, mediaMetaTest.getLocationId());
-        }catch (Exception e){
-            fail("locationId value has not been set correctly");
-        }
-    }
+//    //Testing locationId set method
+//    TODO: Remove? Update? MediaMeta now references location by object in Entity class
+//    @Test
+//    public void testSetLocationId() {
+//        try {
+//            mediaMetaTest = new MediaMeta();
+//            Long locationId = 1L;
+//            mediaMetaTest.setLocationId(locationId);
+//            assertEquals(locationId, mediaMetaTest.getLocationId());
+//        }catch (Exception e){
+//            fail("locationId value has not been set correctly");
+//        }
+//    }
 
-    //Testing locationId get method
-    @Test
-    public void testGetLocationId(){
-        try {
-            mediaMetaTest = new MediaMeta();
-            Long locationId = 1L;
-            mediaMetaTest.setLocationId(locationId);
-            assertEquals(locationId, mediaMetaTest.getLocationId());
-        }catch (Exception e){
-            fail("locationId value has not been gotten correctly");
-        }
-    }
+//    //Testing locationId get method
+//    TODO: Remove? Update? MediaMeta now references location by object in Entity class
+//    @Test
+//    public void testGetLocationId(){
+//        try {
+//            mediaMetaTest = new MediaMeta();
+//            Long locationId = 1L;
+//            mediaMetaTest.setLocationId(locationId);
+//            assertEquals(locationId, mediaMetaTest.getLocationId());
+//        }catch (Exception e){
+//            fail("locationId value has not been gotten correctly");
+//        }
+//    }
 
     //Testing hashtagLabel set method
     @Test
