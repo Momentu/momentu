@@ -69,3 +69,4 @@ MomentuAndroid/app/src/main/java/com/momentu/momentuandroid/SignUpActivity.java
 momentu-api/src/test/java/com/momentu/momentuapi/testEntities/UserTest.java
 momentu-api/src/test/java/com/momentu/momentuapi/testControllers/RegisterUserControllerTest.java
 momentu-api/src/test/java/com/momentu/momentuapi/testCommon/ErrorResponseTest.java
+MomentuAndroid/app/src/main/java/com/momentu/momentuandroid/Data/RestClient.java
