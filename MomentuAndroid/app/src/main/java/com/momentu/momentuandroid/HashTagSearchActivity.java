@@ -118,7 +118,7 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
         showSearchFragment(new SlidingSearchResultsFragment());
 
         initializeLocationManager();
-//        checkLocation();
+        checkLocation();
 
         //Change location UI
         mChangeLocationDialog = (Button) findViewById(R.id.bChangeLocation);
