@@ -4,9 +4,11 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -17,6 +19,7 @@ import android.provider.Settings;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -40,8 +43,11 @@ import com.momentu.momentuandroid.Data.RestClient;
 import com.momentu.momentuandroid.Fragment.BaseFragment;
 import com.momentu.momentuandroid.Fragment.SlidingSearchResultsFragment;
 import com.momentu.momentuandroid.Model.TrendHashTagCard;
+import com.momentu.momentuandroid.Services.ConnectionService;
+import com.momentu.momentuandroid.Utility.RequestPackage;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -90,6 +96,8 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
     private TextView mWhereAmI;
 
     static String token;
+    private ArrayList<String> Storedhashtags;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -180,10 +188,16 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
                 startActivityForResult(cameraIntent, CAMERA_REQUEST);
             }
         });
+
+        //setup
+        LocalBroadcastManager.getInstance(getApplicationContext())
+                .registerReceiver(mBroadcastReceiver,
+                        new IntentFilter(ConnectionService.MY_SERVICE_MESSAGE));
     }
 
     // The method is on activity result after capture a photo. A dialog will be displayed
     // for user to enter the hashtag name.
+    //It passes the hashtage along with the location to RestClient to pass it to the backend
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
@@ -205,8 +219,13 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
                         params.put("city", mCityName);
                         params.put("state", mStateName);
 
-                        int result = new RestClient().media(params, token, HashTagSearchActivity.this);
-                        if(result == 0)
+                        RestClient restClient = new RestClient();
+                        try {
+                            restClient.media(params, token, HashTagSearchActivity.this);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        if(restClient.status == 0)
                             Toast.makeText(HashTagSearchActivity.this, hashtagInput.getText().toString() + " posted", Toast.LENGTH_LONG).show();
                         else
                             Toast.makeText(HashTagSearchActivity.this, hashtagInput.getText().toString() + " cann't be posted", Toast.LENGTH_LONG).show();
@@ -471,6 +490,9 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
         mViewPager.setCurrentItem(0); //When location updated, roll back to the first page (city-wide trend hashtag)
         Toast.makeText(getBaseContext(), "Current location:" + mLocationName,
                 Toast.LENGTH_LONG).show();
+
+        //call the method that passes the location to the RestClient, for retrieving hashtags
+        loadTrendingHashtags();
     }
 
     //When Trend hashtag is clicked
@@ -515,5 +537,44 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
         public void onStatusChanged(String provider, int status, Bundle extras) {
             Log.e(TAG, "onStatusChanged: " + provider);
         }
+    }
+
+    //receive response from ConnectionService
+    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            ArrayList<String> hashtags = intent
+                    .getStringArrayListExtra(ConnectionService.MY_SERVICE_PAYLOAD);
+            if(hashtags == null)
+                Log.d("BroadcastReceiver", "hashtags is null");
+            else{
+                Storedhashtags = hashtags;
+                Log.d("BroadcastReceiver", Storedhashtags.toString());
+            }
+
+//            for (Hashtag hash : hashtags) {
+//                Log.d("BroadCastReceiver","Hashtag: " + hash.getLabel()+ " Count:" + hash.getCount());
+//            }
+        }
+    };
+    private void loadTrendingHashtags()
+    {
+        if(mCityName != null && mStateName != null){
+            RequestPackage requestPackage = new RequestPackage();
+            requestPackage.setEndpoint(RestClient.HASHTAGS_ENDPOINT);
+            requestPackage.setParam("city",mCityName);
+            requestPackage.setParam("state",mStateName);
+            requestPackage.setToken(token);
+            requestPackage.setFunction("/search/findByStateCity");
+
+//            requestPackage.setParam("category", "Entrees");
+//        requestPackage.setMethod("GET");
+
+            Intent intent = new Intent(this, ConnectionService.class);
+            intent.putExtra(ConnectionService.REQUEST_PACKAGE, requestPackage);
+            startService(intent);
+        }
+        else
+            Log.d("loadTrendingHashtags", "city and/or state is null");
     }
 }

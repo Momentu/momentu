@@ -21,6 +21,10 @@
         <activity android:name=".LoginActivity" />
         <activity android:name=".HashTagSearchActivity" />
         <activity android:name=".SignUpActivity"></activity>
+
+        <service
+            android:name=".Services.ConnectionService"
+            android:exported="false" />
     </application>
 
 </manifest>
