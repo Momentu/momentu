@@ -1,5 +1,7 @@
 package com.momentu.momentuapi.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -13,6 +15,7 @@ public class Location extends AbstractEntity {
     @Column(name="state")
     private String state;
 
+    @JsonIgnore
     @OneToMany(mappedBy="hashtagKey.location")
     private List<Hashtag> hashtags;
 
@@ -42,9 +45,4 @@ public class Location extends AbstractEntity {
         this.state = state;
     }
 
-    public List<Hashtag> getHashtags() {
-        return this.hashtags;
-    }
-
-    public List<MediaMeta> getLocations() { return this.mediaMetas; }
 }

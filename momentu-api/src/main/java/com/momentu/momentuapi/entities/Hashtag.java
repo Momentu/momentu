@@ -1,5 +1,6 @@
 package com.momentu.momentuapi.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.momentu.momentuapi.entities.keys.HashtagKey;
 
 import javax.persistence.*;
@@ -42,6 +43,7 @@ public class Hashtag {
         return hashtagKey.getLabel();
     }
 
+    @JsonIgnore
     public Location getLocation() {
         return hashtagKey.getLocation();
     }
