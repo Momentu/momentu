@@ -42,6 +42,7 @@ import com.momentu.momentuandroid.Animation.ShadowTransformer;
 import com.momentu.momentuandroid.Data.RestClient;
 import com.momentu.momentuandroid.Fragment.BaseFragment;
 import com.momentu.momentuandroid.Fragment.SlidingSearchResultsFragment;
+import com.momentu.momentuandroid.Model.Hashtag;
 import com.momentu.momentuandroid.Model.TrendHashTagCard;
 import com.momentu.momentuandroid.Services.ConnectionService;
 import com.momentu.momentuandroid.Utility.RequestPackage;
@@ -96,7 +97,7 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
     private TextView mWhereAmI;
 
     static String token;
-    private ArrayList<String> Storedhashtags;
+    private ArrayList<Hashtag> Storedhashtags;
 
 
     @Override
@@ -543,13 +544,14 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
     private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            ArrayList<String> hashtags = intent
-                    .getStringArrayListExtra(ConnectionService.MY_SERVICE_PAYLOAD);
+            ArrayList<Hashtag> hashtags = intent
+                    .getParcelableArrayListExtra(ConnectionService.MY_SERVICE_PAYLOAD);
             if(hashtags == null)
                 Log.d("BroadcastReceiver", "hashtags is null");
             else{
                 Storedhashtags = hashtags;
-                Log.d("BroadcastReceiver", Storedhashtags.toString());
+                for(Hashtag hashtag:hashtags)
+                Log.d("BroadcastReceiver", hashtag.getLabel() + " " + hashtag.getCount());
             }
 
 //            for (Hashtag hash : hashtags) {

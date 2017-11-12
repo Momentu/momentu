@@ -7,6 +7,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.momentu.momentuandroid.Data.RestClient;
+import com.momentu.momentuandroid.Model.Hashtag;
 import com.momentu.momentuandroid.Utility.JSONParser;
 import com.momentu.momentuandroid.Utility.RequestPackage;
 
@@ -39,7 +40,7 @@ public class ConnectionService extends IntentService {
             return;
         }
         Log.d("IBMServiceBeforeParser", response);
-        ArrayList<String> hashArray = JSONParser.parseJASON(response);
+        ArrayList<Hashtag> hashArray = JSONParser.parseJASON(response);
         if(hashArray != null)
         Log.d("IBMServiceAfterParser", hashArray.toString());
         else

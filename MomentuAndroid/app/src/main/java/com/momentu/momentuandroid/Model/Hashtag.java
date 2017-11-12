@@ -34,7 +34,9 @@ public class Hashtag implements Parcelable {
         dest.writeInt(this.count);
     }
 
-    public Hashtag() {
+    public Hashtag(String label, int count) {
+        this.label = label;
+        this.count = count;
     }
 
     protected Hashtag(Parcel in) {

@@ -2,6 +2,8 @@ package com.momentu.momentuandroid.Utility;
 
 import android.util.Log;
 
+import com.momentu.momentuandroid.Model.Hashtag;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,22 +15,23 @@ import java.util.ArrayList;
  */
 
 public class JSONParser {
-    public static ArrayList<String> parseJASON(String jason) {
+    public static ArrayList<Hashtag> parseJASON(String jason) {
         Log.d("JSON2ARRAY","Just got in 1");
-        ArrayList<String> hashArray = new ArrayList<String>();
+        Hashtag hashtag;
+        ArrayList<Hashtag> hashArray = new ArrayList<Hashtag>();
         try {
             Log.d("JSON2ARRAY","Just got in 2");
 
             JSONObject obj = new JSONObject(jason);
             Log.d("JSON2ARRAYNothingyet",obj.toString());
-//            String pageName = obj.getJSONObject("pageInfo").getString("pageName");
             JSONObject newJson = obj.getJSONObject("_embedded");
             Log.d("JSON2ARRAYNewJASON", newJson.toString());
 
-            JSONArray newArr = newJson.getJSONArray("hashtags").getJSONObject(0).getJSONObject("location").getJSONArray("locations");
+            JSONArray newArr = newJson.getJSONArray("hashtags");//.getJSONArray("locations");
             Log.d("JSON2ARRAY4NewARR", newArr.toString());
             for (int i = 0; i < newArr.length(); i++) {
-                hashArray.add(newArr.getJSONObject(i).getString("hashtagLabel"));
+                hashtag = new Hashtag(newArr.getJSONObject(i).getString("label"),newArr.getJSONObject(i).getInt("count"));
+                hashArray.add(hashtag);
             }
         } catch (JSONException e) {
             return null;
