@@ -22,7 +22,7 @@
     <string name="text_location_permission">Momentu will ask for your permission to access your location.</string>
     <string name="ask_log_out">Are you sure you want to exit?</string>
 
-    <!-- Strings for example state and city-->
+    <!-- Example strings for example state and city-->
     <string-array name="States">
         <item>Please select state…</item>
         <item>Illinois</item>
@@ -37,6 +37,18 @@
         <item>Joliet</item>
         <item>Rockford</item>>
     </string-array>
+
+    <!-- Example strings for feed activity -->
+    <plurals name="likes_count">
+        <item quantity="one">%d like</item>
+        <item quantity="other">%d likes</item>
+    </plurals>
+
+    <string name="feed_hashtag">#Hawaii</string>
+    <string name="feed_description_2">So we made it to Hawaii all safe and stuff</string>
+    <string name="feed_description_1">Kauai, Hawaii | Dramatic Cliffs, Tropical Rainforests and Pristine Beaches.</string>
+
+
 
     <!-- Strings for term and policy -->
     <string name="term_and_policy_text">
@@ -82,6 +94,5 @@
 
         ]]>
     </string>
-
 
 </resources>

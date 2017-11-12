@@ -55,7 +55,7 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * Created by akara on 11/4/2017.
+ * Created by Jane on 11/4/2017.
  */
 
 public class HashTagSearchActivity extends AppCompatActivity implements BaseFragment.BaseExampleFragmentCallbacks, NavigationView.OnNavigationItemSelectedListener {
@@ -177,6 +177,7 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
         });
 
         //Take picture/video
+        //TODO: Need a "MediaActivity" to process the photo/video taken.
         ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.CAMERA},
                 HashTagSearchActivity.CAMERA_REQUEST);
@@ -347,7 +348,7 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
 
         mCardAdapter = new CardPagerAdapter();
 
-        //TODO: Hard Code!
+        //TODO: Hard Code trend hashtag
         cityWideHashTags[0] = "#Sixers";
         cityWideHashTags[1] = "#anniversary";
         cityWideHashTags[2] = "#Supernatural";
@@ -499,11 +500,12 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
     //When Trend hashtag is clicked
     public void clickToSearch(View view) {
         String mTrendingHastTag = ((Button) view).getText().toString();
-//        Toast.makeText(getBaseContext(), "Clicked button " + mTrendingHastTag,
-//                Toast.LENGTH_SHORT).show();
-        //TODO: should pass the data to the feed preview page.
-        SlidingSearchResultsFragment fragment = (SlidingSearchResultsFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-        fragment.injectHashTag(mTrendingHastTag);
+        Toast.makeText(getBaseContext(), "Selected " + mTrendingHastTag,
+                Toast.LENGTH_SHORT).show();
+
+        //TODO: Pass the hashtag to backend, search, and populate feed activity
+        Intent feedIntent = new Intent(this, FeedActivity.class);
+        startActivity(feedIntent);
     }
 
     private class LocationListener implements android.location.LocationListener {

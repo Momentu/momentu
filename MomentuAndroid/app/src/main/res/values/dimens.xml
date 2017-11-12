@@ -7,4 +7,6 @@
     <dimen name="trending_tag_button_height">25dp</dimen>
     <dimen name="header_bar_height">90dp</dimen>
     <dimen name="card_padding">10dp</dimen>
+    <dimen name="btn_fab_margins">10dp</dimen>
+    <dimen name="btn_fab_size">56dp</dimen>
 </resources>

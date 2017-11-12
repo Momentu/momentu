@@ -37,6 +37,7 @@ import com.momentu.momentuandroid.Adapter.SearchResultsListAdapter;
 import com.momentu.momentuandroid.Data.DataHelper;
 import com.momentu.momentuandroid.Data.MomentSuggestion;
 import com.momentu.momentuandroid.Data.MomentWrapper;
+import com.momentu.momentuandroid.FeedActivity;
 import com.momentu.momentuandroid.HashTagSearchActivity;
 import com.momentu.momentuandroid.R;
 import com.momentu.momentuandroid.WelcomeActivity;
@@ -80,7 +81,7 @@ public class SlidingSearchResultsFragment extends BaseFragment {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             mDimSearchViewBackground.setBackground(mDimDrawable);
         } else {
-            mDimSearchViewBackground.setBackgroundDrawable(mDimDrawable);
+            mDimSearchViewBackground.setBackground(mDimDrawable);
         }
 
         mSearchResultsList = (RecyclerView) view.findViewById(R.id.search_results_list);
@@ -329,6 +330,18 @@ public class SlidingSearchResultsFragment extends BaseFragment {
 
     private void setupResultsList() {
         mSearchResultsAdapter = new SearchResultsListAdapter();
+        mSearchResultsAdapter.setItemsOnClickListener(new SearchResultsListAdapter.OnItemClickListener() {
+            @Override
+            public void onClick(MomentWrapper momentWrapper) {
+                Toast.makeText(getActivity(),
+                        "Selected " + momentWrapper.getHashtag(),
+                        Toast.LENGTH_SHORT)
+                        .show();
+                //TODO: Pass the hashtag to backend, search, and populate feed activity
+                Intent feedIntent = new Intent(getActivity(), FeedActivity.class);
+                startActivity(feedIntent);
+            }
+        });
         mSearchResultsList.setAdapter(mSearchResultsAdapter);
         mSearchResultsList.setLayoutManager(new LinearLayoutManager(getContext()));
     }

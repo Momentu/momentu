@@ -1,7 +1,7 @@
 package com.momentu.momentuandroid.Adapter;
 
 /**
- * Created by akara on 10/21/2017.
+ * Created by Jane on 10/21/2017.
  */
 
 
@@ -46,9 +46,9 @@ public class SearchResultsListAdapter extends RecyclerView.Adapter<SearchResults
     @Override
     public void onBindViewHolder(SearchResultsListAdapter.ViewHolder holder, final int position) {
 
-        MomentWrapper colorSuggestion = mDataSet.get(position);
-        holder.mHashTag.setText(colorSuggestion.getHashtag());
-        holder.mContent.setText(colorSuggestion.getContent());
+        MomentWrapper momentSuggestion = mDataSet.get(position);
+        holder.mHashTag.setText(momentSuggestion.getHashtag());
+        holder.mContent.setText(momentSuggestion.getContent());
 
         if (mLastAnimatedItemPosition < position) {
             animateItem(holder.itemView);
@@ -80,7 +80,7 @@ public class SearchResultsListAdapter extends RecyclerView.Adapter<SearchResults
     }
 
     public interface OnItemClickListener {
-        void onClick(MomentWrapper colorWrapper);
+        void onClick(MomentWrapper momentWrapper);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
