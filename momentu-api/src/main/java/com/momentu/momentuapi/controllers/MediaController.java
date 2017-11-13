@@ -34,13 +34,12 @@ public class MediaController {
     }
 
     @RequestMapping(value = "/media_upload", method = RequestMethod.POST)
-    public @ResponseBody Map uploadMedia(@RequestHeader HttpHeaders headers, InputStream inputStream,
-                           PersistentEntityResourceAssembler persistentEntityResourceAssembler) {
-
+    public @ResponseBody Map uploadMedia(@RequestHeader HttpHeaders headers, InputStream inputStream) {
+        Long contentLength = headers.getContentLength();
         ObjectMetadata objectMetadata = new ObjectMetadata();
-        //TODO: derive length from Http Headers
-        objectMetadata.setContentLength(10L);
+        objectMetadata.setContentLength(contentLength);
         String keyName = s3KeyGenerator.getUniqueKey();
+
         AWSCredentials awsCredentials = new BasicAWSCredentials(s3Settings.getAccessKeyId(), s3Settings.getSecretAccessKey());
         s3Manager.upload(awsCredentials, s3Settings.getMediaBucketName(), keyName, inputStream, objectMetadata);
 
