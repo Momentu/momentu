@@ -158,6 +158,7 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
                             mStateName = newStateName;
                             mWhereAmI.setText(((mCityName == null) ? "Where am I" : mCityName));
                             mViewPager.setCurrentItem(0); //ViewPager roll back to the first page (city-wide trend hashtag)
+                            loadTrendingHashtags();
                             dialogInterface.dismiss();
                         }
                     };
