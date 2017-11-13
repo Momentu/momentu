@@ -40,6 +40,10 @@ public class PostMediaMetaController {
                                                                   @RequestHeader HttpHeaders headers,
                                                                   PersistentEntityResourceAssembler persistentEntityResourceAssembler)
     {
+        if(hashtagAndLocation.isValid() == false) {
+            throw new IllegalArgumentException("Invalid data");
+        }
+
         String username = claimExtractor.extractUsername(headers);
         User user = null;
         Optional<User> existingUser = userRepository.findByUsername(username);

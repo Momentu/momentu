@@ -28,4 +28,18 @@ public class HashtagAndLocation {
     public void setState(String state) {
         this.state = state;
     }
+
+    public boolean isValid() {
+        boolean valid = true;
+        if(getHashtagLabel() == null || getHashtagLabel().length() == 0) {
+            valid = false;
+        }
+        if(getState() == null || getState().length() == 0) {
+            valid = false;
+        }
+        if(getCity() == null || getCity().length() == 0) {
+            valid = false;
+        }
+        return valid;
+    }
 }
