@@ -17,6 +17,9 @@ import android.widget.TextSwitcher;
 import android.widget.TextView;
 
 import com.momentu.momentuandroid.FeedActivity;
+import com.momentu.momentuandroid.Model.FeedItem;
+import com.momentu.momentuandroid.Model.Hashtag;
+import com.momentu.momentuandroid.Model.Like;
 import com.momentu.momentuandroid.R;
 
 import java.util.ArrayList;
@@ -57,22 +60,25 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private void setupClickableViews(final View view, final CellFeedViewHolder cellFeedViewHolder) {
 
+        // When clicking the image, like the feed (can be modified to other action)
         cellFeedViewHolder.ivFeedCenter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int adapterPosition = cellFeedViewHolder.getAdapterPosition();
-                feedItems.get(adapterPosition).likesCount++;
+                feedItems.get(adapterPosition).getLike().addLikesCount();
                 notifyItemChanged(adapterPosition, ACTION_LIKE_IMAGE_CLICKED);
                 if (context instanceof FeedActivity) {
                     ((FeedActivity) context).showLikedSnackbar();
                 }
             }
         });
+
+        // When clicking the like button, like the feed
         cellFeedViewHolder.btnLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int adapterPosition = cellFeedViewHolder.getAdapterPosition();
-                feedItems.get(adapterPosition).likesCount++;
+                feedItems.get(adapterPosition).getLike().addLikesCount();
                 notifyItemChanged(adapterPosition, ACTION_LIKE_BUTTON_CLICKED);
                 if (context instanceof FeedActivity) {
                     ((FeedActivity) context).showLikedSnackbar();
@@ -105,13 +111,42 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         feedItems.clear();
         feedItems.addAll(Arrays.asList(
                 //TODO: Hard Coded feed item
-                new FeedItem(45, false),
-                new FeedItem(22, false),
-                new FeedItem(1244, false),
-                new FeedItem(33, false),
-                new FeedItem(25, false),
-                new FeedItem(1, false),
-                new FeedItem(14, false)
+                new FeedItem(null,null,
+                        new Hashtag(context.getString(R.string.feed_hashtag), 1),
+                        context.getResources().getDrawable(R.drawable.img_feed_center_1),
+                        context.getString(R.string.feed_description_1),
+                        null, null, null,
+                        new Like(23, false)),
+                new FeedItem(null,null,
+                        new Hashtag(context.getString(R.string.feed_hashtag), 1),
+                        context.getResources().getDrawable(R.drawable.img_feed_center_2),
+                        context.getString(R.string.feed_description_2),
+                        null, null, null,
+                        new Like(2, false)),
+                new FeedItem(null,null,
+                        new Hashtag(context.getString(R.string.feed_hashtag), 1),
+                        context.getResources().getDrawable(R.drawable.img_feed_center_1),
+                        context.getString(R.string.feed_description_1),
+                        null, null, null,
+                        new Like(45, false)),
+                new FeedItem(null,null,
+                        new Hashtag(context.getString(R.string.feed_hashtag), 1),
+                        context.getResources().getDrawable(R.drawable.img_feed_center_2),
+                        context.getString(R.string.feed_description_2),
+                        null, null, null,
+                        new Like(159, false)),
+                new FeedItem(null,null,
+                        new Hashtag(context.getString(R.string.feed_hashtag), 1),
+                        context.getResources().getDrawable(R.drawable.img_feed_center_1),
+                        context.getString(R.string.feed_description_1),
+                        null, null, null,
+                        new Like(362, false)),
+                new FeedItem(null,null,
+                        new Hashtag(context.getString(R.string.feed_hashtag), 1),
+                        context.getResources().getDrawable(R.drawable.img_feed_center_2),
+                        context.getString(R.string.feed_description_2),
+                        null, null, null,
+                        new Like(93, false))
         ));
         if (animated) {
             notifyItemRangeInserted(0, feedItems.size());
@@ -163,29 +198,17 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             this.feedItem = feedItem;
             int adapterPosition = getAdapterPosition();
             Log.d("Feed Position", Integer.toString(adapterPosition));
-            //TODO: Harcoded Feed media, description, and hashtag
-            ivFeedCenter.setImageResource(adapterPosition % 2 == 0 ? R.drawable.img_feed_center_1 : R.drawable.img_feed_center_2);
-            ivFeedHashTag.setText(R.string.feed_hashtag);
-            ivFeedDescription.setText(adapterPosition % 2 == 0 ? R.string.feed_description_1 : R.string.feed_description_2);
-
-            btnLike.setImageResource(feedItem.isLiked ? R.drawable.ic_heart_red : R.drawable.ic_heart_outline_grey);
+            ivFeedCenter.setImageDrawable(feedItem.getMedia());
+            ivFeedHashTag.setText(feedItem.getHashTag().getLabel());
+            ivFeedDescription.setText(feedItem.getDescription());
+            btnLike.setImageResource(feedItem.getLike().getIsLiked() ? R.drawable.ic_heart_red : R.drawable.ic_heart_outline_grey);
             tsLikesCounter.setCurrentText(vImageRoot.getResources().getQuantityString(
-                    R.plurals.likes_count, feedItem.likesCount, feedItem.likesCount
+                    R.plurals.likes_count, feedItem.getLike().getLikesCount(), feedItem.getLike().getLikesCount()
             ));
         }
 
         public FeedItem getFeedItem() {
             return feedItem;
-        }
-    }
-
-    public static class FeedItem {
-        public int likesCount;
-        public boolean isLiked;
-
-        public FeedItem(int likesCount, boolean isLiked) {
-            this.likesCount = likesCount;
-            this.isLiked = isLiked;
         }
     }
 }
