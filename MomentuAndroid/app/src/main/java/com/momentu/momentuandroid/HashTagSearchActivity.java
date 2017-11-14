@@ -49,6 +49,8 @@ import com.momentu.momentuandroid.Utility.RequestPackage;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -66,7 +68,7 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
     private ShadowTransformer mCardShadowTransformer;
     private String[] cityWideHashTags = new String[6];
     private String[] stateWideHashTags = new String[6];
-    private String[] nationWideHashTags = new String[6];
+//    private String[] nationWideHashTags = new String[6];
 
     /* Search Fragment */
     private Fragment currentFragment;
@@ -83,7 +85,7 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
     private List<Address> mAddresses;
     private String mCityName;
     private String mStateName;
-    private String mCountryName;
+//    private String mCountryName;
     private Location mLocation;
     public EditText hashtagInput;
 
@@ -114,12 +116,15 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        showTrendHashtagPager();
-
         showSearchFragment(new SlidingSearchResultsFragment());
 
         initializeLocationManager();
+
+        mViewPager = (ViewPager) findViewById(R.id.viewPager);
+
         checkLocation();
+
+        showTrendHashtagPager(Storedhashtags);
 
         //Change location UI
         mChangeLocationDialog = (Button) findViewById(R.id.bChangeLocation);
@@ -343,13 +348,13 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
     }
 
     //Trend Hashtag pager
-    private void showTrendHashtagPager() {
-        mViewPager = (ViewPager) findViewById(R.id.viewPager);
+    private void showTrendHashtagPager(ArrayList<Hashtag> Storedhashtags) {
+
         mViewPager.addOnPageChangeListener(new PageListener());
 
         mCardAdapter = new CardPagerAdapter();
 
-        //TODO: Hard Code trend hashtag
+        //Hard coded tags- for demonstration if the number of hashtag is too small.
         cityWideHashTags[0] = "#Sixers";
         cityWideHashTags[1] = "#anniversary";
         cityWideHashTags[2] = "#Supernatural";
@@ -364,22 +369,45 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
         stateWideHashTags[4] = "#Sixers";
         stateWideHashTags[5] = "#scnews";
 
-        nationWideHashTags[0] = "#AllStars3";
-        nationWideHashTags[1] = "#Scandal";
-        nationWideHashTags[2] = "#Supernatural";
-        nationWideHashTags[3] = "#AppleMichiganAve";
-        nationWideHashTags[4] = "#AOMG";
-        nationWideHashTags[5] = "#anniversary";
+//        nationWideHashTags[0] = "#AllStars3";
+//        nationWideHashTags[1] = "#Scandal";
+//        nationWideHashTags[2] = "#Supernatural";
+//        nationWideHashTags[3] = "#AppleMichiganAve";
+//        nationWideHashTags[4] = "#AOMG";
+//        nationWideHashTags[5] = "#anniversary";
 
+        if(Storedhashtags != null) {
+            int storedHashtagLength = Storedhashtags.size();
+
+            if(storedHashtagLength > 0){
+                mViewPager.setVisibility(View.VISIBLE);
+
+                Log.d("# Hashtag received" , Integer.toString(storedHashtagLength));
+                int index=0;
+                for(Hashtag ht:Storedhashtags){
+//                Log.d("Tag index" , Integer.toString(index));
+                    cityWideHashTags[index] = ht.getLabel();
+                    stateWideHashTags[index] = ht.getLabel(); // state-wide got the same tags
+                    index++;
+                    if(index == 5) break; // Only display the top six tags.
+                }
+            } else {
+                mViewPager.setVisibility(View.INVISIBLE);
+            }
+        } else {
+            //If no trend hash tag, hide the view.
+            mViewPager.setVisibility(View.INVISIBLE);
+        }
         mCardAdapter.addCardItem(new TrendHashTagCard(cityWideHashTags));
         mCardAdapter.addCardItem(new TrendHashTagCard(stateWideHashTags));
-        mCardAdapter.addCardItem(new TrendHashTagCard(nationWideHashTags));
+//        mCardAdapter.addCardItem(new TrendHashTagCard(nationWideHashTags));
 
         mCardShadowTransformer = new ShadowTransformer(mViewPager, mCardAdapter);
 
         mViewPager.setAdapter(mCardAdapter);
         mViewPager.setPageTransformer(false, mCardShadowTransformer);
-        mViewPager.setOffscreenPageLimit(3);
+//        mViewPager.setOffscreenPageLimit(3); // Three pages will be kept offscreen
+        mViewPager.setOffscreenPageLimit(2); // Two pages will be kept offscreen
         mCardShadowTransformer.enableScaling(true);
     }
 
@@ -393,9 +421,9 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
                 case 1:
                     mWhereAmI.setText(((mStateName == null) ? "Where am I" : mStateName));
                     break;
-                case 2:
-                    mWhereAmI.setText("United States");
-                    break;
+//                case 2:
+//                    mWhereAmI.setText("United States");
+//                    break;
             }
         }
     }
@@ -480,10 +508,9 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
             if (mAddresses != null & mAddresses.size() > 0) {
                 mCityName = mAddresses.get(0).getLocality();
                 mStateName = mAddresses.get(0).getAdminArea();
-                mCountryName = mAddresses.get(0).getCountryName();
+//                mCountryName = mAddresses.get(0).getCountryName();
                 mLocationName = ((mCityName == null) ? "" : mCityName) + " " +
-                        ((mStateName == null) ? "" : mStateName) + " " +
-                        ((mCountryName == null) ? "" : mCountryName);
+                        ((mStateName == null) ? "" : mStateName);
             } else {
                 mLocationName = "Unknown";
             }
@@ -555,6 +582,7 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
                 Storedhashtags = hashtags;
                 for(Hashtag hashtag:hashtags)
                 Log.d("BroadcastReceiver", hashtag.getLabel() + " " + hashtag.getCount());
+                showTrendHashtagPager(Storedhashtags);
             }
 
 //            for (Hashtag hash : hashtags) {
