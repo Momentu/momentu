@@ -50,19 +50,27 @@ public class UserRoleTest {
         }
     }
 
-    //Testing get role method in User Role class (Doesn't pass further evaluation is needed.)
-    /*
+    //Testing user role constructor without parameters
     @Test
-    public void testGetRole(){
+    public void testUserRoleWithoutParameters(){
         try{
-            assertNull(roleTest);
-            roleTest = Role.MEMBER;
-            Long userId= 1L;
-            userRoleTest = new UserRole(userId,roleTest);
-            assertEquals(Role.MEMBER, userRoleTest.getRole());
+            assertNull(userRoleTest);
+            userRoleTest = new UserRole();
+            assertNotNull(userRoleTest);
         }catch (Exception e){
-            fail("Get role method in User Role class has failed to execute.");
+            fail("User role constructor without parameters has failed to execute.");
         }
     }
-    */
+
+    //Testing get authority enum Role class
+    @Test
+    public void testGetAuthority(){
+        try{
+            roleTest = Role.MEMBER;
+            assertEquals("ROLE_MEMBER",roleTest.authority());
+        }catch (Exception e){
+            fail("get authority in enum Role class method doesn't work properly");
+        }
+    }
+
 }

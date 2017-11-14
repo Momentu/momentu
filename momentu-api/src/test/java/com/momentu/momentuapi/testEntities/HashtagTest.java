@@ -49,18 +49,20 @@ public class HashtagTest {
             fail("count value has not been gotten correctly");
         }
     }
-/*
+
     //Testing Hashtag Key set method
     @Test
     public void testSetHashtagKey(){
         try {
+            hashtagTest = new Hashtag();
             String label="hashtagLabel";
             Location location = new Location("Chicaog", "IL");
-            HashtagKey hashtagKey = new HashtagKey(label,location);
+            HashtagKey hashtagKey =  new HashtagKey();
+            hashtagKey.setLocation(location);
+            hashtagKey.getLocation().setId(1L);
             hashtagTest.setHashtagKey(hashtagKey);
-            assertEquals(label, hashtagTest.getHashtagKey().getLabel());
-            //assertEquals(locationId, hashtagTest.getHashtagKey().getLocationId());
-            //assertEquals(hashtagKey,hashtagTest.getHashtagKey());
+            assertEquals(hashtagKey, hashtagTest.getHashtagKey());
+
         }catch (Exception e){
             fail("Hashtag Key value has not been set correctly");
         }
@@ -71,18 +73,57 @@ public class HashtagTest {
     @Test
     public void testGetHashtagKey(){
         try {
+            hashtagTest = new Hashtag();
             String label="hashtagLabel";
-            Long locationId=1L;
-            HashtagKey hashtagKey = new HashtagKey(label,locationId);
+            Location location = new Location("Chicaog", "IL");
+            HashtagKey hashtagKey =  new HashtagKey();
+            hashtagKey.setLocation(location);
+            hashtagKey.getLocation().setId(1L);
             hashtagTest.setHashtagKey(hashtagKey);
-            assertEquals(label, hashtagTest.getHashtagKey().getLabel());
-            assertEquals(locationId, hashtagTest.getHashtagKey().getLocationId());
-            assertEquals(hashtagKey,hashtagTest.getHashtagKey());
+            assertEquals(hashtagKey, hashtagTest.getHashtagKey());
+
         }catch (Exception e){
             fail("Hashtag Key value has not been gotten correctly");
         }
     }
-*/
+
+    //Testing label get method
+    @Test
+    public void testGetLabel(){
+        try {
+            hashtagTest = new Hashtag();
+            String label="hashtagLabel";
+            Location location = new Location("Chicaog", "IL");
+            HashtagKey hashtagKey =  new HashtagKey();
+            hashtagKey.setLocation(location);
+            hashtagKey.getLocation().setId(1L);
+            hashtagKey.setLabel(label);
+            hashtagTest.setHashtagKey(hashtagKey);
+            assertEquals(label, hashtagTest.getLabel());
+
+        }catch (Exception e){
+            fail("Hashtag Key value has not been gotten correctly");
+        }
+    }
+
+    //Testing location get method
+    @Test
+    public void testGetLocation(){
+        try {
+            hashtagTest = new Hashtag();
+            String label="hashtagLabel";
+            Location location = new Location("Chicaog", "IL");
+            HashtagKey hashtagKey =  new HashtagKey();
+            hashtagKey.setLocation(location);
+            hashtagKey.getLocation().setId(1L);
+            hashtagTest.setHashtagKey(hashtagKey);
+            assertEquals(location, hashtagTest.getLocation());
+
+        }catch (Exception e){
+            fail("Hashtag Key value has not been gotten correctly");
+        }
+    }
+
     //Testing Latitude set method
     @Test
     public void testSetLatitude(){

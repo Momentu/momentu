@@ -61,7 +61,7 @@ public class ErrorResponseTest {
 
     //Testing get error code method in Error Response class
     @Test
-    public void testGetErrorCode(){
+    public void testGetErrorCodeErrorResposneClass(){
         try {
             HttpStatus httpStatus = HttpStatus.OK;
             String message = "Accepted";
@@ -103,5 +103,15 @@ public class ErrorResponseTest {
         }
     }
 
+    //Testing get error code method in Error Code Enum class
+    @Test
+    public void testGetErrorCodeErrorEnumClass(){
+        try {
+            ErrorCode errorCode = ErrorCode.JWT_TOKEN_EXPIRED;
+            assertEquals(11,errorCode.getErrorCode());
+        }catch (Exception e){
+            fail("it is not creating date object correctly");
+        }
+    }
 
 }

@@ -1,6 +1,7 @@
 package com.momentu.momentuapi.testEntities;
 
 import com.momentu.momentuapi.entities.Hashtag;
+import com.momentu.momentuapi.entities.Location;
 import com.momentu.momentuapi.entities.MediaMeta;
 import com.momentu.momentuapi.entities.UserLike;
 import com.momentu.momentuapi.entities.keys.UserLikeKey;
@@ -29,28 +30,6 @@ public class MediaMetaTest {
         }
     }
 
-    //Testing MediaMeta constructor with parameters
-//    TODO: Remove? Changed to set values in setters for more flexibility with setting location
-//    @Test
-//    public void testMediaMetaWithParameters() {
-//        try {
-//            assertTrue(mediaMetaTest == null);
-//            Long userId = 1L;
-//            String hashtagLabel = "hashtagLabelTest";
-//            Long locationId = 2L;
-//            mediaMetaTest = new MediaMeta(userId, hashtagLabel, locationId);
-//            assertTrue(mediaMetaTest != null);
-//            assertEquals(userId, mediaMetaTest.getUserId());
-//            assertEquals(hashtagLabel, mediaMetaTest.getHashtagLabel());
-//            assertEquals(locationId, mediaMetaTest.getLocationId());
-//            TestCase.assertEquals(false, mediaMetaTest.isRemoved());
-//            assertNotNull(mediaMetaTest.getCreated());
-//
-//        } catch (Exception e) {
-//            fail("MediaMeta constructor with parameters can't be used");
-//        }
-//    }
-
     //Testing userId set method
     @Test
     public void testSetUserId() {
@@ -77,33 +56,69 @@ public class MediaMetaTest {
         }
     }
 
-//    //Testing locationId set method
-//    TODO: Remove? Update? MediaMeta now references location by object in Entity class
-//    @Test
-//    public void testSetLocationId() {
-//        try {
-//            mediaMetaTest = new MediaMeta();
-//            Long locationId = 1L;
-//            mediaMetaTest.setLocationId(locationId);
-//            assertEquals(locationId, mediaMetaTest.getLocationId());
-//        }catch (Exception e){
-//            fail("locationId value has not been set correctly");
-//        }
-//    }
+    //Testing locationId set method
+    @Test
+    public void testSetLocationId() {
+        try {
+            mediaMetaTest = new MediaMeta();
+            Long locationId = 1L;
+            Location location = new Location("Chicago", "IL");
+            location.setId(locationId);
+            mediaMetaTest.setLocation(location);
+            mediaMetaTest.setLocationId(locationId);
+            assertEquals(locationId, mediaMetaTest.getLocationId());
+        }catch (Exception e){
+            fail("locationId value has not been set correctly");
+        }
+    }
 
-//    //Testing locationId get method
-//    TODO: Remove? Update? MediaMeta now references location by object in Entity class
-//    @Test
-//    public void testGetLocationId(){
-//        try {
-//            mediaMetaTest = new MediaMeta();
-//            Long locationId = 1L;
-//            mediaMetaTest.setLocationId(locationId);
-//            assertEquals(locationId, mediaMetaTest.getLocationId());
-//        }catch (Exception e){
-//            fail("locationId value has not been gotten correctly");
-//        }
-//    }
+    //Testing locationId get method
+    @Test
+    public void testGetLocationId(){
+        try {
+            mediaMetaTest = new MediaMeta();
+            Long locationId = 1L;
+            Location location = new Location("Chicago", "IL");
+            location.setId(locationId);
+            mediaMetaTest.setLocation(location);
+            mediaMetaTest.setLocationId(locationId);
+            assertEquals(locationId, mediaMetaTest.getLocationId());
+        }catch (Exception e){
+            fail("locationId value has not been gotten correctly");
+        }
+    }
+
+    //Testing location set method
+    @Test
+    public void testSetLocation() {
+        try {
+            mediaMetaTest = new MediaMeta();
+            Long locationId = 1L;
+            Location location = new Location("Chicago", "IL");
+            location.setId(locationId);
+            mediaMetaTest.setLocation(location);
+            mediaMetaTest.setLocationId(locationId);
+            assertEquals(location, mediaMetaTest.getLocation());
+        }catch (Exception e){
+            fail("location value has not been set correctly");
+        }
+    }
+
+    //Testing location get method
+    @Test
+    public void testGetLocation(){
+        try {
+            mediaMetaTest = new MediaMeta();
+            Long locationId = 1L;
+            Location location = new Location("Chicago", "IL");
+            location.setId(locationId);
+            mediaMetaTest.setLocation(location);
+            mediaMetaTest.setLocationId(locationId);
+            assertEquals(location, mediaMetaTest.getLocation());
+        }catch (Exception e){
+            fail("location value has not been gotten correctly");
+        }
+    }
 
     //Testing hashtagLabel set method
     @Test
