@@ -14,7 +14,7 @@ public class UserTest {
     //An object from User class to check its functionality
     private User userTest = null;
 
-    //Testing the constructor of User class
+    //Testing the constructor with parameters of User class
     @Test
     public void TestUserUser() throws Exception {
         try {
@@ -26,7 +26,18 @@ public class UserTest {
             assertEquals("123456789", userTest.getPassword());
             assertEquals("Male", userTest.getGender());
         }catch (Exception e){
-            fail("Creating a user object fails.");
+            fail("Creating a user object with parameters fails.");
+        }
+    }
+    //Testing the constructor without parameters of User class
+    @Test
+    public void TestUserUserWithoutParameters() throws Exception {
+        try {
+            assertNull(userTest);
+            userTest = new User();
+            assertNotNull(userTest);
+        }catch (Exception e){
+            fail("Creating a user object without parameters fails.");
         }
     }
 
@@ -173,6 +184,24 @@ public class UserTest {
             assertEquals("Female", userTest.getGender());
         }catch(Exception e){
             fail("Getting a gender fails.");
+        }
+    }
+
+    //Testing the to string method in User class
+    @Test
+    public void testToString() throws Exception {
+        try {
+            userTest = new User("falharbi88", "Fahad", "Alharbi", "falharbi88@gmail.com", "123456789", "Male");
+            assertEquals("User{" +
+                    "username='" + "falharbi88" + '\'' +
+                    ", firstName='" + "Fahad" + '\'' +
+                    ", lastName='" + "Alharbi" + '\'' +
+                    ", email='" + "falharbi88@gmail.com" + '\'' +
+                    ", password='" + "123456789" + '\'' +
+                    ", gender='" + "Male" + '\'' +
+                    '}', userTest.toString());
+        }catch(Exception e){
+            fail("to string method fails.");
         }
     }
 }
