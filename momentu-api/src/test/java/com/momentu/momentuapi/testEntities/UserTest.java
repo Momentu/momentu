@@ -1,14 +1,18 @@
 package com.momentu.momentuapi.testEntities;
 
+import com.momentu.momentuapi.entities.Role;
 import com.momentu.momentuapi.entities.User;
+import com.momentu.momentuapi.entities.UserRole;
 import org.junit.Test;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.List;
 import java.util.Objects;
 
 import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNull;
 
 //This is a test class for User class
 public class UserTest {
@@ -162,6 +166,23 @@ public class UserTest {
         try {
             userTest.setPassword("12345678");
             assertNotEquals("12345678", userTest.getPassword());
+        }catch (Exception e) {
+            fail("encoding features doesn't work properly");
+        }
+    }
+
+    //Testing get roles method in user class
+    @Test
+    public void testGetRoles() {
+        try {
+            /*
+            List<UserRole> roles = null;
+            roles.add(new UserRole(1L, Role.MEMBER));
+            roles.add(new UserRole(2L, Role.EVENT_MEMBER));
+            roles.add(new UserRole(3L, Role.ADMIN));
+            */
+            userTest = new User();
+            assertNull(userTest.getRoles());
         }catch (Exception e) {
             fail("encoding features doesn't work properly");
         }

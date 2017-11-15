@@ -17,7 +17,7 @@ public class UserRoleTest {
     UserRoleKey userRoleKeyTest;
 
     //This is a test object from Role Enum class
-    Role roleTest;
+    Role roleTest = null;
 
     //Testing UserRoleKey static class in User Role Class
     //Testing UserRoleKey constructor
@@ -59,6 +59,17 @@ public class UserRoleTest {
             assertNotNull(userRoleTest);
         }catch (Exception e){
             fail("User role constructor without parameters has failed to execute.");
+        }
+    }
+
+    //Testing get Role method in User Role class
+    @Test
+    public void testGetRole(){
+        try{
+            userRoleTest = new UserRole(1L,Role.MEMBER);
+            assertEquals(roleTest,userRoleTest.getRole());
+        }catch (Exception e){
+            fail("get role in user role class method doesn't work properly");
         }
     }
 

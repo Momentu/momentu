@@ -32,7 +32,8 @@ public class HashtagKeyTest {
     public void testHashtagKeyWithParameter() {
         try {
             assertNull(hashtagKeyTest);
-            hashtagKeyTest = new HashtagKey("hashtagLabel",new Location().getId());
+            hashtagKeyTest = new HashtagKey("hashtagLabel",1L);
+            hashtagKeyTest.setLocation();
             assertNotNull(hashtagKeyTest);
         }catch (Exception e){
             fail("HashtagKey constructor with parameters can't be used");

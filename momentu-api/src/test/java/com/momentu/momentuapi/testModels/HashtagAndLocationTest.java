@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 //This is a test class for HashtagAndLocation class
 public class HashtagAndLocationTest {
@@ -81,6 +82,25 @@ public class HashtagAndLocationTest {
             assertEquals("IL",hashtagAndLocation.getState());
         }catch (Exception e){
             fail("state value has not been gotten correctly");
+        }
+    }
+
+    //Testing isValid method
+    @Test
+    public void testIsValid() {
+        try {
+            hashtagAndLocation = new HashtagAndLocation();
+            hashtagAndLocation.setHashtagLabel("");
+            assertFalse(hashtagAndLocation.isValid());
+
+            hashtagAndLocation.setState("");
+            assertFalse(hashtagAndLocation.isValid());
+
+            hashtagAndLocation.setCity("");
+            assertFalse(hashtagAndLocation.isValid());
+
+        }catch (Exception e){
+            fail("is valid method doesn't work properly");
         }
     }
 }
