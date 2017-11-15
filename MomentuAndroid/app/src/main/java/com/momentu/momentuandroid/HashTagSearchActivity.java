@@ -28,6 +28,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -39,18 +40,19 @@ import android.widget.Toast;
 import com.arlib.floatingsearchview.FloatingSearchView;
 import com.momentu.momentuandroid.Adapter.CardPagerAdapter;
 import com.momentu.momentuandroid.Animation.ShadowTransformer;
+import com.momentu.momentuandroid.Data.EndPoints;
 import com.momentu.momentuandroid.Data.RestClient;
 import com.momentu.momentuandroid.Fragment.BaseFragment;
 import com.momentu.momentuandroid.Fragment.SlidingSearchResultsFragment;
 import com.momentu.momentuandroid.Model.Hashtag;
+import com.momentu.momentuandroid.Model.State;
+import com.momentu.momentuandroid.Model.StatesAndCities;
 import com.momentu.momentuandroid.Model.TrendHashTagCard;
 import com.momentu.momentuandroid.Services.ConnectionService;
 import com.momentu.momentuandroid.Utility.RequestPackage;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -100,12 +102,17 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
 
     static String token;
     private ArrayList<Hashtag> Storedhashtags;
+    private ArrayList<State> arrayOfStates = new ArrayList<State>();
+//    private ArrayList<City> arrayOfCities = new ArrayList<City>();
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hashtag_search);
+
+        arrayOfStates.add(new State("Please select state"));
+
         Intent intent = getIntent();
         token = intent.getStringExtra("token");
 
@@ -137,16 +144,34 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
                 final Spinner mSpinnerState = (Spinner) mView.findViewById(R.id.spinner_state);
                 final Spinner mSpinnerCity = (Spinner) mView.findViewById(R.id.spinner_city);
                 //TODO: City needs to be linked with State.
-                ArrayAdapter<String> adapterState = new ArrayAdapter<String>(HashTagSearchActivity.this,
+                ArrayAdapter<State> adapterState = new ArrayAdapter<State>(HashTagSearchActivity.this,
                         android.R.layout.simple_spinner_item,
-                        getResources().getStringArray(R.array.States));
-                ArrayAdapter<String> adapterCity = new ArrayAdapter<String>(HashTagSearchActivity.this,
-                        android.R.layout.simple_spinner_item,
-                        getResources().getStringArray(R.array.Cities));
+                        arrayOfStates);
+
                 adapterState.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                adapterCity.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 mSpinnerState.setAdapter(adapterState);
-                mSpinnerCity.setAdapter(adapterCity);
+                //StateListner
+                mSpinnerState.setOnItemSelectedListener(
+                        new AdapterView.OnItemSelectedListener(){
+
+                            @Override
+                            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                               ArrayList<String> citiesList =  arrayOfStates.get(i).getCities();
+                                ArrayAdapter<String> adapterCity = new ArrayAdapter<String>(HashTagSearchActivity.this,
+                                        android.R.layout.simple_spinner_item,
+                                        citiesList);
+                                adapterCity.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                mSpinnerCity.setAdapter(adapterCity);
+                            }
+
+                            @Override
+                            public void onNothingSelected(AdapterView<?> adapterView) {
+
+                            }
+                        }
+                );
+
+
 
                 mBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
@@ -163,7 +188,7 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
                             mStateName = newStateName;
                             mWhereAmI.setText(((mCityName == null) ? "Where am I" : mCityName));
                             mViewPager.setCurrentItem(0); //ViewPager roll back to the first page (city-wide trend hashtag)
-                            loadTrendingHashtags();
+                            loading(0, null);
                             dialogInterface.dismiss();
                         }
                     };
@@ -175,7 +200,6 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
                         dialogInterface.dismiss();
                     }
                 });
-
                 mBuilder.setView(mView);
                 AlertDialog dialog = mBuilder.create();
                 dialog.show();
@@ -197,17 +221,19 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
             }
         });
 
-        //setup
+        //setup reciever 'mBroadcastReceiver'
         LocalBroadcastManager.getInstance(getApplicationContext())
                 .registerReceiver(mBroadcastReceiver,
                         new IntentFilter(ConnectionService.MY_SERVICE_MESSAGE));
+
+        //this single line populate the state array
+        loading(1,null);
     }
 
     // The method is on activity result after capture a photo. A dialog will be displayed
     // for user to enter the hashtag name.
     //It passes the hashtage along with the location to RestClient to pass it to the backend
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
             final Dialog dialogToPost = new Dialog(this);
             dialogToPost.setContentView(R.layout.dialog_to_post);
@@ -258,8 +284,6 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
 
         }
     }
-
-
 
     @Override
     public void onAttachSearchViewToDrawer(FloatingSearchView searchView) {
@@ -522,7 +546,7 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
                 Toast.LENGTH_LONG).show();
 
         //call the method that passes the location to the RestClient, for retrieving hashtags
-        loadTrendingHashtags();
+        loading(0, null);
     }
 
     //When Trend hashtag is clicked
@@ -574,40 +598,72 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
     private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            ArrayList<Hashtag> hashtags = intent
-                    .getParcelableArrayListExtra(ConnectionService.MY_SERVICE_PAYLOAD);
-            if(hashtags == null)
-                Log.d("BroadcastReceiver", "hashtags is null");
-            else{
-                Storedhashtags = hashtags;
-                for(Hashtag hashtag:hashtags)
-                Log.d("BroadcastReceiver", hashtag.getLabel() + " " + hashtag.getCount());
+            int code = intent.getIntExtra("code", -1);
+            if(code == 0){
+                Storedhashtags = intent
+                        .getParcelableArrayListExtra(ConnectionService.MY_SERVICE_PAYLOAD);
                 showTrendHashtagPager(Storedhashtags);
             }
+            else if(code == 1) {
+                    ArrayList<StatesAndCities> temp = intent
+                        .getParcelableArrayListExtra(ConnectionService.MY_SERVICE_PAYLOAD);
 
-//            for (Hashtag hash : hashtags) {
-//                Log.d("BroadCastReceiver","Hashtag: " + hash.getLabel()+ " Count:" + hash.getCount());
-//            }
+                if (temp != null) {
+                    arrayOfStates.addAll(temp.get(0).getStates());
+                    for (State state: arrayOfStates) {
+                        Log.d("Receiver",state.toString() + " :" + state.getCities().toString());
+                    }
+                }
+                else
+                    Log.d("Receiver","StatesArray is null");
+            }
         }
     };
-    private void loadTrendingHashtags()
+    //api for loading hashtags(0), state(1), city(2)
+    private void loading(int code, String partial)
     {
-        if(mCityName != null && mStateName != null){
-            RequestPackage requestPackage = new RequestPackage();
-            requestPackage.setEndpoint(RestClient.HASHTAGS_ENDPOINT);
-            requestPackage.setParam("city",mCityName);
-            requestPackage.setParam("state",mStateName);
-            requestPackage.setToken(token);
-            requestPackage.setFunction("/search/findByStateCity");
+        if(code == 0)
+        {
+            if(mCityName != null && mStateName != null){
+                RequestPackage requestPackage = new RequestPackage();
+                requestPackage.setEndpoint(EndPoints.HASHTAGS_ENDPOINT);
+                requestPackage.setParam("city",mCityName);
+                requestPackage.setParam("state",mStateName);
+                requestPackage.setToken(token);
+                requestPackage.setFunction("/search/findByStateCity");
 
-//            requestPackage.setParam("category", "Entrees");
-//        requestPackage.setMethod("GET");
+                Intent intent = new Intent(this, ConnectionService.class);
+                intent.putExtra(ConnectionService.REQUEST_PACKAGE, requestPackage);
+                intent.putExtra("code",code);
+                startService(intent);
+            }
+            else
+                Log.d("loadTrendingHashtags", "city and/or state is null");
+        }
+        else if(code ==1)
+        {
+            RequestPackage requestPackage = new RequestPackage();
+            requestPackage.setEndpoint(EndPoints.LOCATION_ENDPOINT);
+            requestPackage.setToken(token);
 
             Intent intent = new Intent(this, ConnectionService.class);
             intent.putExtra(ConnectionService.REQUEST_PACKAGE, requestPackage);
+            intent.putExtra("code",code);
             startService(intent);
         }
-        else
-            Log.d("loadTrendingHashtags", "city and/or state is null");
+//        else if(code ==2)
+//        {
+//            RequestPackage requestPackage = new RequestPackage();
+//            requestPackage.setEndpoint(EndPoints.LOCATION_ENDPOINT);
+//            requestPackage.setFunction("/search/findByState");
+//            requestPackage.setParam("state",partial);
+//            requestPackage.setToken(token);
+//
+//            Intent intent = new Intent(this, ConnectionService.class);
+//            intent.putExtra(ConnectionService.REQUEST_PACKAGE, requestPackage);
+//            intent.putExtra("code",code);
+//            startService(intent);
+//        }
     }
+
 }

@@ -26,12 +26,6 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class RestClient {
-    public static final String LOGIN_ENDPOINT = "http://www.momentu.xyz:8080/login";
-    public static final String REGISTER_ENDPOINT = "http://www.momentu.xyz:8080/register";
-    public static final String MEDIA_ENDPOINT = "http://www.momentu.xyz:8080/media";
-    public static final String HASHTAGS_ENDPOINT = "http://www.momentu.xyz:8080/hashtags";
-
-
     private String token;
     public int status = 0;
 
@@ -44,7 +38,7 @@ public class RestClient {
 
         RequestBody body = RequestBody.create(JSON, parameter.toString());
         final Request request = new Request.Builder()
-                .url(LOGIN_ENDPOINT)
+                .url(EndPoints.LOGIN_ENDPOINT)
                 .post(body)
                 .addHeader("content-type", "application/json; charset=utf-8")
                 .build();
@@ -99,7 +93,7 @@ public class RestClient {
         RequestBody body = RequestBody.create(JSON, parameter.toString());
         Request request = new Request.Builder()
 
-                .url(REGISTER_ENDPOINT)
+                .url(EndPoints.REGISTER_ENDPOINT)
                 .post(body)
                 .addHeader("content-type", "application/json; charset=utf-8")
                 .build();
@@ -154,7 +148,7 @@ public class RestClient {
                 RequestBody body = RequestBody.create(JSON, parameter.toString());
 
                 request = new Request.Builder()
-                .url(MEDIA_ENDPOINT)
+                .url(EndPoints.MEDIA_ENDPOINT)
                 .post(body)
                 .addHeader("content-type", "application/json; charset=utf-8")
                 .addHeader("authorization", userToken)
@@ -190,56 +184,7 @@ public class RestClient {
         }.execute();
     }
 
-    //this method is to send an http request to the :8080/hashtags endpoint
-//    public void hashtags(final Map<String, String> params, final Activity currentActivity) {
-//        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-//
-//        try{
-//            Request request = new Request.Builder()
-//                    .url(HASHTAGS_ENDPOINT)
-////                .addPathSegment("search")
-//                    .addHeader("city", params.get("city"))
-//                    .addHeader("state", params.get("state"))
-//                    .build();
-//
-//            OkHttpClient client = new OkHttpClient();
-//
-//            Log.d("request_method", request.method());
-//
-//            client.newCall(request).enqueue(new Callback() {
-//                @Override
-//                public void onFailure(Call call, IOException e) {
-//                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-//
-//                        @Override
-//                        public void run() {
-//                            Toast.makeText(currentActivity, "Server is not responding", Toast.LENGTH_SHORT).show();
-//                        }
-//                    });
-//                }
-//
-//                @Override
-//                public void onResponse(Call call, Response response) throws IOException {
-//                    if (response.code() == 200) {
-//                        Log.d("Hashtag_OnResponse", response.body().string());
-//                    } else {
-//                        new Handler(Looper.getMainLooper()).post(new Runnable() {
-//
-//                            @Override
-//                            public void run() {
-//                                Toast.makeText(currentActivity, "I went to the server but it looks like it is not happy", Toast.LENGTH_SHORT).show();
-//                            }
-//                        });
-//                    }
-//                }
-//            });
-//        }
-//        catch (java.lang.NullPointerException e){
-//            Log.d("Hashtag failed", "Because location is null");
-//        }
-//
-//    }
-    public static String Hashtages(RequestPackage requestPackage)
+    public static String get(RequestPackage requestPackage)
             throws IOException {
 
         String address = requestPackage.getEndpoint();

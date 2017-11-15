@@ -2,12 +2,12 @@ package com.momentu.momentuandroid.Services;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.momentu.momentuandroid.Data.RestClient;
-import com.momentu.momentuandroid.Model.Hashtag;
 import com.momentu.momentuandroid.Utility.JSONParser;
 import com.momentu.momentuandroid.Utility.RequestPackage;
 
@@ -21,6 +21,7 @@ import java.util.ArrayList;
 public class ConnectionService extends IntentService {
 
     public static final String MY_SERVICE_MESSAGE = "myServiceMessage";
+    public static final String MY_SERVICE_MESSAGE_STATE = "myServiceMessage_State";
     public static final String REQUEST_PACKAGE = "requestPackage";
     public static final String MY_SERVICE_PAYLOAD = "myServicePayload";
     private static final String TAG = "ConnectionService";
@@ -31,27 +32,29 @@ public class ConnectionService extends IntentService {
     protected void onHandleIntent(@Nullable Intent intent) {
         RequestPackage requestPackage =
                 intent.getParcelableExtra(REQUEST_PACKAGE);
+        int code = intent.getIntExtra("code", -1);
 
         String response;
         try {
-            response = RestClient.Hashtages(requestPackage);
+            response = RestClient.get(requestPackage);
         } catch (IOException e) {
             e.printStackTrace();
             return;
         }
         Log.d("IBMServiceBeforeParser", response);
-        ArrayList<Hashtag> hashArray = JSONParser.parseJASON(response);
-        if(hashArray != null)
-        Log.d("IBMServiceAfterParser", hashArray.toString());
+        ArrayList<Parcelable> objectArray = JSONParser.parseJASON(response, code);
+        if(objectArray != null)
+            Log.d("IBMServiceAfterParser", objectArray.toString());
         else
-            Log.d("IBMServiceAfterParser", "hashArray is null");
+            Log.d("IBMServiceAfterParser", "objectArray is null and code= " + code);
 
-//
-//        Gson gson = new Gson();
-//        Hashtag hashtages = gson.fromJson(response, Hashtag.class);
+        Intent messageIntent;
 
-        Intent messageIntent = new Intent(MY_SERVICE_MESSAGE);
-        messageIntent.putExtra(MY_SERVICE_PAYLOAD, hashArray);
+        messageIntent = new Intent(MY_SERVICE_MESSAGE);
+
+        messageIntent.putExtra(MY_SERVICE_PAYLOAD, objectArray);
+        messageIntent.putExtra("code",code);
+
         LocalBroadcastManager manager =
                 LocalBroadcastManager.getInstance(getApplicationContext());
         manager.sendBroadcast(messageIntent);
@@ -70,4 +73,3 @@ public class ConnectionService extends IntentService {
     }
 
 }
-
