@@ -5,10 +5,11 @@ package com.momentu.momentuandroid.Model;
  */
 
 public class TrendHashTagCard {
-    private String[] trendHashTags = new String[6];
+    private String[] trendHashTags;
     public TrendHashTagCard(String[] inTrendHashTags) {
         trendHashTags = inTrendHashTags;
     }
+    public int HashTagCount() {return trendHashTags.length;}
     public String[] getTrendHashTags() {
         return trendHashTags;
     }

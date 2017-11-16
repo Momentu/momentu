@@ -25,6 +25,7 @@
                 android:layout_height="@dimen/trending_tag_button_height"
                 android:background="@drawable/capsule_button"
                 android:text="#Tag1"
+                android:visibility="invisible"
                 android:textAllCaps="false"
                 android:textColor="@color/white" />
 
@@ -37,6 +38,7 @@
                 android:layout_toRightOf="@+id/bTag1"
                 android:background="@drawable/capsule_button"
                 android:text="#Tag2"
+                android:visibility="invisible"
                 android:textAllCaps="false"
                 android:textColor="@color/white" />
 
@@ -49,6 +51,7 @@
                 android:layout_toRightOf="@+id/bTag2"
                 android:background="@drawable/capsule_button"
                 android:text="#Tag3"
+                android:visibility="invisible"
                 android:textAllCaps="false"
                 android:textColor="@color/white" />
 
@@ -63,6 +66,7 @@
                 android:layout_marginTop="5dp"
                 android:background="@drawable/capsule_button"
                 android:text="#Tag4"
+                android:visibility="invisible"
                 android:textAllCaps="false"
                 android:textColor="@color/white" />
 
@@ -76,6 +80,7 @@
                 android:layout_alignTop="@+id/bTag4"
                 android:background="@drawable/capsule_button"
                 android:text="#Tag5"
+                android:visibility="invisible"
                 android:textAllCaps="false"
                 android:textColor="@color/white" />
 
@@ -89,6 +94,7 @@
                 android:layout_alignTop="@+id/bTag4"
                 android:background="@drawable/capsule_button"
                 android:text="#Tag6"
+                android:visibility="invisible"
                 android:textAllCaps="false"
                 android:textColor="@color/white" />
         </RelativeLayout>

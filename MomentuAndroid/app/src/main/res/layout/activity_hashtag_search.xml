@@ -23,7 +23,6 @@
                 android:textStyle="bold"
                 android:textSize="25sp"
                 android:textColor="@color/colorAccent"
-                android:background="@color/white"
                 android:fontFamily="casual"
                 android:paddingLeft="10dp"
                 android:text="Where am I" />
@@ -56,6 +55,24 @@
             android:clipToPadding="false"
             android:overScrollMode="never"
             android:paddingBottom="30dp"
+            android:paddingEnd="@dimen/card_padding"
+            android:paddingLeft="@dimen/card_padding"
+            android:paddingRight="@dimen/card_padding"
+            android:paddingStart="@dimen/card_padding" />
+
+        <TextView
+            android:id="@+id/viewEmpty"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_marginTop="30dp"
+            android:focusable="false"
+            android:clickable="false"
+            android:text="Welcome"
+            android:textSize="20dp"
+            android:textColor="@color/colorAccent"
+            android:fontFamily="casual"
+            android:gravity="center"
+            android:paddingBottom="20dp"
             android:paddingEnd="@dimen/card_padding"
             android:paddingLeft="@dimen/card_padding"
             android:paddingRight="@dimen/card_padding"

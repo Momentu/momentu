@@ -66,10 +66,11 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
 
     /* TrendHashTag ViewPager */
     private ViewPager mViewPager;
+    private TextView mViewEmpty;
     private CardPagerAdapter mCardAdapter;
     private ShadowTransformer mCardShadowTransformer;
-    private String[] cityWideHashTags = new String[6];
-    private String[] stateWideHashTags = new String[6];
+    private String[] cityWideHashTags;
+    private String[] stateWideHashTags;
 //    private String[] nationWideHashTags = new String[6];
 
     /* Search Fragment */
@@ -128,6 +129,8 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
         initializeLocationManager();
 
         mViewPager = (ViewPager) findViewById(R.id.viewPager);
+        mViewEmpty = (TextView) findViewById(R.id.viewEmpty);
+        SwitchPagerToEmpty(false);
 
         checkLocation();
 
@@ -379,19 +382,19 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
         mCardAdapter = new CardPagerAdapter();
 
         //Hard coded tags- for demonstration if the number of hashtag is too small.
-        cityWideHashTags[0] = "#Sixers";
-        cityWideHashTags[1] = "#anniversary";
-        cityWideHashTags[2] = "#Supernatural";
-        cityWideHashTags[3] = "#scnews";
-        cityWideHashTags[4] = "#AOMG";
-        cityWideHashTags[5] = "#Scandal";
-
-        stateWideHashTags[0] = "#AOMG";
-        stateWideHashTags[1] = "#anniversary";
-        stateWideHashTags[2] = "#AnOpenSecret";
-        stateWideHashTags[3] = "#Scandal";
-        stateWideHashTags[4] = "#Sixers";
-        stateWideHashTags[5] = "#scnews";
+//        cityWideHashTags[0] = "#Sixers";
+//        cityWideHashTags[1] = "#anniversary";
+//        cityWideHashTags[2] = "#Supernatural";
+//        cityWideHashTags[3] = "#scnews";
+//        cityWideHashTags[4] = "#AOMG";
+//        cityWideHashTags[5] = "#Scandal";
+//
+//        stateWideHashTags[0] = "#AOMG";
+//        stateWideHashTags[1] = "#anniversary";
+//        stateWideHashTags[2] = "#AnOpenSecret";
+//        stateWideHashTags[3] = "#Scandal";
+//        stateWideHashTags[4] = "#Sixers";
+//        stateWideHashTags[5] = "#scnews";
 
 //        nationWideHashTags[0] = "#AllStars3";
 //        nationWideHashTags[1] = "#Scandal";
@@ -405,8 +408,10 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
 
             if(storedHashtagLength > 0){
                 mViewPager.setVisibility(View.VISIBLE);
-
+                mViewEmpty.setVisibility(View.INVISIBLE);
                 Log.d("# Hashtag received" , Integer.toString(storedHashtagLength));
+                cityWideHashTags = new String[storedHashtagLength];
+                stateWideHashTags = new String[storedHashtagLength];
                 int index=0;
                 for(Hashtag ht:Storedhashtags){
 //                Log.d("Tag index" , Integer.toString(index));
@@ -415,24 +420,35 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
                     index++;
                     if(index == 5) break; // Only display the top six tags.
                 }
+                mCardAdapter.addCardItem(new TrendHashTagCard(cityWideHashTags));
+                mCardAdapter.addCardItem(new TrendHashTagCard(stateWideHashTags));
+//        mCardAdapter.addCardItem(new TrendHashTagCard(nationWideHashTags));
+
+                mCardShadowTransformer = new ShadowTransformer(mViewPager, mCardAdapter);
+
+                mViewPager.setAdapter(mCardAdapter);
+                mViewPager.setPageTransformer(false, mCardShadowTransformer);
+//        mViewPager.setOffscreenPageLimit(3); // Three pages will be kept offscreen
+                mViewPager.setOffscreenPageLimit(2); // Two pages will be kept offscreen
+                mCardShadowTransformer.enableScaling(true);
             } else {
-                mViewPager.setVisibility(View.INVISIBLE);
+                SwitchPagerToEmpty(true);
             }
         } else {
             //If no trend hash tag, hide the view.
-            mViewPager.setVisibility(View.INVISIBLE);
+            SwitchPagerToEmpty(true);
         }
-        mCardAdapter.addCardItem(new TrendHashTagCard(cityWideHashTags));
-        mCardAdapter.addCardItem(new TrendHashTagCard(stateWideHashTags));
-//        mCardAdapter.addCardItem(new TrendHashTagCard(nationWideHashTags));
+    }
 
-        mCardShadowTransformer = new ShadowTransformer(mViewPager, mCardAdapter);
-
-        mViewPager.setAdapter(mCardAdapter);
-        mViewPager.setPageTransformer(false, mCardShadowTransformer);
-//        mViewPager.setOffscreenPageLimit(3); // Three pages will be kept offscreen
-        mViewPager.setOffscreenPageLimit(2); // Two pages will be kept offscreen
-        mCardShadowTransformer.enableScaling(true);
+    private void SwitchPagerToEmpty(boolean doSwitch){
+        if(doSwitch){
+            mViewPager.setVisibility(View.INVISIBLE);
+            mViewEmpty.setVisibility(View.VISIBLE);
+            mViewEmpty.setText("Welcome to " + mCityName + "\nPost to get your #hashtag to trend");
+        } else {
+            mViewPager.setVisibility(View.VISIBLE);
+            mViewEmpty.setVisibility(View.INVISIBLE);
+        }
     }
 
     private class PageListener extends ViewPager.SimpleOnPageChangeListener {

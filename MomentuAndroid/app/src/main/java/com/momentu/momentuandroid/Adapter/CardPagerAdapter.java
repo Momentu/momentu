@@ -28,6 +28,7 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter {
     private List<CardView> mViews;
     private List<TrendHashTagCard> mData;
     private float mBaseElevation;
+    private final int[] btns = {R.id.bTag1, R.id.bTag2, R.id.bTag3, R.id.bTag4, R.id.bTag5, R.id.bTag6};
 
     public CardPagerAdapter() {
         mData = new ArrayList<>();
@@ -84,18 +85,21 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter {
 
     private void bind(TrendHashTagCard item, View view) {
         ArrayList<Button> buttonArrayList = new ArrayList<>();
-        buttonArrayList.add((Button) view.findViewById(R.id.bTag1));
-        buttonArrayList.add((Button) view.findViewById(R.id.bTag2));
-        buttonArrayList.add((Button) view.findViewById(R.id.bTag3));
-        buttonArrayList.add((Button) view.findViewById(R.id.bTag4));
-        buttonArrayList.add((Button) view.findViewById(R.id.bTag5));
-        buttonArrayList.add((Button) view.findViewById(R.id.bTag6));
+//        buttonArrayList.add((Button) view.findViewById(R.id.bTag1));
+//        buttonArrayList.add((Button) view.findViewById(R.id.bTag2));
+//        buttonArrayList.add((Button) view.findViewById(R.id.bTag3));
+//        buttonArrayList.add((Button) view.findViewById(R.id.bTag4));
+//        buttonArrayList.add((Button) view.findViewById(R.id.bTag5));
+//        buttonArrayList.add((Button) view.findViewById(R.id.bTag6));
 
-        for(int i = 0; i < 6; i++){
+        //Dynamic button creation
+        for(int i = 0; i < item.HashTagCount(); i++){
+            buttonArrayList.add((Button) view.findViewById(btns[i]));
             String hashTag = item.getTrendHashTags()[i];
             int hashTagLen = hashTag.length();
             // self-adjust font size
             int hashTagFontSize = Math.min(15, (int) (45/Math.sqrt(hashTagLen)));
+            buttonArrayList.get(i).setVisibility(View.VISIBLE);
             buttonArrayList.get(i).setTextSize(TypedValue.COMPLEX_UNIT_DIP, hashTagFontSize);
             buttonArrayList.get(i).setText(hashTag);
         }
