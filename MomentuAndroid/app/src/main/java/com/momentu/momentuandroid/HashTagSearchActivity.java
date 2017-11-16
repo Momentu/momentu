@@ -414,11 +414,11 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
                 stateWideHashTags = new String[storedHashtagLength];
                 int index=0;
                 for(Hashtag ht:Storedhashtags){
-//                Log.d("Tag index" , Integer.toString(index));
+                Log.d("Tag" , ht.getLabel());
                     cityWideHashTags[index] = ht.getLabel();
                     stateWideHashTags[index] = ht.getLabel(); // state-wide got the same tags
                     index++;
-                    if(index == 5) break; // Only display the top six tags.
+                    if(index == 6) break; // Only display the top six tags.
                 }
                 mCardAdapter.addCardItem(new TrendHashTagCard(cityWideHashTags));
                 mCardAdapter.addCardItem(new TrendHashTagCard(stateWideHashTags));
