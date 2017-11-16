@@ -410,14 +410,14 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
                 mViewPager.setVisibility(View.VISIBLE);
                 mViewEmpty.setVisibility(View.INVISIBLE);
                 Log.d("# Hashtag received" , Integer.toString(storedHashtagLength));
-                cityWideHashTags = new String[storedHashtagLength];
-                stateWideHashTags = new String[storedHashtagLength];
+                cityWideHashTags = new String[Math.min(6,storedHashtagLength)];
+                stateWideHashTags = new String[Math.min(6,storedHashtagLength)];
                 int index=0;
                 for(Hashtag ht:Storedhashtags){
-                Log.d("Tag" , ht.getLabel());
+                    Log.d("Tag" , ht.getLabel());
                     cityWideHashTags[index] = ht.getLabel();
                     stateWideHashTags[index] = ht.getLabel(); // state-wide got the same tags
-                    index++;
+                    index ++;
                     if(index == 6) break; // Only display the top six tags.
                 }
                 mCardAdapter.addCardItem(new TrendHashTagCard(cityWideHashTags));

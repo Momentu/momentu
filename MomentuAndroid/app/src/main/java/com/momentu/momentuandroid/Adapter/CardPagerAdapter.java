@@ -91,9 +91,11 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter {
 //        buttonArrayList.add((Button) view.findViewById(R.id.bTag4));
 //        buttonArrayList.add((Button) view.findViewById(R.id.bTag5));
 //        buttonArrayList.add((Button) view.findViewById(R.id.bTag6));
+//        Log.d("Index", Integer.toString(item.HashTagCount()));
 
         //Dynamic button creation
         for(int i = 0; i < item.HashTagCount(); i++){
+//            Log.d("Index", Integer.toString(i));
             buttonArrayList.add((Button) view.findViewById(btns[i]));
             String hashTag = item.getTrendHashTags()[i];
             int hashTagLen = hashTag.length();
