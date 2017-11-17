@@ -18,12 +18,12 @@ public interface HashtagRepository extends CrudRepository<Hashtag, HashtagKey> {
     List<Hashtag> findByStateCity(@Param("state") String state, @Param("city") String city);
 
     @Query("select h from Hashtag h left join fetch h.hashtagKey.location lo " +
-            "where lo.state=:state and lo.city=:city order by h.count")
+            "where lo.state=:state and lo.city=:city order by h.count desc")
     List<Hashtag> findByStateCityTrending(@Param("state") String state, @Param("city") String city);
 
     @Query("select h from Hashtag h left join fetch h.hashtagKey.location lo " +
             "where lo.state=:state and lo.city=:city and h.hashtagKey.label like concat('%',:label,'%')" +
-            "order by h.count")
+            "order by h.count desc")
     List<Hashtag> findByStateCityTrendingLabel(@Param("state") String state, @Param("city") String city,
                                                @Param("label") String label);
 
