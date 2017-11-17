@@ -60,4 +60,9 @@ public class Hashtag implements Parcelable {
             return new Hashtag[size];
         }
     };
+    @Override
+    public String toString(){
+        return this.label;
+    }
+
 }

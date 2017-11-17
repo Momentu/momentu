@@ -28,8 +28,8 @@ public class State implements Parcelable {
     public boolean equals(Object object)
     {
         boolean sameSame = false;
-        String compare = (String) object;
-            boolean result = this.stateName.equals(compare);
+        State compare = (State) object;
+            boolean result = this.stateName.equals(compare.getStateName());
         return result;
     }
 

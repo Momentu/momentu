@@ -51,9 +51,9 @@ public class JSONParser {
                     Log.d("ParserStep:", i + " state:" + state);
                     String city = newArr.getJSONObject(i).getString("city");
                     Log.d("ParserStep:", i + " city:" + city);
-                    if (locations.getStates().contains(state) == true   ) {
+                    if (locations.getStates().contains(new State(state))) {
                         Log.d("ParserStep:", i + " Found:" + state);
-                        int indx = locations.getStates().indexOf(state);
+                        int indx = locations.getStates().indexOf(new State(state));
                         if(!locations.getStates().get(indx).getCities().contains(city)){
                             locations.getStates().get(indx).addCity(city);}
                     } else {
