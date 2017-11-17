@@ -10,7 +10,10 @@ public class HashtagAndLocation {
     }
 
     public void setHashtagLabel(String hashtagLabel) {
-        this.hashtagLabel = hashtagLabel;
+        String label = hashtagLabel.toLowerCase();
+        label = label.replaceAll("^#+", "");
+        label = "#".concat(label);
+        this.hashtagLabel = label;
     }
 
     public String getCity() {

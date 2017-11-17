@@ -21,7 +21,7 @@ public class HashtagAndLocationTest {
         try {
             hashtagAndLocation = new HashtagAndLocation();
             hashtagAndLocation.setHashtagLabel("#Chicago");
-            assertEquals("#Chicago",hashtagAndLocation.getHashtagLabel());
+            assertEquals("#chicago",hashtagAndLocation.getHashtagLabel());
         }catch (Exception e){
             fail("hashtagLabel value has not been set correctly");
         }
@@ -32,7 +32,7 @@ public class HashtagAndLocationTest {
         try {
             hashtagAndLocation = new HashtagAndLocation();
             hashtagAndLocation.setHashtagLabel("#Chicago");
-            assertEquals("#Chicago",hashtagAndLocation.getHashtagLabel());
+            assertEquals("#chicago",hashtagAndLocation.getHashtagLabel());
         }catch (Exception e){
             fail("hashtagLabel value has not been gotten correctly");
         }
