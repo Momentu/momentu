@@ -650,7 +650,7 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
                 requestPackage.setParam("city",mCityName);
                 requestPackage.setParam("state",mStateName);
                 requestPackage.setToken(token);
-                requestPackage.setFunction("/search/findByStateCity");
+                requestPackage.setFunction("/search/findByStateCityTrending");
 
                 Intent intent = new Intent(this, ConnectionService.class);
                 intent.putExtra(ConnectionService.REQUEST_PACKAGE, requestPackage);
