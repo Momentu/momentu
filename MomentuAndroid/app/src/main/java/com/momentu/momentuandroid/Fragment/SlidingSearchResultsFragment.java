@@ -110,6 +110,7 @@ public class SlidingSearchResultsFragment extends BaseFragment {
                     //shows the top left circular progress
                     mSearchView.showProgress();
 
+                    DataHelper.initHashtagList(getActivity());
                     //simulates a query call to a data source with a new query.
                     DataHelper.findSuggestions(getActivity(), newQuery, 5,
                             FIND_SUGGESTION_SIMULATED_DELAY, new DataHelper.OnFindSuggestionsListener() {
@@ -119,7 +120,7 @@ public class SlidingSearchResultsFragment extends BaseFragment {
 
                                     //this will swap the data and
                                     //render the collapse/expand animations as necessary
-//                                    mSearchView.swapSuggestions(results);
+                                    mSearchView.swapSuggestions(results);
 
                                     //let the users know that the background
                                     //process has completed
@@ -198,9 +199,10 @@ public class SlidingSearchResultsFragment extends BaseFragment {
                 animSetSearchAndResults.start();
 
                 //show suggestions when search bar gains focus (history suggestions)
-//                if (mSearchView.getQuery().equals("")) {
-//                    mSearchView.swapSuggestions(DataHelper.getHistory(getActivity(), 3));
-//                }
+                if (mSearchView.getQuery().equals("")) {
+                    DataHelper.initHashtagList(getActivity());
+                    mSearchView.swapSuggestions(DataHelper.getHistory(getActivity(), 3));
+                }
 
                 Log.d(TAG, "onFocus()");
             }

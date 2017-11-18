@@ -28,17 +28,7 @@ public class DataHelper {
 
     private static List<Hashtag> sHashtags = new ArrayList<>();
 
-    // TODO: Hard coded (not used for now)
-    private static List<MomentSuggestion> sMomentSuggestions =
-            new ArrayList<>(Arrays.asList(
-                    new MomentSuggestion("#AnOpenSecret"),
-                    new MomentSuggestion("#AppleMichiganAve"),
-                    new MomentSuggestion("#Sixers"),
-                    new MomentSuggestion("#Scandal"),
-                    new MomentSuggestion("#Supernatural"),
-                    new MomentSuggestion("#anniversary"),
-                    new MomentSuggestion("#AOMG"),
-                    new MomentSuggestion("#scnews")));
+    private static List<MomentSuggestion> sMomentSuggestions;
 
     public static List<MomentSuggestion> getHistory(Context context, int count) {
 
@@ -46,6 +36,7 @@ public class DataHelper {
         MomentSuggestion momentSuggestion;
         for (int i = 0; i < sMomentSuggestions.size(); i++) {
             momentSuggestion = sMomentSuggestions.get(i);
+            //TODO: define "recent search". for now, all are recent.
             momentSuggestion.setIsHistory(true);
             suggestionList.add(momentSuggestion);
             if (suggestionList.size() == count) {
@@ -155,8 +146,13 @@ public class DataHelper {
 
     }
 
-    private static void initHashtagList(Context context) {
+    public static void initHashtagList(Context context) {
         sHashtags = ((HashTagSearchActivity) context).getStoredhashtags();
+        List<MomentSuggestion> momentSuggestions = new ArrayList<>();
+        for(Hashtag ht:sHashtags){
+            momentSuggestions.add(new MomentSuggestion(ht.getLabel()));
+        }
+        sMomentSuggestions = momentSuggestions;
     }
 
 //    private static String loadJson(Context context) {

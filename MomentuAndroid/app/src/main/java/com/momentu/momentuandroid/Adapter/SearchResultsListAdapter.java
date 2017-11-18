@@ -53,7 +53,7 @@ public class SearchResultsListAdapter extends RecyclerView.Adapter<SearchResults
         if(postCount == 1){
             holder.mContent.setText("1 post");
         } else {
-            holder.mContent.setText(hashtagSuggestion.getCount() + " posts");
+            holder.mContent.setText(postCount + " posts");
         }
 
         if (mLastAnimatedItemPosition < position) {

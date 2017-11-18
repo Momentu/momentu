@@ -16,6 +16,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="vertical"
+            android:background="@color/trend_hashtag_pager_light_gray"
             android:padding="8dp">
 
             <Button
