@@ -573,6 +573,10 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
 
         //TODO: Pass the hashtag to backend, search, and populate feed activity
         Intent feedIntent = new Intent(this, FeedActivity.class);
+        feedIntent.putExtra("token", token);
+        feedIntent.putExtra("state", mStateName);
+        feedIntent.putExtra("city", mCityName);
+        feedIntent.putExtra("hashtag", mTrendingHastTag);
         startActivity(feedIntent);
     }
 

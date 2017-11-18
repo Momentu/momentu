@@ -7,6 +7,8 @@ package com.momentu.momentuandroid;
 import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,15 +22,23 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import butterknife.BindView;
 
 import com.momentu.momentuandroid.BaseActivity.FeedBaseActivity;
+import com.momentu.momentuandroid.Data.RestClient;
 import com.momentu.momentuandroid.Utility.DeviceParameterTools;
 import com.momentu.momentuandroid.Adapter.FeedAdapter;
 import com.momentu.momentuandroid.Adapter.FeedItemAnimator;
 import com.momentu.momentuandroid.View.FeedContextMenuManager;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeedItemClickListener {
@@ -52,11 +62,24 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
 
     private boolean pendingIntroAnimation;
 
+    public EditText hashtagInput;
+
+    private String mCityName;
+    private String mStateName;
+
+    static String token;
+
+    public String hashtag;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
         setupFeed();
+
+        mCityName = getIntent().getStringExtra("city");
+        mStateName = getIntent().getStringExtra("state");
+        token = getIntent().getStringExtra("token");
+        hashtag = getIntent().getStringExtra("hashtag");
 
         if (savedInstanceState == null) {
             Log.d("savedInstanceState:", "null");
@@ -79,6 +102,62 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
                 startActivityForResult(cameraIntent, CAMERA_REQUEST);
             }
         });
+    }
+
+    // The method is on activity result after capture a photo. A dialog will be displayed
+    // for user to enter the hashtag name.
+    //It passes the hashtage along with the location to RestClient to pass it to the backend
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
+            final Dialog dialogToPost = new Dialog(this);
+            dialogToPost.setContentView(R.layout.dialog_to_post);
+            Button post = (Button) dialogToPost.findViewById(R.id.post);
+            Button cancel = (Button) dialogToPost.findViewById(R.id.cancel);
+            hashtagInput = (EditText) dialogToPost.findViewById(R.id.hashtagInput);
+
+            //On click listener for post button
+            post.setOnClickListener(new View.OnClickListener(){
+
+                @Override
+                public void onClick(View v) {
+                    if (hashtagInput.getText().toString().contains("#")) {
+                        dialogToPost.dismiss();
+                        Map<String, String> params = new HashMap<String, String>();
+                        params.put("hashtagLabel", hashtagInput.getText().toString());
+                        params.put("city", mCityName);
+                        params.put("state", mStateName);
+
+                        RestClient restClient = new RestClient();
+                        try {
+                            restClient.media(params, token, FeedActivity.this);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        if(restClient.status == 0)
+                            Toast.makeText(FeedActivity.this, hashtagInput.getText().toString() + " posted", Toast.LENGTH_LONG).show();
+                        else
+                            Toast.makeText(FeedActivity.this, hashtagInput.getText().toString() + " cann't be posted", Toast.LENGTH_LONG).show();
+
+                    }else
+                    {
+                        Toast.makeText(FeedActivity.this, "Wrong Hashtag Format", Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+            dialogToPost.show();
+
+            //On click listener for cancel button
+            cancel.setOnClickListener(new View.OnClickListener(){
+
+                @Override
+                public void onClick(View v) {
+                    dialogToPost.dismiss();
+                    Toast.makeText(FeedActivity.this, "Post has been canceled", Toast.LENGTH_LONG).show();
+                }
+
+            });
+
+        }
     }
 
     //Load adapter, listener and animator to the feed
