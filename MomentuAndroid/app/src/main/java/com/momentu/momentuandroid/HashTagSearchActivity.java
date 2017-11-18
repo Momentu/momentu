@@ -639,7 +639,7 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
             }
         }
     };
-    //api for loading hashtags(0), state(1), city(2)
+    //api for loading hashtags(0), state(1)
     private void loading(int code, String partial)
     {
         if(code == 0)
@@ -671,19 +671,5 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
             intent.putExtra("code",code);
             startService(intent);
         }
-//        else if(code ==2)
-//        {
-//            RequestPackage requestPackage = new RequestPackage();
-//            requestPackage.setEndpoint(EndPoints.LOCATION_ENDPOINT);
-//            requestPackage.setFunction("/search/findByState");
-//            requestPackage.setParam("state",partial);
-//            requestPackage.setToken(token);
-//
-//            Intent intent = new Intent(this, ConnectionService.class);
-//            intent.putExtra(ConnectionService.REQUEST_PACKAGE, requestPackage);
-//            intent.putExtra("code",code);
-//            startService(intent);
-//        }
     }
-
 }
