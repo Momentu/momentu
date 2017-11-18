@@ -48,7 +48,13 @@ public class SearchResultsListAdapter extends RecyclerView.Adapter<SearchResults
 
         Hashtag hashtagSuggestion = mDataSet.get(position);
         holder.mHashTag.setText(hashtagSuggestion.getLabel());
-        holder.mContent.setText(hashtagSuggestion.getCount() + " posts");
+
+        int postCount = hashtagSuggestion.getCount();
+        if(postCount == 1){
+            holder.mContent.setText("1 post");
+        } else {
+            holder.mContent.setText(hashtagSuggestion.getCount() + " posts");
+        }
 
         if (mLastAnimatedItemPosition < position) {
             animateItem(holder.itemView);
