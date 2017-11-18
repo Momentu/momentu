@@ -12,11 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 
-import com.arlib.floatingsearchview.FloatingSearchView;
-import com.momentu.momentuandroid.Data.DataHelper;
-import com.momentu.momentuandroid.Data.MomentWrapper;
 import com.momentu.momentuandroid.Model.TrendHashTagCard;
 import com.momentu.momentuandroid.R;
 

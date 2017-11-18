@@ -24,7 +24,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,8 +33,8 @@ import com.arlib.floatingsearchview.suggestions.SearchSuggestionsAdapter;
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 import com.arlib.floatingsearchview.util.Util;
 import com.momentu.momentuandroid.Adapter.SearchResultsListAdapter;
-import com.momentu.momentuandroid.Data.DataHelper;
-import com.momentu.momentuandroid.Data.MomentSuggestion;
+import com.momentu.momentuandroid.Utility.HashtagSearchHelper;
+import com.momentu.momentuandroid.Model.HashtagSuggestion;
 import com.momentu.momentuandroid.Model.Hashtag;
 import com.momentu.momentuandroid.FeedActivity;
 import com.momentu.momentuandroid.HashTagSearchActivity;
@@ -110,13 +109,13 @@ public class SlidingSearchResultsFragment extends BaseFragment {
                     //shows the top left circular progress
                     mSearchView.showProgress();
 
-                    DataHelper.initHashtagList(getActivity());
+                    HashtagSearchHelper.updateHashtagList(getActivity());
                     //simulates a query call to a data source with a new query.
-                    DataHelper.findSuggestions(getActivity(), newQuery, 5,
-                            FIND_SUGGESTION_SIMULATED_DELAY, new DataHelper.OnFindSuggestionsListener() {
+                    HashtagSearchHelper.findSuggestions(getActivity(), newQuery, 5,
+                            FIND_SUGGESTION_SIMULATED_DELAY, new HashtagSearchHelper.OnFindSuggestionsListener() {
 
                                 @Override
-                                public void onResults(List<MomentSuggestion> results) {
+                                public void onResults(List<HashtagSuggestion> results) {
 
                                     //this will swap the data and
                                     //render the collapse/expand animations as necessary
@@ -137,9 +136,10 @@ public class SlidingSearchResultsFragment extends BaseFragment {
             @Override
             public void onSuggestionClicked(final SearchSuggestion searchSuggestion) {
 
-                MomentSuggestion momentSuggestion = (MomentSuggestion) searchSuggestion;
-                DataHelper.findMoments(getActivity(), momentSuggestion.getBody(),
-                        new DataHelper.OnFindMomentsListener() {
+                HashtagSuggestion hashtagSuggestion = (HashtagSuggestion) searchSuggestion;
+                HashtagSearchHelper.updateHashtagList(getActivity());
+                HashtagSearchHelper.findMoments(getActivity(), hashtagSuggestion.getBody(),
+                        new HashtagSearchHelper.OnFindMomentsListener() {
 
                             @Override
                             public void onResults(List<Hashtag> results) {
@@ -157,9 +157,9 @@ public class SlidingSearchResultsFragment extends BaseFragment {
             @Override
             public void onSearchAction(String query) {
                 mLastQuery = query;
-
-                DataHelper.findMoments(getActivity(), query,
-                        new DataHelper.OnFindMomentsListener() {
+                HashtagSearchHelper.updateHashtagList(getActivity());
+                HashtagSearchHelper.findMoments(getActivity(), query,
+                        new HashtagSearchHelper.OnFindMomentsListener() {
 
                             @Override
                             public void onResults(List<Hashtag> results) {
@@ -200,8 +200,8 @@ public class SlidingSearchResultsFragment extends BaseFragment {
 
                 //show suggestions when search bar gains focus (history suggestions)
                 if (mSearchView.getQuery().equals("")) {
-                    DataHelper.initHashtagList(getActivity());
-                    mSearchView.swapSuggestions(DataHelper.getHistory(getActivity(), 3));
+                    HashtagSearchHelper.updateHashtagList(getActivity());
+                    mSearchView.swapSuggestions(HashtagSearchHelper.getHistory(getActivity(), 3));
                 }
 
                 Log.d(TAG, "onFocus()");
@@ -281,12 +281,12 @@ public class SlidingSearchResultsFragment extends BaseFragment {
             @Override
             public void onBindSuggestion(View suggestionView, ImageView leftIcon,
                                          TextView textView, SearchSuggestion item, int itemPosition) {
-                MomentSuggestion momentSuggestion = (MomentSuggestion) item;
+                HashtagSuggestion hashtagSuggestion = (HashtagSuggestion) item;
 
                 String textColor = "#FF4081";
                 String textLight = "#bfbfbf";
 
-                if (momentSuggestion.getIsHistory()) {
+                if (hashtagSuggestion.getIsHistory()) {
                     leftIcon.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
                             R.drawable.ic_history_black_24dp, null));
 
@@ -298,7 +298,7 @@ public class SlidingSearchResultsFragment extends BaseFragment {
                 }
 
                 textView.setTextColor(Color.parseColor(textColor));
-                String text = momentSuggestion.getBody()
+                String text = hashtagSuggestion.getBody()
                         .replaceFirst(mSearchView.getQuery(),
                                 "<font moment=\"" + textLight + "\">" + mSearchView.getQuery() + "</font>");
                 textView.setText(Html.fromHtml(text));
@@ -399,8 +399,9 @@ public class SlidingSearchResultsFragment extends BaseFragment {
         Log.d("Received", hashTag);
         //this textview should be bound in the fragment onCreate as a member variable
         mSearchView.setSearchText(hashTag);
-        DataHelper.findMoments(getActivity(), hashTag,
-                new DataHelper.OnFindMomentsListener() {
+        HashtagSearchHelper.updateHashtagList(getActivity());
+        HashtagSearchHelper.findMoments(getActivity(), hashTag,
+                new HashtagSearchHelper.OnFindMomentsListener() {
                     @Override
                     public void onResults(List<Hashtag> results) {
                         setupResultsList();

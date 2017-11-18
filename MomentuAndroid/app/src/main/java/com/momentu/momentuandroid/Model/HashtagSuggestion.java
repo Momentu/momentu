@@ -1,4 +1,4 @@
-package com.momentu.momentuandroid.Data;
+package com.momentu.momentuandroid.Model;
 
 /**
  * Created by Jane on 10/19/2017.
@@ -9,16 +9,16 @@ import android.os.Parcel;
 
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 
-public class MomentSuggestion implements SearchSuggestion {
+public class HashtagSuggestion implements SearchSuggestion {
 
     private String mHashTag;
     private boolean mIsHistory = false;
 
-    public MomentSuggestion(String suggestion) {
+    public HashtagSuggestion(String suggestion) {
         this.mHashTag = suggestion;
     }
 
-    public MomentSuggestion(Parcel source) {
+    public HashtagSuggestion(Parcel source) {
         this.mHashTag = source.readString();
         this.mIsHistory = source.readInt() != 0;
     }
@@ -36,15 +36,15 @@ public class MomentSuggestion implements SearchSuggestion {
         return mHashTag;
     }
 
-    public static final Creator<MomentSuggestion> CREATOR = new Creator<MomentSuggestion>() {
+    public static final Creator<HashtagSuggestion> CREATOR = new Creator<HashtagSuggestion>() {
         @Override
-        public MomentSuggestion createFromParcel(Parcel in) {
-            return new MomentSuggestion(in);
+        public HashtagSuggestion createFromParcel(Parcel in) {
+            return new HashtagSuggestion(in);
         }
 
         @Override
-        public MomentSuggestion[] newArray(int size) {
-            return new MomentSuggestion[size];
+        public HashtagSuggestion[] newArray(int size) {
+            return new HashtagSuggestion[size];
         }
     };
 

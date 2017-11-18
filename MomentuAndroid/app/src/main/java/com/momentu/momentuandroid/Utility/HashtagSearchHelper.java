@@ -1,4 +1,4 @@
-package com.momentu.momentuandroid.Data;
+package com.momentu.momentuandroid.Utility;
 
 /**
  * Created by Jane on 10/19/2017.
@@ -12,33 +12,31 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.momentu.momentuandroid.HashTagSearchActivity;
 import com.momentu.momentuandroid.Model.Hashtag;
+import com.momentu.momentuandroid.Model.HashtagSuggestion;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class DataHelper {
+public class HashtagSearchHelper {
 
     private static final String MOMENTS_FILE_NAME = "moment.json";
 
     private static List<Hashtag> sHashtags = new ArrayList<>();
 
-    private static List<MomentSuggestion> sMomentSuggestions;
+    private static List<HashtagSuggestion> sHashtagSuggestions;
 
-    public static List<MomentSuggestion> getHistory(Context context, int count) {
+    public static List<HashtagSuggestion> getHistory(Context context, int count) {
 
-        List<MomentSuggestion> suggestionList = new ArrayList<>();
-        MomentSuggestion momentSuggestion;
-        for (int i = 0; i < sMomentSuggestions.size(); i++) {
-            momentSuggestion = sMomentSuggestions.get(i);
+        List<HashtagSuggestion> suggestionList = new ArrayList<>();
+        HashtagSuggestion hashtagSuggestion;
+        for (int i = 0; i < sHashtagSuggestions.size(); i++) {
+            hashtagSuggestion = sHashtagSuggestions.get(i);
             //TODO: define "recent search". for now, all are recent.
-            momentSuggestion.setIsHistory(true);
-            suggestionList.add(momentSuggestion);
+            hashtagSuggestion.setIsHistory(true);
+            suggestionList.add(hashtagSuggestion);
             if (suggestionList.size() == count) {
                 break;
             }
@@ -47,8 +45,8 @@ public class DataHelper {
     }
 
     public static void resetSuggestionsHistory() {
-        for (MomentSuggestion momentSuggestion : sMomentSuggestions) {
-            momentSuggestion.setIsHistory(false);
+        for (HashtagSuggestion hashtagSuggestion : sHashtagSuggestions) {
+            hashtagSuggestion.setIsHistory(false);
         }
     }
 
@@ -65,11 +63,11 @@ public class DataHelper {
                     e.printStackTrace();
                 }
 
-                DataHelper.resetSuggestionsHistory();
-                List<MomentSuggestion> suggestionList = new ArrayList<>();
+                HashtagSearchHelper.resetSuggestionsHistory();
+                List<HashtagSuggestion> suggestionList = new ArrayList<>();
                 if (!(constraint == null || constraint.length() == 0)) {
 
-                    for (MomentSuggestion suggestion : sMomentSuggestions) {
+                    for (HashtagSuggestion suggestion : sHashtagSuggestions) {
                         //TODO: Make this search algorithm smarter
                         if (suggestion.getBody().toUpperCase()
                                 .startsWith(constraint.toString().toUpperCase())) {
@@ -82,9 +80,9 @@ public class DataHelper {
                 }
 
                 FilterResults results = new FilterResults();
-                Collections.sort(suggestionList, new Comparator<MomentSuggestion>() {
+                Collections.sort(suggestionList, new Comparator<HashtagSuggestion>() {
                     @Override
-                    public int compare(MomentSuggestion lhs, MomentSuggestion rhs) {
+                    public int compare(HashtagSuggestion lhs, HashtagSuggestion rhs) {
                         return lhs.getIsHistory() ? -1 : 0;
                     }
                 });
@@ -98,7 +96,7 @@ public class DataHelper {
             protected void publishResults(CharSequence constraint, FilterResults results) {
 
                 if (listener != null) {
-                    listener.onResults((List<MomentSuggestion>) results.values);
+                    listener.onResults((List<HashtagSuggestion>) results.values);
                 }
             }
         }.filter(query);
@@ -106,7 +104,7 @@ public class DataHelper {
     }
 
     public static void findMoments(Context context, String query, final OnFindMomentsListener listener) {
-        initHashtagList(context);
+//        updateHashtagList(context);
 
         new Filter() {
 
@@ -146,13 +144,13 @@ public class DataHelper {
 
     }
 
-    public static void initHashtagList(Context context) {
+    public static void updateHashtagList(Context context) {
         sHashtags = ((HashTagSearchActivity) context).getStoredhashtags();
-        List<MomentSuggestion> momentSuggestions = new ArrayList<>();
+        List<HashtagSuggestion> hashtagSuggestions = new ArrayList<>();
         for(Hashtag ht:sHashtags){
-            momentSuggestions.add(new MomentSuggestion(ht.getLabel()));
+            hashtagSuggestions.add(new HashtagSuggestion(ht.getLabel()));
         }
-        sMomentSuggestions = momentSuggestions;
+        sHashtagSuggestions = hashtagSuggestions;
     }
 
 //    private static String loadJson(Context context) {
@@ -188,7 +186,7 @@ public class DataHelper {
     }
 
     public interface OnFindSuggestionsListener {
-        void onResults(List<MomentSuggestion> results);
+        void onResults(List<HashtagSuggestion> results);
     }
 
 }
