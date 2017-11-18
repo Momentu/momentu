@@ -14,7 +14,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 
 import com.arlib.floatingsearchview.util.Util;
-import com.momentu.momentuandroid.Data.MomentWrapper;
+import com.momentu.momentuandroid.Model.Hashtag;
 import com.momentu.momentuandroid.R;
 
 import java.util.ArrayList;
@@ -22,12 +22,12 @@ import java.util.List;
 
 public class SearchResultsListAdapter extends RecyclerView.Adapter<SearchResultsListAdapter.ViewHolder> {
 
-    private List<MomentWrapper> mDataSet = new ArrayList<>();
+    private List<Hashtag> mDataSet = new ArrayList<>();
 
     private int mLastAnimatedItemPosition = -1;
     private OnItemClickListener mItemsOnClickListener;
 
-    public void swapData(List<MomentWrapper> mNewDataSet) {
+    public void swapData(List<Hashtag> mNewDataSet) {
         mDataSet = mNewDataSet;
         notifyDataSetChanged();
     }
@@ -46,9 +46,9 @@ public class SearchResultsListAdapter extends RecyclerView.Adapter<SearchResults
     @Override
     public void onBindViewHolder(SearchResultsListAdapter.ViewHolder holder, final int position) {
 
-        MomentWrapper momentSuggestion = mDataSet.get(position);
-        holder.mHashTag.setText(momentSuggestion.getHashtag());
-        holder.mContent.setText(momentSuggestion.getContent());
+        Hashtag hashtagSuggestion = mDataSet.get(position);
+        holder.mHashTag.setText(hashtagSuggestion.getLabel());
+        holder.mContent.setText(hashtagSuggestion.getCount() + " posts");
 
         if (mLastAnimatedItemPosition < position) {
             animateItem(holder.itemView);
@@ -80,7 +80,7 @@ public class SearchResultsListAdapter extends RecyclerView.Adapter<SearchResults
     }
 
     public interface OnItemClickListener {
-        void onClick(MomentWrapper momentWrapper);
+        void onClick(Hashtag Hashtag);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

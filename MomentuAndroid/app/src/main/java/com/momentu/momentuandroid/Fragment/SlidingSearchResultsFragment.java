@@ -36,7 +36,7 @@ import com.arlib.floatingsearchview.util.Util;
 import com.momentu.momentuandroid.Adapter.SearchResultsListAdapter;
 import com.momentu.momentuandroid.Data.DataHelper;
 import com.momentu.momentuandroid.Data.MomentSuggestion;
-import com.momentu.momentuandroid.Data.MomentWrapper;
+import com.momentu.momentuandroid.Model.Hashtag;
 import com.momentu.momentuandroid.FeedActivity;
 import com.momentu.momentuandroid.HashTagSearchActivity;
 import com.momentu.momentuandroid.R;
@@ -119,7 +119,7 @@ public class SlidingSearchResultsFragment extends BaseFragment {
 
                                     //this will swap the data and
                                     //render the collapse/expand animations as necessary
-                                    mSearchView.swapSuggestions(results);
+//                                    mSearchView.swapSuggestions(results);
 
                                     //let the users know that the background
                                     //process has completed
@@ -141,7 +141,7 @@ public class SlidingSearchResultsFragment extends BaseFragment {
                         new DataHelper.OnFindMomentsListener() {
 
                             @Override
-                            public void onResults(List<MomentWrapper> results) {
+                            public void onResults(List<Hashtag> results) {
                                 setupResultsList();
                                 mSearchResultsAdapter.swapData(results);
                             }
@@ -161,7 +161,7 @@ public class SlidingSearchResultsFragment extends BaseFragment {
                         new DataHelper.OnFindMomentsListener() {
 
                             @Override
-                            public void onResults(List<MomentWrapper> results) {
+                            public void onResults(List<Hashtag> results) {
                                 mSearchResultsAdapter.swapData(results);
                             }
 
@@ -198,9 +198,9 @@ public class SlidingSearchResultsFragment extends BaseFragment {
                 animSetSearchAndResults.start();
 
                 //show suggestions when search bar gains focus (history suggestions)
-                if (mSearchView.getQuery().equals("")) {
-                    mSearchView.swapSuggestions(DataHelper.getHistory(getActivity(), 3));
-                }
+//                if (mSearchView.getQuery().equals("")) {
+//                    mSearchView.swapSuggestions(DataHelper.getHistory(getActivity(), 3));
+//                }
 
                 Log.d(TAG, "onFocus()");
             }
@@ -332,9 +332,9 @@ public class SlidingSearchResultsFragment extends BaseFragment {
         mSearchResultsAdapter = new SearchResultsListAdapter();
         mSearchResultsAdapter.setItemsOnClickListener(new SearchResultsListAdapter.OnItemClickListener() {
             @Override
-            public void onClick(MomentWrapper momentWrapper) {
+            public void onClick(Hashtag Hashtag) {
                 Toast.makeText(getActivity(),
-                        "Selected " + momentWrapper.getHashtag(),
+                        "Selected " + Hashtag.getLabel(),
                         Toast.LENGTH_SHORT)
                         .show();
                 //TODO: Pass the hashtag to backend, search, and populate feed activity
@@ -400,7 +400,7 @@ public class SlidingSearchResultsFragment extends BaseFragment {
         DataHelper.findMoments(getActivity(), hashTag,
                 new DataHelper.OnFindMomentsListener() {
                     @Override
-                    public void onResults(List<MomentWrapper> results) {
+                    public void onResults(List<Hashtag> results) {
                         setupResultsList();
                         mSearchResultsAdapter.swapData(results);
                     }

@@ -10,6 +10,8 @@ import android.widget.Filter;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.momentu.momentuandroid.HashTagSearchActivity;
+import com.momentu.momentuandroid.Model.Hashtag;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,9 +26,9 @@ public class DataHelper {
 
     private static final String MOMENTS_FILE_NAME = "moment.json";
 
-    private static List<MomentWrapper> sMomentWrappers = new ArrayList<>();
+    private static List<Hashtag> sHashtags = new ArrayList<>();
 
-    // Hard coded
+    // TODO: Hard coded (not used for now)
     private static List<MomentSuggestion> sMomentSuggestions =
             new ArrayList<>(Arrays.asList(
                     new MomentSuggestion("#AnOpenSecret"),
@@ -113,7 +115,7 @@ public class DataHelper {
     }
 
     public static void findMoments(Context context, String query, final OnFindMomentsListener listener) {
-        initMomentWrapperList(context);
+        initHashtagList(context);
 
         new Filter() {
 
@@ -121,12 +123,12 @@ public class DataHelper {
             protected FilterResults performFiltering(CharSequence constraint) {
 
 
-                List<MomentWrapper> suggestionList = new ArrayList<>();
+                List<Hashtag> suggestionList = new ArrayList<>();
 
                 if (!(constraint == null || constraint.length() == 0)) {
 
-                    for (MomentWrapper moment : sMomentWrappers) {
-                        if (moment.getHashtag().toUpperCase()
+                    for (Hashtag moment : sHashtags) {
+                        if (moment.getLabel().toUpperCase()
                                 .startsWith(constraint.toString().toUpperCase())) {
 
                             suggestionList.add(moment);
@@ -146,51 +148,47 @@ public class DataHelper {
             protected void publishResults(CharSequence constraint, FilterResults results) {
 
                 if (listener != null) {
-                    listener.onResults((List<MomentWrapper>) results.values);
+                    listener.onResults((List<Hashtag>) results.values);
                 }
             }
         }.filter(query);
 
     }
 
-    private static void initMomentWrapperList(Context context) {
-
-        if (sMomentWrappers.isEmpty()) {
-            String jsonString = loadJson(context);
-            sMomentWrappers = deserializeMoments(jsonString);
-        }
+    private static void initHashtagList(Context context) {
+        sHashtags = ((HashTagSearchActivity) context).getStoredhashtags();
     }
 
-    private static String loadJson(Context context) {
+//    private static String loadJson(Context context) {
+//
+//        String jsonString;
+//
+//        try {
+//            InputStream is = context.getAssets().open(MOMENTS_FILE_NAME);
+//            int size = is.available();
+//            byte[] buffer = new byte[size];
+//            is.read(buffer);
+//            is.close();
+//            jsonString = new String(buffer, "UTF-8");
+//        } catch (IOException ex) {
+//            ex.printStackTrace();
+//            return null;
+//        }
+//
+//        return jsonString;
+//    }
 
-        String jsonString;
-
-        try {
-            InputStream is = context.getAssets().open(MOMENTS_FILE_NAME);
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            jsonString = new String(buffer, "UTF-8");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-
-        return jsonString;
-    }
-
-    private static List<MomentWrapper> deserializeMoments(String jsonString) {
+    private static List<Hashtag> deserializeMoments(String jsonString) {
 
         Gson gson = new Gson();
 
-        Type collectionType = new TypeToken<List<MomentWrapper>>() {
+        Type collectionType = new TypeToken<List<Hashtag>>() {
         }.getType();
         return gson.fromJson(jsonString, collectionType);
     }
 
     public interface OnFindMomentsListener {
-        void onResults(List<MomentWrapper> results);
+        void onResults(List<Hashtag> results);
     }
 
     public interface OnFindSuggestionsListener {

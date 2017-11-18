@@ -124,17 +124,18 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        showSearchFragment(new SlidingSearchResultsFragment());
-
         initializeLocationManager();
 
         mViewPager = (ViewPager) findViewById(R.id.viewPager);
         mViewEmpty = (TextView) findViewById(R.id.viewEmpty);
         SwitchPagerToEmpty(false);
 
+        // Get location, and get the associated tags (populate the storedhashtags).
         checkLocation();
 
+        // Show UI
         showTrendHashtagPager(Storedhashtags);
+        showSearchFragment(new SlidingSearchResultsFragment());
 
         //Change location UI
         mChangeLocationDialog = (Button) findViewById(R.id.bChangeLocation);
@@ -686,4 +687,8 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
 //        }
     }
 
+    //TODO: Probably this is a bad design
+    public ArrayList<Hashtag> getStoredhashtags(){
+        return Storedhashtags;
+    }
 }
