@@ -210,5 +210,10 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         public FeedItem getFeedItem() {
             return feedItem;
         }
+
+
+    }
+    public void addFeed(FeedItem myFeed){
+        feedItems.add(myFeed);
     }
 }

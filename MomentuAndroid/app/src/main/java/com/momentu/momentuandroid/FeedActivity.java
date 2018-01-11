@@ -10,6 +10,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
@@ -31,6 +33,9 @@ import butterknife.BindView;
 
 import com.momentu.momentuandroid.BaseActivity.FeedBaseActivity;
 import com.momentu.momentuandroid.Data.RestClient;
+import com.momentu.momentuandroid.Model.FeedItem;
+import com.momentu.momentuandroid.Model.Hashtag;
+import com.momentu.momentuandroid.Model.Like;
 import com.momentu.momentuandroid.Utility.DeviceParameterTools;
 import com.momentu.momentuandroid.Adapter.FeedAdapter;
 import com.momentu.momentuandroid.Adapter.FeedItemAnimator;
@@ -109,6 +114,9 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
     //It passes the hashtage along with the location to RestClient to pass it to the backend
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+
             final Dialog dialogToPost = new Dialog(this);
             dialogToPost.setContentView(R.layout.dialog_to_post);
             Button post = (Button) dialogToPost.findViewById(R.id.post);
@@ -145,7 +153,13 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
                 }
             });
             dialogToPost.show();
-
+            FeedItem myFeed = new FeedItem(null,null,
+                    new Hashtag(hashtagInput.getText().toString(), 1),
+                    new BitmapDrawable(getResources(), imageBitmap),
+                    "HI",
+                    null, null, null,
+                    new Like(93, false));
+            feedAdapter.addFeed(myFeed);
             //On click listener for cancel button
             cancel.setOnClickListener(new View.OnClickListener(){
 

@@ -10,6 +10,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -39,12 +41,15 @@ import android.widget.Toast;
 
 import com.arlib.floatingsearchview.FloatingSearchView;
 import com.momentu.momentuandroid.Adapter.CardPagerAdapter;
+import com.momentu.momentuandroid.Adapter.FeedAdapter;
 import com.momentu.momentuandroid.Animation.ShadowTransformer;
 import com.momentu.momentuandroid.Data.EndPoints;
 import com.momentu.momentuandroid.Data.RestClient;
 import com.momentu.momentuandroid.Fragment.BaseFragment;
 import com.momentu.momentuandroid.Fragment.SlidingSearchResultsFragment;
+import com.momentu.momentuandroid.Model.FeedItem;
 import com.momentu.momentuandroid.Model.Hashtag;
+import com.momentu.momentuandroid.Model.Like;
 import com.momentu.momentuandroid.Model.State;
 import com.momentu.momentuandroid.Model.StatesAndCities;
 import com.momentu.momentuandroid.Model.TrendHashTagCard;
@@ -71,6 +76,7 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
     private ShadowTransformer mCardShadowTransformer;
     private String[] cityWideHashTags;
     private String[] stateWideHashTags;
+    private FeedAdapter feedAdapter;
 //    private String[] nationWideHashTags = new String[6];
 
     /* Search Fragment */
@@ -111,7 +117,7 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hashtag_search);
-
+        feedAdapter = new FeedAdapter(this);
         arrayOfStates.add(new State("Please select state"));
 
         Intent intent = getIntent();
@@ -239,6 +245,10 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
     //It passes the hashtage along with the location to RestClient to pass it to the backend
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
+
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+
             final Dialog dialogToPost = new Dialog(this);
             dialogToPost.setContentView(R.layout.dialog_to_post);
             Button post = (Button) dialogToPost.findViewById(R.id.post);
@@ -274,7 +284,13 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
                 }
             });
             dialogToPost.show();
-
+            FeedItem myFeed = new FeedItem(null,null,
+                    new Hashtag(hashtagInput.getText().toString(), 1),
+                    new BitmapDrawable(getResources(), imageBitmap),
+                    "HI",
+                    null, null, null,
+                    new Like(93, false));
+            feedAdapter.addFeed(myFeed);
             //On click listener for cancel button
             cancel.setOnClickListener(new View.OnClickListener(){
 
