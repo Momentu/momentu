@@ -12,6 +12,7 @@ import org.springframework.data.rest.webmvc.PersistentEntityResourceAssembler;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.util.Collections;
@@ -34,15 +35,25 @@ public class MediaController {
     }
 
     @RequestMapping(value = "/media_upload", method = RequestMethod.POST)
-    public @ResponseBody Map uploadMedia(@RequestHeader HttpHeaders headers, InputStream inputStream) {
-        Long contentLength = headers.getContentLength();
-        ObjectMetadata objectMetadata = new ObjectMetadata();
-        objectMetadata.setContentLength(contentLength);
-        String keyName = s3KeyGenerator.getUniqueKey();
+    public @ResponseBody Map uploadMedia(@RequestHeader HttpHeaders headers, @RequestParam("file") MultipartFile file) {
+        InputStream inputStream = null;
+        if (!file.isEmpty()) {
+            try {
+                byte[] fileBytes = file.getBytes();
+                Long fileLength = new Long(fileBytes.length);
+                inputStream = new ByteArrayInputStream(fileBytes);
+                Long contentLength = fileLength;//headers.getContentLength();
+                ObjectMetadata objectMetadata = new ObjectMetadata();
+                objectMetadata.setContentLength(contentLength);
+                String keyName = s3KeyGenerator.getUniqueKey();
 
-        AWSCredentials awsCredentials = new BasicAWSCredentials(s3Settings.getAccessKeyId(), s3Settings.getSecretAccessKey());
-        s3Manager.upload(awsCredentials, s3Settings.getMediaBucketName(), keyName, inputStream, objectMetadata);
+                AWSCredentials awsCredentials = new BasicAWSCredentials(s3Settings.getAccessKeyId(), s3Settings.getSecretAccessKey());
+                s3Manager.upload(awsCredentials, s3Settings.getMediaBucketName(), keyName, inputStream, objectMetadata);
 
-        return Collections.singletonMap("status", "success");
+                return Collections.singletonMap("status", "success");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
