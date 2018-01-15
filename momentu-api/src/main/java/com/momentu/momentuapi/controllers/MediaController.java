@@ -55,5 +55,6 @@ public class MediaController {
                 e.printStackTrace();
             }
         }
+        return Collections.singletonMap("status", "fail");
     }
 }
