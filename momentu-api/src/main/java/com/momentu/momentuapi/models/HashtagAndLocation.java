@@ -5,6 +5,14 @@ public class HashtagAndLocation {
     private String city;
     private String state;
 
+    public HashtagAndLocation() {}
+
+    public HashtagAndLocation(String hashtagLabel, String city, String state) {
+        this.hashtagLabel = hashtagLabel;
+        this.city = city;
+        this.state = state;
+    }
+
     public String getHashtagLabel() {
         return hashtagLabel;
     }
