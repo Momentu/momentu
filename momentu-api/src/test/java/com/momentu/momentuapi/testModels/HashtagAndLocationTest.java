@@ -6,14 +6,27 @@ import com.momentu.momentuapi.models.HashtagAndLocation;
 import org.junit.Test;
 
 import static junit.framework.TestCase.fail;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 //This is a test class for HashtagAndLocation class
 public class HashtagAndLocationTest {
 
     //This is a test object from HashtagAndLocation class
     HashtagAndLocation hashtagAndLocation;
+
+
+    //Testing hashtagLabel set method
+    @Test
+    public void testHashtagAndLocation() {
+        try {
+            assertNull(hashtagAndLocation);
+            hashtagAndLocation = new HashtagAndLocation("#Chicago","Chicago","IL");
+            assertNotNull(hashtagAndLocation);
+        }catch (Exception e){
+            fail("hashtagLabel value has not been set correctly");
+        }
+    }
+
 
     //Testing hashtagLabel set method
     @Test

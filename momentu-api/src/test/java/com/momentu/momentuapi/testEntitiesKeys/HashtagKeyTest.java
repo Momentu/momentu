@@ -1,6 +1,7 @@
 package com.momentu.momentuapi.testEntitiesKeys;
 
 
+import com.momentu.momentuapi.entities.AbstractEntity;
 import com.momentu.momentuapi.entities.Hashtag;
 import com.momentu.momentuapi.entities.Location;
 import com.momentu.momentuapi.entities.keys.HashtagKey;
@@ -31,10 +32,14 @@ public class HashtagKeyTest {
     @Test
     public void testHashtagKeyWithParameter() {
         try {
-            assertNull(hashtagKeyTest);
-            hashtagKeyTest = new HashtagKey("hashtagLabel",1L);
-            hashtagKeyTest.setLocation();
-            assertNotNull(hashtagKeyTest);
+            Location location = new Location();
+            location.setCity("Chicago");
+            location.setState("IL");
+            location.setId(1L);
+            HashtagKey hashtagKeyTest2 = new HashtagKey();
+            hashtagKeyTest2.setLocation(location);
+            hashtagKeyTest2 = new HashtagKey("hashtagLabel",location.getId());
+            assertNotNull(hashtagKeyTest2);
         }catch (Exception e){
             fail("HashtagKey constructor with parameters can't be used");
         }
