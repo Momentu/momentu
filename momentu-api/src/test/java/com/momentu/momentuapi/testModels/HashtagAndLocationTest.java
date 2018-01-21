@@ -103,7 +103,6 @@ public class HashtagAndLocationTest {
     public void testIsValid() {
         try {
             hashtagAndLocation = new HashtagAndLocation();
-            hashtagAndLocation.setHashtagLabel("");
             assertFalse(hashtagAndLocation.isValid());
 
             hashtagAndLocation.setState("");

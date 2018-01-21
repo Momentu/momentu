@@ -1,9 +1,11 @@
 package com.momentu.momentuapi.testSecurityModelToken;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.momentu.momentuapi.security.config.JwtSettings;
 import com.momentu.momentuapi.security.model.LoginRequest;
 import com.momentu.momentuapi.security.model.UserContext;
 import com.momentu.momentuapi.security.model.token.AccessJwtToken;
+import com.momentu.momentuapi.security.model.token.JwtTokenFactory;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.junit.Test;
@@ -24,20 +26,38 @@ public class AccessJwtTokenTest{
     //This is a test object from AccessJwtToken class
     AccessJwtToken accessJwtTokenTest;
 
-    //Testing AccessJwtToken constructor
+    //Testing AccessJwtToken constructor **Protected constructor
     @Test
     public void testAccessJwtToken() {
        try {
-            //assertNull(accessJwtTokenTest);
-            //String rawToken = "ABC";
-            //List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-            //authorities.add(new SimpleGrantedAuthority("Admin"));
-            //UserContext userContext = new UserContext("Fahad",authorities);
-            //Claims claims = Jwts.claims().setSubject(userContext.getUsername());
-            //accessJwtTokenTest = new AccessJwtToken(rawToken,claims);
-            //assertNotNull(accessJwtTokenTest);
+           /*
+           String rawToken="Token";
+           Claims claims = null;
+           claims.setSubject("claims");
+           accessJwtTokenTest = new AccessJwtToken(rawToken,claims);
+            */
         }catch (Exception e){
-            fail("LoginRequest constructor can't be used");
+            fail("AccessJwtToken constructor can't be used");
+        }
+    }
+
+    //Testing getClaims method
+    @Test
+    public void testGetClaims() {
+        try {
+
+        }catch (Exception e){
+            fail("getClaims method doesn't work properly");
+        }
+    }
+
+    //Testing getToken method
+    @Test
+    public void testGetToken() {
+        try {
+
+        }catch (Exception e){
+            fail("getToken method doesn't work properly");
         }
     }
 
