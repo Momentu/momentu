@@ -41,4 +41,16 @@ public class TrednHashTagCardTest {
             fail("get TrednHashTagCard method doesn't work properly.");
         }
     }
+
+    //Testing the HashTagCount method in TrednHashTagCard class
+    @Test
+    public void TestHashTagCount() throws Exception {
+        try {
+            String[] trendHashTags = new String[6];
+            TrednHashTagCardTest = new TrendHashTagCard(trendHashTags);
+            assertEquals(6,TrednHashTagCardTest.HashTagCount());
+        }catch (Exception e){
+            fail("HashTagCount method doesn't work properly.");
+        }
+    }
 }

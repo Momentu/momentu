@@ -10,10 +10,13 @@ import android.os.Parcel;
 import com.momentu.momentuandroid.Model.FeedItem;
 import com.momentu.momentuandroid.Model.Hashtag;
 import com.momentu.momentuandroid.Model.Like;
+import com.momentu.momentuandroid.Model.State;
+import com.momentu.momentuandroid.Model.StatesAndCities;
 
 import org.junit.Test;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
@@ -125,6 +128,34 @@ public class HashtagTest {
             assertEquals("#fahad",hashtag.getLabel());
         }catch (Exception e){
             fail("getLabel method doesn't work properly.");
+        }
+    }
+
+    //Testing describeContents method in Hashtag class
+    @Test
+    public void TestDescribeContents() throws Exception {
+        try {
+            assertNull(hashtag);
+            String label = "#event";
+            int count = 10;
+            hashtag = new Hashtag(label,count);
+            assertEquals(0,hashtag.describeContents());
+        }catch (Exception e){
+            fail("the describeContents method of Hashtag class doesn't work properly.");
+        }
+    }
+
+    //Testing toString method in Hashtag class
+    @Test
+    public void TestToString() throws Exception {
+        try {
+            assertNull(hashtag);
+            String label = "#event";
+            int count = 10;
+            hashtag = new Hashtag(label,count);
+            assertEquals("#event",hashtag.toString());
+        }catch (Exception e){
+            fail("the toString method of Hashtag class doesn't work properly.");
         }
     }
 
