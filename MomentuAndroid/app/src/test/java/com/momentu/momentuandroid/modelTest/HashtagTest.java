@@ -1,20 +1,13 @@
-package com.momentu.momentuandroid;
+package com.momentu.momentuandroid.modelTest;
 
 /**
  * Created by Fahad on 11/14/17.
  */
 
-import android.graphics.drawable.Drawable;
 import android.os.Parcel;
-
-import com.momentu.momentuandroid.Model.FeedItem;
 import com.momentu.momentuandroid.Model.Hashtag;
-import com.momentu.momentuandroid.Model.Like;
-
 import org.junit.Test;
-
-import java.math.BigInteger;
-import java.util.Date;
+import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -42,31 +35,6 @@ public class HashtagTest {
             fail("Creating a hashtag object with parameters fails.");
         }
     }
-    /*
-    //Testing the constructor with Parcel of Hashtag class
-    @Test
-    public void TestHashtagWithParcel() throws Exception {
-        try {
-            assertNull(hashtag);
-            String label = "#event";
-            int count = 10;
-            hashtag = new Hashtag(label,count);
-            Parcel parcel =null;
-            parcel.setDataPosition(0);
-            //hashtag.writeToParcel(parcel,hashtag.describeContents());
-            //parcel = Parcel.obtain();
-            //hashtag.writeToParcel(parcel,0);
-            //parcel.setDataPosition(0);
-            //assertEquals("#event",parcel.readString());
-            //Hashtag createdFromParcel = Hashtag.CREATOR.createFromParcel(parcel);
-            //assertThat(createdFromParcel.getAuthor(), is("author"));
-            //assertThat(createdFromParcel.getTitle(), is("title"));
-
-        }catch (Exception e){
-            fail("Creating a hashtag With Parcel object with parameters fails.");
-        }
-    }
-    */
 
     //Testing the setCount method in Hashtag class
     @Test
@@ -128,5 +96,32 @@ public class HashtagTest {
         }
     }
 
+    //Testing describeContents method in Hashtag class
+    @Test
+    public void TestDescribeContents() throws Exception {
+        try {
+            assertNull(hashtag);
+            String label = "#event";
+            int count = 10;
+            hashtag = new Hashtag(label,count);
+            assertEquals(0,hashtag.describeContents());
+        }catch (Exception e){
+            fail("the describeContents method of Hashtag class doesn't work properly.");
+        }
+    }
+
+    //Testing toString method in Hashtag class
+    @Test
+    public void TestToString() throws Exception {
+        try {
+            assertNull(hashtag);
+            String label = "#event";
+            int count = 10;
+            hashtag = new Hashtag(label,count);
+            assertEquals("#event",hashtag.toString());
+        }catch (Exception e){
+            fail("the toString method of Hashtag class doesn't work properly.");
+        }
+    }
 
 }

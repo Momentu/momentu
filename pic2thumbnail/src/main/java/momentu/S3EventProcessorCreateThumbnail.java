@@ -30,6 +30,8 @@ public class S3EventProcessorCreateThumbnail implements
     private final String JPG_MIME = (String) "image/jpeg";
     private final String PNG_TYPE = (String) "png";
     private final String PNG_MIME = (String) "image/png";
+    private final String BMP_TYPE = (String) "bmp";
+    private final String BMP_MIME = (String) "image/bmp";
     public String handleRequest(S3Event s3event, Context context) {
         try {
             S3EventNotificationRecord record = s3event.getRecords().get(0);
@@ -55,7 +57,8 @@ public class S3EventProcessorCreateThumbnail implements
                 return "";
             }
             String imageType = matcher.group(1);
-            if (!(JPG_TYPE.equals(imageType)) && !(PNG_TYPE.equals(imageType))) {
+            if (!(JPG_TYPE.equals(imageType)) && !(PNG_TYPE.equals(imageType))
+                    && !(BMP_TYPE.equals(imageType))) {
                 System.out.println("Skipping non-image " + srcKey);
                 return "";
             }
@@ -99,6 +102,9 @@ public class S3EventProcessorCreateThumbnail implements
             }
             if (PNG_TYPE.equals(imageType)) {
                 meta.setContentType(PNG_MIME);
+            }
+            if (BMP_TYPE.equals(imageType)) {
+                meta.setContentType(BMP_MIME);
             }
             // Uploading to S3 destination bucket
             System.out.println("Writing to: " + dstBucket + "/" + dstKey);

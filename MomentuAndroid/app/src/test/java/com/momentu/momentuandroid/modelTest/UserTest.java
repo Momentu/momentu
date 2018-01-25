@@ -1,4 +1,4 @@
-package com.momentu.momentuandroid;
+package com.momentu.momentuandroid.modelTest;
 
 import com.momentu.momentuandroid.Model.User;
 
