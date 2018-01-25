@@ -16,6 +16,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.NavigationView;
@@ -27,6 +28,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -56,6 +58,8 @@ import com.momentu.momentuandroid.Model.TrendHashTagCard;
 import com.momentu.momentuandroid.Services.ConnectionService;
 import com.momentu.momentuandroid.Utility.RequestPackage;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -106,6 +110,9 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
     private Button mChangeLocationDialog;
     private DrawerLayout mDrawerLayout;
     private TextView mWhereAmI;
+
+    private static File file;
+    private static Uri imageFileUri;
 
     static String token;
     private ArrayList<Hashtag> Storedhashtags;
@@ -247,7 +254,7 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
 
             Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            final Bitmap imageBitmap = (Bitmap) extras.get("data");
 
             final Dialog dialogToPost = new Dialog(this);
             dialogToPost.setContentView(R.layout.dialog_to_post);
@@ -269,6 +276,7 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
 
                         RestClient restClient = new RestClient();
                         try {
+                            restClient.media_upload(imageToString(imageBitmap), params, token, HashTagSearchActivity.this);
                             restClient.media(params, token, HashTagSearchActivity.this);
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -301,7 +309,6 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
                 }
 
             });
-
         }
     }
 
@@ -693,5 +700,13 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
     //TODO: Probably this is a bad design
     public ArrayList<Hashtag> getStoredhashtags(){
         return Storedhashtags;
+    }
+
+    //takes an image and compress it and convert it to String of bytes
+    private String imageToString(Bitmap bitmap){
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+        byte[] imageBytes = byteArrayOutputStream.toByteArray();
+        return Base64.encodeToString(imageBytes,Base64.DEFAULT);
     }
 }

@@ -1,8 +1,11 @@
 package com.momentu.momentuandroid.Data;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -14,12 +17,17 @@ import com.momentu.momentuandroid.Utility.RequestPackage;
 
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -62,7 +70,7 @@ public class RestClient {
             public void onResponse(Call call, Response response) throws IOException {
                 token = response.body().string();
                 token = token.split(",")[0].split(":")[1];
-                token = "Bearier " + token.substring(1, token.length() - 1);
+                token = "Bearer " + token.substring(1, token.length() - 1);
                 if (response.code() == 200) {
                     Intent intent = new Intent(currentActivity, HashTagSearchActivity.class);
                     intent.putExtra("token", token);
@@ -129,18 +137,16 @@ public class RestClient {
     }
 
     //this method is to send an http request to the :8080/media endpoint
-    public void media(final Map<String, String> params, final String userToken, final Activity currentActivity)throws IOException {
+    public void media(final Map<String, String> params, final String userToken, final Activity currentActivity) throws IOException {
 
         final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
         final JSONObject parameter = new JSONObject(params);
-        new AsyncTask<String, Void, Response>()
-        {
+        new AsyncTask<String, Void, Response>() {
             public Request request;
 
             @Override
-            protected void onPreExecute()
-            {
+            protected void onPreExecute() {
             /* Called before task execution; from UI thread, so you can access your widgets */
 
                 // Optionally do some stuff like showing progress bar
@@ -148,16 +154,17 @@ public class RestClient {
                 RequestBody body = RequestBody.create(JSON, parameter.toString());
 
                 request = new Request.Builder()
-                .url(EndPoints.MEDIA_ENDPOINT)
-                .post(body)
-                .addHeader("content-type", "application/json; charset=utf-8")
-                .addHeader("authorization", userToken)
-                .build();
-            };
+                        .url(EndPoints.MEDIA_ENDPOINT)
+                        .post(body)
+                        .addHeader("content-type", "application/json; charset=utf-8")
+                        .addHeader("authorization", userToken)
+                        .build();
+            }
+
+            ;
 
             @Override
-            protected Response doInBackground(String... url)
-            {
+            protected Response doInBackground(String... url) {
             /* Called from background thread, so you're NOT allowed to interact with UI */
 
                 // Perform heavy task to get YourObject by string
@@ -166,6 +173,7 @@ public class RestClient {
                 Response response = null;
                 try {
                     response = client.newCall(request).execute();
+                    Log.d("Response_M",response.code() + "");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -173,8 +181,7 @@ public class RestClient {
             }
 
             @Override
-            protected void onPostExecute(Response result)
-            {
+            protected void onPostExecute(Response result) {
             /* Called once task is done; from UI thread, so you can access your widgets */
 
                 // Process result as you like
@@ -189,13 +196,13 @@ public class RestClient {
 
         String address = requestPackage.getEndpoint();
         String function = requestPackage.getFunction();
-        if(function != null)
+        if (function != null)
             address += function;
         String encodedParams = requestPackage.getEncodedParams();
 
         address = String.format("%s?%s", address, encodedParams);
 
-        Log.d("Adress",address);
+        Log.d("Adress", address);
 
 
         OkHttpClient client = new OkHttpClient();
@@ -212,5 +219,61 @@ public class RestClient {
             throw new IOException("Exception: response code " + response.code());
         }
     }
+    public void media_upload(final String image, final Map<String, String> params, final String userToken, final Activity currentActivity) throws IOException {
+        final MediaType MEDIA_TYPE_JPEG = MediaType.parse("image/JPEG");
+        OkHttpClient client = new OkHttpClient();
+        Log.d("Response_M_U_Not_yet", "just got in");
 
+        new AsyncTask<String, Void, Response>() {
+            public Request request;
+//            String path_external = Environment.getExternalStorageDirectory() + File.separator + "temporary_file.jpg";
+//            File file;
+            @Override
+            protected void onPreExecute() {
+            /* Called before task execution; from UI thread, so you can access your widgets */
+                // Optionally do some stuff like showing progress bar
+                      }
+            @Override
+            protected Response doInBackground(String... url) {
+            /* Called from background thread, so you're NOT allowed to interact with UI */
+            // Perform heavy task to get YourObject by string
+                // Stay clear & functional, just convert input to output and return it
+                OkHttpClient client = new OkHttpClient();
+                RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                        .addFormDataPart("file","image.jpeg",RequestBody.create(MEDIA_TYPE_JPEG,image))
+                        .addFormDataPart("city","Chicago")
+                        .addFormDataPart("hashtagLabel","#kiss_me")
+                        .addFormDataPart("state","Illinois")
+                        .build();
+
+                request = new Request.Builder().url(EndPoints.MEDIA_UPLOAD_ENDPOINT)
+                        .addHeader("content-type", "application/json; charset=utf-8")
+                        .addHeader("authorization", userToken)
+                        .post(requestBody).build();
+                ///*****************************************************************\\\\\
+                Response response = null;
+                try {
+                    response = client.newCall(request).execute();
+                    Log.d("Response_M_U",response.code() + "");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.d("Response_M_U"," it failed");
+
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+                return response;
+            }
+
+            @Override
+            protected void onPostExecute(Response result) {
+            /* Called once task is done; from UI thread, so you can access your widgets */
+
+                // Process result as you like
+
+                status = 0;
+            }
+        }.execute();
+    }
 }
