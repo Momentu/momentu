@@ -1,4 +1,4 @@
-package com.momentu.momentuandroid;
+package com.momentu.momentuandroid.modelTest;
 
 /**
  * Created by Fahad on 11/14/17.

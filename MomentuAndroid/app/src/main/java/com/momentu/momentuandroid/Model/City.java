@@ -22,7 +22,14 @@ public class City implements Parcelable {
         this.cityName = cityName;
     }
 
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(this.cityName);
+        parcel.writeString(this.cityName);
+    }
+
     protected City(Parcel in) {
+        this.cityName = in.readString();
     }
 
     public static final Creator<City> CREATOR = new Creator<City>() {
@@ -42,9 +49,7 @@ public class City implements Parcelable {
         return 0;
     }
 
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-    }
+
     @Override
     public String toString(){
         return this.cityName;
