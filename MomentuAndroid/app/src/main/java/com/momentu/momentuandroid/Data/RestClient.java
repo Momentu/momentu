@@ -241,9 +241,9 @@ public class RestClient {
                 OkHttpClient client = new OkHttpClient();
                 RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
                         .addFormDataPart("file","image.jpeg",RequestBody.create(MEDIA_TYPE_JPEG,image))
-                        .addFormDataPart("city","Chicago")
-                        .addFormDataPart("hashtagLabel","#kiss_me")
-                        .addFormDataPart("state","Illinois")
+                        .addFormDataPart("city",params.get("city"))
+                        .addFormDataPart("hashtagLabel",params.get("hashtagLabel"))
+                        .addFormDataPart("state",params.get("state"))
                         .build();
 
                 request = new Request.Builder().url(EndPoints.MEDIA_UPLOAD_ENDPOINT)

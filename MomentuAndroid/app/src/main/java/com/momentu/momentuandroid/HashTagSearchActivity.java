@@ -277,7 +277,7 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
                         RestClient restClient = new RestClient();
                         try {
                             restClient.media_upload(imageToString(imageBitmap), params, token, HashTagSearchActivity.this);
-                            restClient.media(params, token, HashTagSearchActivity.this);
+                            //restClient.media(params, token, HashTagSearchActivity.this);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
