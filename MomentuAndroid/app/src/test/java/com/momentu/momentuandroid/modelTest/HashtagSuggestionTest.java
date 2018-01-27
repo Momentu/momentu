@@ -5,12 +5,8 @@ package com.momentu.momentuandroid.modelTest;
  */
 
 import com.momentu.momentuandroid.Model.HashtagSuggestion;
-import com.momentu.momentuandroid.Model.State;
-import com.momentu.momentuandroid.Model.StatesAndCities;
 
 import org.junit.Test;
-
-import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

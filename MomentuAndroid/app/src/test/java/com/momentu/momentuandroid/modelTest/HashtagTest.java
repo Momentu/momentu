@@ -4,10 +4,8 @@ package com.momentu.momentuandroid.modelTest;
  * Created by Fahad on 11/14/17.
  */
 
-import android.os.Parcel;
 import com.momentu.momentuandroid.Model.Hashtag;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
