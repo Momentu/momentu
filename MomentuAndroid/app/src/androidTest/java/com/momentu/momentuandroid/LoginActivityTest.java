@@ -65,7 +65,7 @@ public class LoginActivityTest {
 
     //This is an UI Test that these the existence of all the activity widgets
     @Test
-    public void termAndPolicyActivityUITest(){
+    public void logInUITest(){
 
         Activity activity = loginActivityTestRule.getActivity();
         assertNotNull(activity.findViewById(R.id.tWelcomeUser));

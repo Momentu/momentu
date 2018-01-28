@@ -18,6 +18,7 @@ import com.momentu.momentuapi.storage.config.S3Settings;
 import com.momentu.momentuapi.storage.key.S3KeyGenerator;
 import com.momentu.momentuapi.storage.s3.S3Manager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.rest.webmvc.PersistentEntityResourceAssembler;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.http.HttpHeaders;
@@ -41,6 +42,15 @@ public class MediaController {
     private final S3Manager s3Manager;
     private final S3Settings s3Settings;
     private final S3KeyGenerator s3KeyGenerator;
+
+    @Value("${aws.s3.cloudfront.image.protocol}")
+    private String imageProtocol;
+
+    @Value("${aws.s3.cloudfront.image.location}")
+    private String imageLocation;
+
+    @Value("${aws.s3.cloudfront.imageresized.location}")
+    private String thumbnailLocation;
 
     @Autowired
     MediaController(ClaimExtractor claimExtractor, MediaMetaRepository mediaMetaRepository, HashtagRepository hashtagRepository,
@@ -68,12 +78,17 @@ public class MediaController {
         }
         if (!file.isEmpty()) {
             try {
+                String fileName = file.getOriginalFilename();
+                String fileExtension = "";
+                if(fileName.indexOf(".") > 0) {
+                    fileExtension = fileName.substring(fileName.lastIndexOf("."));
+                }
                 byte[] fileBytes = file.getBytes();
                 Long contentLength = new Long(fileBytes.length);
                 inputStream = new ByteArrayInputStream(fileBytes);
                 ObjectMetadata objectMetadata = new ObjectMetadata();
                 objectMetadata.setContentLength(contentLength);
-                String keyName = s3KeyGenerator.getUniqueKey();
+                String keyName = s3KeyGenerator.getUniqueKey().concat(fileExtension);
 
                 AWSCredentials awsCredentials = new BasicAWSCredentials(s3Settings.getAccessKeyId(), s3Settings.getSecretAccessKey());
                 s3Manager.upload(awsCredentials, s3Settings.getMediaBucketName(), keyName, inputStream, objectMetadata);
@@ -119,12 +134,17 @@ public class MediaController {
                     hashtagWithId = hashtagRepository.save(hashtagWithId);
                 }
 
+                String imageUrl = imageProtocol + "://" + imageLocation + "/" + keyName;
+                String thumbnailUrl = imageProtocol + "://" + thumbnailLocation + "/" + keyName;
+
                 MediaMeta mediaMeta = new MediaMeta();
                 mediaMeta.setUserId(user.getId());
                 mediaMeta.setCreated(new Date());
                 mediaMeta.setRemoved(false);
                 mediaMeta.setHashtagLabel(hashtagAndLocation.getHashtagLabel());
                 mediaMeta.setLocation(locationWithId);
+                mediaMeta.setImageLocation(imageUrl);
+                mediaMeta.setThumbnailLocation(thumbnailUrl);
                 mediaMeta = mediaMetaRepository.save(mediaMeta);
 
                 return Collections.singletonMap("status", "success");

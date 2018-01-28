@@ -22,6 +22,12 @@ public class MediaMeta extends AbstractEntity {
     @Column(name="removed")
     private boolean removed;
 
+    @Column(name="imageLocation")
+    private String imageLocation;
+
+    @Column(name="thumbnailLocation")
+    private String thumbnailLocation;
+
     public MediaMeta() {}
 
     public Long getUserId() {
@@ -68,5 +74,21 @@ public class MediaMeta extends AbstractEntity {
 
     public void setRemoved(boolean removed) {
         this.removed = removed;
+    }
+
+    public String getImageLocation() {
+        return imageLocation;
+    }
+
+    public void setImageLocation(String imageLocation) {
+        this.imageLocation = imageLocation;
+    }
+
+    public String getThumbnailLocation() {
+        return thumbnailLocation;
+    }
+
+    public void setThumbnailLocation(String thumbnailLocation) {
+        this.thumbnailLocation = thumbnailLocation;
     }
 }

@@ -199,7 +199,7 @@ public class SignUpActivityTest {
 
     //This is an UI Test that these the existence of all the activity widgets
     @Test
-    public void termAndPolicyActivityUITest(){
+    public void signUpActivityUITest(){
 
         Activity activity = signUpActivityTestRule.getActivity();
         assertNotNull(activity.findViewById(R.id.signUpText));

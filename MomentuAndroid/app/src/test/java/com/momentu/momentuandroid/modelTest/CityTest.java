@@ -5,8 +5,6 @@ package com.momentu.momentuandroid.modelTest;
  */
 
 import com.momentu.momentuandroid.Model.City;
-import com.momentu.momentuandroid.Model.HashtagSuggestion;
-import com.momentu.momentuandroid.Model.State;
 
 import org.junit.Test;
 

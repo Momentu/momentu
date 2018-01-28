@@ -41,7 +41,7 @@ public class S3EventProcessorCreateThumbnail implements
                     .replace('+', ' ');
             srcKey = URLDecoder.decode(srcKey, "UTF-8");
             String dstBucket = srcBucket + "resized";
-            String dstKey = "resized-" + srcKey;
+            String dstKey = srcKey;
             // Sanity check: validate that source and destination are different
             // buckets.
             if (srcBucket.equals(dstBucket)) {

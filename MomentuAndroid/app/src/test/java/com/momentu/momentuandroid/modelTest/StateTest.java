@@ -1,7 +1,6 @@
 package com.momentu.momentuandroid.modelTest;
 
 import com.momentu.momentuandroid.Model.State;
-import com.momentu.momentuandroid.Model.StatesAndCities;
 
 import org.junit.Test;
 

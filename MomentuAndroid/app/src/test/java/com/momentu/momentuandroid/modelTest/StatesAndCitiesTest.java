@@ -6,7 +6,6 @@ package com.momentu.momentuandroid.modelTest;
 
 import com.momentu.momentuandroid.Model.State;
 import com.momentu.momentuandroid.Model.StatesAndCities;
-import com.momentu.momentuandroid.Model.TrendHashTagCard;
 
 import org.junit.Test;
 
