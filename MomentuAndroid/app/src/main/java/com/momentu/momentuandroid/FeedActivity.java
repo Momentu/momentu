@@ -36,6 +36,7 @@ import com.momentu.momentuandroid.Data.RestClient;
 import com.momentu.momentuandroid.Model.FeedItem;
 import com.momentu.momentuandroid.Model.Hashtag;
 import com.momentu.momentuandroid.Model.Like;
+import com.momentu.momentuandroid.Utility.ConvertImagesToStringOfBytes;
 import com.momentu.momentuandroid.Utility.DeviceParameterTools;
 import com.momentu.momentuandroid.Adapter.FeedAdapter;
 import com.momentu.momentuandroid.Adapter.FeedItemAnimator;
@@ -115,7 +116,7 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
             Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
+           final Bitmap imageBitmap = (Bitmap) extras.get("data");
 
             final Dialog dialogToPost = new Dialog(this);
             dialogToPost.setContentView(R.layout.dialog_to_post);
@@ -137,7 +138,8 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
 
                         RestClient restClient = new RestClient();
                         try {
-                            restClient.media(params, token, FeedActivity.this);
+                            restClient.media_upload(ConvertImagesToStringOfBytes.imageToString(imageBitmap), params, token, FeedActivity.this);
+                            //restClient.media(params, token, FeedActivity.this);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }

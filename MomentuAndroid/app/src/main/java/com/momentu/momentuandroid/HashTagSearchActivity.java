@@ -56,6 +56,7 @@ import com.momentu.momentuandroid.Model.State;
 import com.momentu.momentuandroid.Model.StatesAndCities;
 import com.momentu.momentuandroid.Model.TrendHashTagCard;
 import com.momentu.momentuandroid.Services.ConnectionService;
+import com.momentu.momentuandroid.Utility.ConvertImagesToStringOfBytes;
 import com.momentu.momentuandroid.Utility.RequestPackage;
 
 import java.io.ByteArrayOutputStream;
@@ -276,7 +277,7 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
 
                         RestClient restClient = new RestClient();
                         try {
-                            restClient.media_upload(imageToString(imageBitmap), params, token, HashTagSearchActivity.this);
+                            restClient.media_upload(ConvertImagesToStringOfBytes.imageToString(imageBitmap), params, token, HashTagSearchActivity.this);
                             //restClient.media(params, token, HashTagSearchActivity.this);
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -700,13 +701,5 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
     //TODO: Probably this is a bad design
     public ArrayList<Hashtag> getStoredhashtags(){
         return Storedhashtags;
-    }
-
-    //takes an image and compress it and convert it to String of bytes
-    private String imageToString(Bitmap bitmap){
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-        byte[] imageBytes = byteArrayOutputStream.toByteArray();
-        return Base64.encodeToString(imageBytes,Base64.DEFAULT);
     }
 }
