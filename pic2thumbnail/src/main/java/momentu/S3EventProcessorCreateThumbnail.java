@@ -28,6 +28,8 @@ public class S3EventProcessorCreateThumbnail implements
     private static final float MAX_HEIGHT = 100;
     private final String JPG_TYPE = (String) "jpg";
     private final String JPG_MIME = (String) "image/jpeg";
+    private final String JPEG_TYPE = (String) "jpeg";
+    private final String JPEG_MIME = (String) "image/jpeg";
     private final String PNG_TYPE = (String) "png";
     private final String PNG_MIME = (String) "image/png";
     private final String BMP_TYPE = (String) "bmp";
@@ -99,6 +101,9 @@ public class S3EventProcessorCreateThumbnail implements
             meta.setContentLength(os.size());
             if (JPG_TYPE.equals(imageType)) {
                 meta.setContentType(JPG_MIME);
+            }
+            if (JPEG_TYPE.equals(imageType)) {
+                meta.setContentType(JPEG_MIME);
             }
             if (PNG_TYPE.equals(imageType)) {
                 meta.setContentType(PNG_MIME);
