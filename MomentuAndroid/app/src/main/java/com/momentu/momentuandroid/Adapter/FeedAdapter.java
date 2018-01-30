@@ -5,6 +5,7 @@ package com.momentu.momentuandroid.Adapter;
  */
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,7 +37,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public static final int VIEW_TYPE_DEFAULT = 1;
     public static final int VIEW_TYPE_LOADER = 2;
 
-    private final List<FeedItem> feedItems = new ArrayList<>();
+    public static List<FeedItem> feedItems = new ArrayList<>();
 
     private Context context;
     private OnFeedItemClickListener onFeedItemClickListener;
@@ -65,10 +66,10 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             @Override
             public void onClick(View v) {
                 int adapterPosition = cellFeedViewHolder.getAdapterPosition();
-                feedItems.get(adapterPosition).getLike().addLikesCount();
-                notifyItemChanged(adapterPosition, ACTION_LIKE_IMAGE_CLICKED);
+                //feedItems.get(adapterPosition).getLike().addLikesCount();
+                //notifyItemChanged(adapterPosition, ACTION_LIKE_IMAGE_CLICKED);
                 if (context instanceof FeedActivity) {
-                    ((FeedActivity) context).showLikedSnackbar();
+                    ((FeedActivity) context).itemActivity(adapterPosition);
                 }
             }
         });
@@ -215,5 +216,15 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
     public void addFeed(FeedItem myFeed){
         feedItems.add(myFeed);
+    }
+
+    public Drawable getFeed(int position){
+
+        for (int i=0 ; i<feedItems.size() ; i++){
+            if (i == position){
+                return feedItems.get(i).getMedia();
+            }
+        }
+        return null;
     }
 }

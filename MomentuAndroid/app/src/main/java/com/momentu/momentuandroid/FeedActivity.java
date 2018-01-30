@@ -14,6 +14,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -105,7 +106,7 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                Intent cameraIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
                 startActivityForResult(cameraIntent, CAMERA_REQUEST);
             }
         });
@@ -265,6 +266,17 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
                 .setDuration(ANIM_DURATION_FAB)
                 .start();
         feedAdapter.updateItems(true);
+    }
+
+    public void itemActivity(int position){
+
+        Intent itemIntent = new Intent(this, ItemActivity.class);
+        itemIntent.putExtra("token", token);
+        itemIntent.putExtra("state", mStateName);
+        itemIntent.putExtra("city", mCityName);
+        itemIntent.putExtra("hashtag", hashtag);
+        itemIntent.putExtra("position", position);
+        startActivity(itemIntent);
     }
 
     public void showLikedSnackbar() {
