@@ -5,20 +5,11 @@ package com.momentu.momentuandroid.Data;
  */
 
 public class EndPoints {
-//    public static String LOCATION_ENDPOINT = "http://www.momentu.xyz:8080/locations";
-//    public static String LOGIN_ENDPOINT = "http://www.momentu.xyz:8080/login";
-//    public static String REGISTER_ENDPOINT = "http://www.momentu.xyz:8080/register";
-//    public static String MEDIA_ENDPOINT = "http://www.momentu.xyz:8080/media";
-//    public static String MEDIA_UPLOAD_ENDPOINT = "http://www.momentu.xyz:8080/media_upload";
-//    public static String STATES_ENDPOINT = "http://www.momentu.xyz:8080/states";
-//    public static String HASHTAGS_ENDPOINT = "http://www.momentu.xyz:8080/hashtags";
-
-    //the following are equivilant addresses mapped to the local host
-    public static String LOCATION_ENDPOINT = "http://10.0.2.2:8080/locations";
-    public static String LOGIN_ENDPOINT = "http://10.0.2.2:8080/login";
-    public static String REGISTER_ENDPOINT = "http://10.0.2.2:8080/register";
-    public static String MEDIA_ENDPOINT = "http://10.0.2.2:8080/media";
-    public static String MEDIA_UPLOAD_ENDPOINT = "http://10.0.2.2:8080/media_upload";
-    public static String STATES_ENDPOINT = "http://10.0.2.2:8080/states";
-    public static String HASHTAGS_ENDPOINT = "http://10.0.2.2:8080/hashtags";
+    public static String LOCATION_ENDPOINT = "http://www.momentu.xyz:8080/locations";
+    public static String LOGIN_ENDPOINT = "http://www.momentu.xyz:8080/login";
+    public static String REGISTER_ENDPOINT = "http://www.momentu.xyz:8080/register";
+    public static String MEDIA_ENDPOINT = "http://www.momentu.xyz:8080/media";
+    public static String MEDIA_UPLOAD_ENDPOINT = "http://www.momentu.xyz:8080/media_upload";
+    public static String STATES_ENDPOINT = "http://www.momentu.xyz:8080/states";
+    public static String HASHTAGS_ENDPOINT = "http://www.momentu.xyz:8080/hashtags";
 }

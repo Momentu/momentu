@@ -42,6 +42,7 @@ import com.momentu.momentuandroid.Adapter.FeedAdapter;
 import com.momentu.momentuandroid.Adapter.FeedItemAnimator;
 import com.momentu.momentuandroid.View.FeedContextMenuManager;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -138,8 +139,10 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
 
                         RestClient restClient = new RestClient();
                         try {
-                            restClient.media_upload(ConvertImagesToStringOfBytes.imageToString(imageBitmap), params, token, FeedActivity.this);
-                            //restClient.media(params, token, FeedActivity.this);
+                            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                            byte[] imageBytes = byteArrayOutputStream.toByteArray();
+                            restClient.media_upload(imageBytes, params, token, FeedActivity.this);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }

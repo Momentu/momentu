@@ -59,8 +59,8 @@ public class S3EventProcessorCreateThumbnail implements
                 return "";
             }
             String imageType = matcher.group(1);
-            if (!(JPG_TYPE.equals(imageType)) && !(PNG_TYPE.equals(imageType))
-                    && !(BMP_TYPE.equals(imageType))) {
+            if (!(JPG_TYPE.equals(imageType)) && !(JPEG_TYPE.equals(imageType)) &&
+                    !(PNG_TYPE.equals(imageType)) && !(BMP_TYPE.equals(imageType))) {
                 System.out.println("Skipping non-image " + srcKey);
                 return "";
             }

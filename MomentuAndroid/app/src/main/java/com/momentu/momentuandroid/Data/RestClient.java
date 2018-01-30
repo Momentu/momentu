@@ -219,7 +219,7 @@ public class RestClient {
             throw new IOException("Exception: response code " + response.code());
         }
     }
-    public void media_upload(final String image, final Map<String, String> params, final String userToken, final Activity currentActivity) throws IOException {
+    public void media_upload(final byte[] image, final Map<String, String> params, final String userToken, final Activity currentActivity) throws IOException {
         final MediaType MEDIA_TYPE_JPEG = MediaType.parse("image/JPEG");
         OkHttpClient client = new OkHttpClient();
         Log.d("Response_M_U_Not_yet", "just got in");
