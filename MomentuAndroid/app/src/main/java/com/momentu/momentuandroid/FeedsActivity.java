@@ -37,7 +37,6 @@ import com.momentu.momentuandroid.Data.RestClient;
 import com.momentu.momentuandroid.Model.FeedItem;
 import com.momentu.momentuandroid.Model.Hashtag;
 import com.momentu.momentuandroid.Model.Like;
-import com.momentu.momentuandroid.Utility.ConvertImagesToStringOfBytes;
 import com.momentu.momentuandroid.Utility.DeviceParameterTools;
 import com.momentu.momentuandroid.Adapter.FeedAdapter;
 import com.momentu.momentuandroid.Adapter.FeedItemAnimator;
@@ -49,7 +48,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeedItemClickListener {
+public class FeedsActivity extends FeedBaseActivity implements FeedAdapter.OnFeedItemClickListener {
     public static final String ACTION_SHOW_LOADING_ITEM = "action_show_loading_item";
     private static final int ANIM_DURATION_TOOLBAR = 300;
     private static final int ANIM_DURATION_FAB = 400;
@@ -106,7 +105,7 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent cameraIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(cameraIntent, CAMERA_REQUEST);
             }
         });
@@ -143,18 +142,18 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
                             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                             imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
                             byte[] imageBytes = byteArrayOutputStream.toByteArray();
-                            restClient.media_upload(imageBytes, params, token, FeedActivity.this);
+                            restClient.media_upload(imageBytes, params, token, FeedsActivity.this);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                         if(restClient.status == 0)
-                            Toast.makeText(FeedActivity.this, hashtagInput.getText().toString() + " posted", Toast.LENGTH_LONG).show();
+                            Toast.makeText(FeedsActivity.this, hashtagInput.getText().toString() + " posted", Toast.LENGTH_LONG).show();
                         else
-                            Toast.makeText(FeedActivity.this, hashtagInput.getText().toString() + " cann't be posted", Toast.LENGTH_LONG).show();
+                            Toast.makeText(FeedsActivity.this, hashtagInput.getText().toString() + " cann't be posted", Toast.LENGTH_LONG).show();
 
                     }else
                     {
-                        Toast.makeText(FeedActivity.this, "Wrong Hashtag Format", Toast.LENGTH_LONG).show();
+                        Toast.makeText(FeedsActivity.this, "Wrong Hashtag Format", Toast.LENGTH_LONG).show();
                     }
                 }
             });
@@ -172,7 +171,7 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
                 @Override
                 public void onClick(View v) {
                     dialogToPost.dismiss();
-                    Toast.makeText(FeedActivity.this, "Post has been canceled", Toast.LENGTH_LONG).show();
+                    Toast.makeText(FeedsActivity.this, "Post has been canceled", Toast.LENGTH_LONG).show();
                 }
 
             });
@@ -270,7 +269,7 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
 
     public void itemActivity(int position){
 
-        Intent itemIntent = new Intent(this, ItemActivity.class);
+        Intent itemIntent = new Intent(this, ImageActivity.class);
         itemIntent.putExtra("token", token);
         itemIntent.putExtra("state", mStateName);
         itemIntent.putExtra("city", mCityName);

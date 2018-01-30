@@ -16,10 +16,10 @@ import static org.junit.Assert.assertNotNull;
  */
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class FeedActivityTest {
+public class FeedsActivityTest {
 
     @Rule
-    public ActivityTestRule<FeedActivity> mActivityTestRule = new ActivityTestRule<>(FeedActivity.class);
+    public ActivityTestRule<FeedsActivity> mActivityTestRule = new ActivityTestRule<>(FeedsActivity.class);
 
     //This is an UI Test that these the existence of all the activity widgets
     @Test

@@ -21,14 +21,14 @@
         <activity android:name=".TermAndPolicyActivity" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".HashTagSearchActivity" />
-        <activity android:name=".FeedActivity" />
+        <activity android:name=".FeedsActivity" />
         <activity android:name=".SignUpActivity" />
 
         <service
             android:name=".Services.ConnectionService"
             android:exported="false" />
 
-        <activity android:name=".ItemActivity"></activity>
+        <activity android:name=".ImageActivity"></activity>
     </application>
 
 </manifest>

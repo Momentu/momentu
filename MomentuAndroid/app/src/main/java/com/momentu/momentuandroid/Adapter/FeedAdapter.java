@@ -17,7 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
 
-import com.momentu.momentuandroid.FeedActivity;
+import com.momentu.momentuandroid.FeedsActivity;
 import com.momentu.momentuandroid.Model.FeedItem;
 import com.momentu.momentuandroid.Model.Hashtag;
 import com.momentu.momentuandroid.Model.Like;
@@ -68,8 +68,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 int adapterPosition = cellFeedViewHolder.getAdapterPosition();
                 //feedItems.get(adapterPosition).getLike().addLikesCount();
                 //notifyItemChanged(adapterPosition, ACTION_LIKE_IMAGE_CLICKED);
-                if (context instanceof FeedActivity) {
-                    ((FeedActivity) context).itemActivity(adapterPosition);
+                if (context instanceof FeedsActivity) {
+                    ((FeedsActivity) context).itemActivity(adapterPosition);
                 }
             }
         });
@@ -81,8 +81,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 int adapterPosition = cellFeedViewHolder.getAdapterPosition();
                 feedItems.get(adapterPosition).getLike().addLikesCount();
                 notifyItemChanged(adapterPosition, ACTION_LIKE_BUTTON_CLICKED);
-                if (context instanceof FeedActivity) {
-                    ((FeedActivity) context).showLikedSnackbar();
+                if (context instanceof FeedsActivity) {
+                    ((FeedsActivity) context).showLikedSnackbar();
                 }
             }
         });

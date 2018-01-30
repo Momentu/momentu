@@ -6,7 +6,7 @@ import android.widget.ImageView;
 
 import com.momentu.momentuandroid.Adapter.FeedAdapter;
 
-public class ItemActivity extends AppCompatActivity {
+public class ImageActivity extends AppCompatActivity {
 
     private String mCityName;
     private String mStateName;
@@ -21,7 +21,7 @@ public class ItemActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_item);
+        setContentView(R.layout.activity_image);
 
         mCityName = getIntent().getStringExtra("city");
         mStateName = getIntent().getStringExtra("state");
