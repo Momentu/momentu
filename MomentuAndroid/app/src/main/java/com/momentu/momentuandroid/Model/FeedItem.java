@@ -14,13 +14,13 @@ public class FeedItem {
     private BigInteger userID;
     private Hashtag hashTag;
     private String description;
-    private Drawable media;
+    private String media;
     private BigInteger locationID;
     private Date createdTime;
     private Boolean removed;
     private Like likeFeed;
 
-    public FeedItem(BigInteger id, BigInteger userID, Hashtag hashTag, Drawable media, String description, BigInteger locationID, Date createdTime, Boolean removed, Like likeFeed) {
+    public FeedItem(BigInteger id, BigInteger userID, Hashtag hashTag, String media, String description, BigInteger locationID, Date createdTime, Boolean removed, Like likeFeed) {
         this.id = id;
         this.userID = userID;
         this.hashTag = hashTag;
@@ -40,7 +40,7 @@ public class FeedItem {
         return description;
     }
 
-    public Drawable getMedia(){
+    public String getMedia(){
         return media;
     }
 

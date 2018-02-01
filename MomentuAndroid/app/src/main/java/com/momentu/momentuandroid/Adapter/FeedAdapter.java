@@ -22,6 +22,7 @@ import com.momentu.momentuandroid.Model.FeedItem;
 import com.momentu.momentuandroid.Model.Hashtag;
 import com.momentu.momentuandroid.Model.Like;
 import com.momentu.momentuandroid.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,7 +38,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public static final int VIEW_TYPE_DEFAULT = 1;
     public static final int VIEW_TYPE_LOADER = 2;
 
-    public static List<FeedItem> feedItems = new ArrayList<>();
+    private final List<FeedItem> feedItems = new ArrayList<>();
 
     private Context context;
     private OnFeedItemClickListener onFeedItemClickListener;
@@ -69,7 +70,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 //feedItems.get(adapterPosition).getLike().addLikesCount();
                 //notifyItemChanged(adapterPosition, ACTION_LIKE_IMAGE_CLICKED);
                 if (context instanceof FeedsActivity) {
-                    ((FeedsActivity) context).itemActivity(adapterPosition);
+                    ((FeedsActivity) context).itemActivity(adapterPosition, feedItems.get(adapterPosition).getMedia());
                 }
             }
         });
@@ -91,7 +92,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-        ((CellFeedViewHolder) viewHolder).bindView(feedItems.get(position));
+        ((CellFeedViewHolder) viewHolder).bindView(feedItems.get(position),context);
     }
 
     @Override
@@ -109,45 +110,46 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public void updateItems(boolean animated) {
+
         feedItems.clear();
         feedItems.addAll(Arrays.asList(
                 //TODO: Hard Coded feed item
                 new FeedItem(null,null,
                         new Hashtag(context.getString(R.string.feed_hashtag), 1),
-                        context.getResources().getDrawable(R.drawable.img_feed_center_1),
+                        "https://www.w3schools.com/howto/img_fjords.jpg",
                         context.getString(R.string.feed_description_1),
                         null, null, null,
                         new Like(23, false)),
                 new FeedItem(null,null,
                         new Hashtag(context.getString(R.string.feed_hashtag), 1),
-                        context.getResources().getDrawable(R.drawable.img_feed_center_2),
+                        "http://kb4images.com/images/image/37185176-image.jpg",
                         context.getString(R.string.feed_description_2),
                         null, null, null,
-                        new Like(2, false)),
-                new FeedItem(null,null,
-                        new Hashtag(context.getString(R.string.feed_hashtag), 1),
-                        context.getResources().getDrawable(R.drawable.img_feed_center_1),
-                        context.getString(R.string.feed_description_1),
-                        null, null, null,
-                        new Like(45, false)),
-                new FeedItem(null,null,
-                        new Hashtag(context.getString(R.string.feed_hashtag), 1),
-                        context.getResources().getDrawable(R.drawable.img_feed_center_2),
-                        context.getString(R.string.feed_description_2),
-                        null, null, null,
-                        new Like(159, false)),
-                new FeedItem(null,null,
-                        new Hashtag(context.getString(R.string.feed_hashtag), 1),
-                        context.getResources().getDrawable(R.drawable.img_feed_center_1),
-                        context.getString(R.string.feed_description_1),
-                        null, null, null,
-                        new Like(362, false)),
-                new FeedItem(null,null,
-                        new Hashtag(context.getString(R.string.feed_hashtag), 1),
-                        context.getResources().getDrawable(R.drawable.img_feed_center_2),
-                        context.getString(R.string.feed_description_2),
-                        null, null, null,
-                        new Like(93, false))
+                        new Like(2, false))
+//                new FeedItem(null,null,
+//                        new Hashtag(context.getString(R.string.feed_hashtag), 1),
+//                        context.getResources().getDrawable(R.drawable.img_feed_center_1),
+//                        context.getString(R.string.feed_description_1),
+//                        null, null, null,
+//                        new Like(45, false)),
+//                new FeedItem(null,null,
+//                        new Hashtag(context.getString(R.string.feed_hashtag), 1),
+//                        context.getResources().getDrawable(R.drawable.img_feed_center_2),
+//                        context.getString(R.string.feed_description_2),
+//                        null, null, null,
+//                        new Like(159, false)),
+//                new FeedItem(null,null,
+//                        new Hashtag(context.getString(R.string.feed_hashtag), 1),
+//                        context.getResources().getDrawable(R.drawable.img_feed_center_1),
+//                        context.getString(R.string.feed_description_1),
+//                        null, null, null,
+//                        new Like(362, false)),
+//                new FeedItem(null,null,
+//                        new Hashtag(context.getString(R.string.feed_hashtag), 1),
+//                        context.getResources().getDrawable(R.drawable.img_feed_center_2),
+//                        context.getString(R.string.feed_description_2),
+//                        null, null, null,
+//                        new Like(93, false))
         ));
         if (animated) {
             notifyItemRangeInserted(0, feedItems.size());
@@ -195,11 +197,11 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             ButterKnife.bind(this, view);
         }
 
-        public void bindView(FeedItem feedItem) {
+        public void bindView(FeedItem feedItem, Context context) {
             this.feedItem = feedItem;
             int adapterPosition = getAdapterPosition();
             Log.d("Feed Position", Integer.toString(adapterPosition));
-            ivFeedCenter.setImageDrawable(feedItem.getMedia());
+            Picasso.with(context).load(feedItem.getMedia()).into(ivFeedCenter);
             ivFeedHashTag.setText(feedItem.getHashTag().getLabel());
             ivFeedDescription.setText(feedItem.getDescription());
             btnLike.setImageResource(feedItem.getLike().getIsLiked() ? R.drawable.ic_heart_red : R.drawable.ic_heart_outline_grey);
@@ -218,13 +220,4 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         feedItems.add(myFeed);
     }
 
-    public Drawable getFeed(int position){
-
-        for (int i=0 ; i<feedItems.size() ; i++){
-            if (i == position){
-                return feedItems.get(i).getMedia();
-            }
-        }
-        return null;
-    }
 }

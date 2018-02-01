@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.widget.ImageView;
 
 import com.momentu.momentuandroid.Adapter.FeedAdapter;
+import com.squareup.picasso.Picasso;
+
+import static java.security.AccessController.getContext;
 
 public class ImageActivity extends AppCompatActivity {
 
@@ -14,6 +17,8 @@ public class ImageActivity extends AppCompatActivity {
     static String token;
 
     public String hashtag;
+
+    public String url;
 
     ImageView im;
     int position = 0;
@@ -28,11 +33,9 @@ public class ImageActivity extends AppCompatActivity {
         token = getIntent().getStringExtra("token");
         hashtag = getIntent().getStringExtra("hashtag");
         position = getIntent().getIntExtra("position",0);
-
-
+        url = getIntent().getStringExtra("url");
         im = (ImageView)findViewById(R.id.imageCenter);
-
-        im.setImageDrawable(FeedAdapter.feedItems.get(position).getMedia());
+        Picasso.with(this).load(url).into(im);
 
     }
 }

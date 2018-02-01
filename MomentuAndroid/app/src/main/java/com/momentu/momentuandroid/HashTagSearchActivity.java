@@ -294,13 +294,13 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
                 }
             });
             dialogToPost.show();
-            FeedItem myFeed = new FeedItem(null,null,
-                    new Hashtag(hashtagInput.getText().toString(), 1),
-                    new BitmapDrawable(getResources(), imageBitmap),
-                    "HI",
-                    null, null, null,
-                    new Like(93, false));
-            feedAdapter.addFeed(myFeed);
+//            FeedItem myFeed = new FeedItem(null,null,
+//                    new Hashtag(hashtagInput.getText().toString(), 1),
+//                    new BitmapDrawable(getResources(), imageBitmap),
+//                    "HI",
+//                    null, null, null,
+//                    new Like(93, false));
+//            feedAdapter.addFeed(myFeed);
             //On click listener for cancel button
             cancel.setOnClickListener(new View.OnClickListener(){
 

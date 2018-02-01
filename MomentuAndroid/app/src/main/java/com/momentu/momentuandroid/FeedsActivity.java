@@ -11,7 +11,9 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
@@ -81,6 +83,7 @@ public class FeedsActivity extends FeedBaseActivity implements FeedAdapter.OnFee
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
+        Log.d("Before setup","Hello");
         setupFeed();
 
         mCityName = getIntent().getStringExtra("city");
@@ -94,13 +97,13 @@ public class FeedsActivity extends FeedBaseActivity implements FeedAdapter.OnFee
         } else {
             feedAdapter.updateItems(false);
         }
-
+        Log.d("Before Camera","Hello");
         //Take picture/video
         //TODO: Need a "MediaActivity" to process the photo/video taken.
         ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.CAMERA},
-                HashTagSearchActivity.CAMERA_REQUEST);
-
+                FeedsActivity.CAMERA_REQUEST);
+        Log.d("After Camera","Hello");
         ImageButton cameraButton = (ImageButton) this.findViewById(R.id.bCameraInFeed);
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -158,13 +161,13 @@ public class FeedsActivity extends FeedBaseActivity implements FeedAdapter.OnFee
                 }
             });
             dialogToPost.show();
-            FeedItem myFeed = new FeedItem(null,null,
-                    new Hashtag(hashtagInput.getText().toString(), 1),
-                    new BitmapDrawable(getResources(), imageBitmap),
-                    "HI",
-                    null, null, null,
-                    new Like(93, false));
-            feedAdapter.addFeed(myFeed);
+//            FeedItem myFeed = new FeedItem(null,null,
+//                    new Hashtag(hashtagInput.getText().toString(), 1),
+//                    new BitmapDrawable(getResources(), imageBitmap),
+//                    "HI",
+//                    null, null, null,
+//                    new Like(93, false));
+//            feedAdapter.addFeed(myFeed);
             //On click listener for cancel button
             cancel.setOnClickListener(new View.OnClickListener(){
 
@@ -267,7 +270,7 @@ public class FeedsActivity extends FeedBaseActivity implements FeedAdapter.OnFee
         feedAdapter.updateItems(true);
     }
 
-    public void itemActivity(int position){
+    public void itemActivity(int position, String url){
 
         Intent itemIntent = new Intent(this, ImageActivity.class);
         itemIntent.putExtra("token", token);
@@ -275,6 +278,7 @@ public class FeedsActivity extends FeedBaseActivity implements FeedAdapter.OnFee
         itemIntent.putExtra("city", mCityName);
         itemIntent.putExtra("hashtag", hashtag);
         itemIntent.putExtra("position", position);
+        itemIntent.putExtra("url", url);
         startActivity(itemIntent);
     }
 
