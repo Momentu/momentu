@@ -66,10 +66,10 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             @Override
             public void onClick(View v) {
                 int adapterPosition = cellFeedViewHolder.getAdapterPosition();
-                feedItems.get(adapterPosition).getLike().addLikesCount();
-                notifyItemChanged(adapterPosition, ACTION_LIKE_IMAGE_CLICKED);
+                //feedItems.get(adapterPosition).getLike().addLikesCount();
+                //notifyItemChanged(adapterPosition, ACTION_LIKE_IMAGE_CLICKED);
                 if (context instanceof FeedActivity) {
-                    ((FeedActivity) context).showLikedSnackbar();
+                    ((FeedActivity) context).goToMediaActivity(adapterPosition, feedItems.get(adapterPosition).getMedia());
                 }
             }
         });

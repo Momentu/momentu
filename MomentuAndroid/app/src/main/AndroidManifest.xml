@@ -14,6 +14,7 @@
         <activity android:name=".WelcomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -21,7 +22,7 @@
         <activity android:name=".LoginActivity" />
         <activity android:name=".HashTagSearchActivity" />
         <activity android:name=".FeedActivity" />
-        <activity android:name=".SignUpActivity"></activity>
+        <activity android:name=".SignUpActivity" />
 
         <service
             android:name=".Services.ConnectionService"
@@ -30,6 +31,7 @@
             android:name=".Services.GetImagesService"
             android:exported="false" />
 
+        <activity android:name=".MediaActivity"></activity>
     </application>
 
 </manifest>

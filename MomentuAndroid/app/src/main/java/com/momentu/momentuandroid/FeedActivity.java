@@ -327,6 +327,19 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
     public void showLikedSnackbar() {
         Snackbar.make(clContent, "Liked!", Snackbar.LENGTH_SHORT).show();
     }
+
+    public void goToMediaActivity(int position, String url){
+
+        Intent itemIntent = new Intent(this, MediaActivity.class);
+        itemIntent.putExtra("token", token);
+        itemIntent.putExtra("state", mStateName);
+        itemIntent.putExtra("city", mCityName);
+        itemIntent.putExtra("hashtag", hashtag);
+        itemIntent.putExtra("position", position);
+        itemIntent.putExtra("url", url);
+        startActivity(itemIntent);
+    }
+
     public void convertURL(final ArrayList<ImagesUrlStorage> response){
 
         Log.d("ConverURLToImage", "Just got in with a array");
