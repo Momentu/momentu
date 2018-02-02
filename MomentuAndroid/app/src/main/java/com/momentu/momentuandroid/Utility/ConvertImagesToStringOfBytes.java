@@ -12,10 +12,11 @@ import java.io.ByteArrayOutputStream;
 public class ConvertImagesToStringOfBytes {
 
     //takes an image and compress it and convert it to String of bytes
-    public static String imageToString(Bitmap bitmap){
+    public static byte[] imageToString(Bitmap bitmap){
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-        byte[] imageBytes = byteArrayOutputStream.toByteArray();
-        return Base64.encodeToString(imageBytes,Base64.DEFAULT);
+//        byte[] imageBytes =
+               return byteArrayOutputStream.toByteArray();
+//        return Base64.encodeToString(imageBytes,Base64.DEFAULT);
     }
 }

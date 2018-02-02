@@ -223,14 +223,6 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
                 }
             });
             dialogToPost.show();
-//            FeedItem myFeed = new FeedItem(null,null,
-//                    new Hashtag(hashtagInput.getText().toString(), 1),
-//                    new BitmapDrawable(getResources(), imageBitmap),
-//                    "HI",
-//                    null, null, null,
-//                    new Like(93, false));
-//            feedAdapter.addFeed(myFeed);
-            //On click listener for cancel button
             cancel.setOnClickListener(new View.OnClickListener(){
 
                 @Override

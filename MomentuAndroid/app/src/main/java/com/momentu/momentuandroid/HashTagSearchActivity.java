@@ -570,7 +570,7 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
                 e.printStackTrace();
             }
 
-            if (mAddresses != null & mAddresses.size() > 0) {
+            if (mAddresses != null && mAddresses.size() > 0) {
                 mCityName = mAddresses.get(0).getLocality();
                 mStateName = mAddresses.get(0).getAdminArea();
 //                mCountryName = mAddresses.get(0).getCountryName();
@@ -595,8 +595,6 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
         String mTrendingHastTag = ((Button) view).getText().toString();
         Toast.makeText(getBaseContext(), "Selected " + mTrendingHastTag,
                 Toast.LENGTH_SHORT).show();
-        FeedAdapter.feedItems.clear();
-
         //TODO: Pass the hashtag to backend, search, and populate feed activity
         Intent feedIntent = new Intent(this, FeedActivity.class);
         feedIntent.putExtra("token", token);

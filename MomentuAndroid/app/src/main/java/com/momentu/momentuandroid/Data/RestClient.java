@@ -197,7 +197,6 @@ public class RestClient {
 
         Log.d("Adress", address);
 
-
         OkHttpClient client = new OkHttpClient();
 
         Request.Builder requestBuilder = new Request.Builder()
@@ -213,7 +212,7 @@ public class RestClient {
         }
     }
 
-    public void media_upload(final String image, final Map<String, String> params, final String userToken, final Activity currentActivity) throws IOException {
+    public void media_upload(final byte[] image, final Map<String, String> params, final String userToken, final Activity currentActivity) throws IOException {
         final MediaType MEDIA_TYPE_JPEG = MediaType.parse("image/JPEG");
         OkHttpClient client = new OkHttpClient();
         Log.d("Response_M_U_Not_yet", "just got in");
@@ -276,15 +275,10 @@ public class RestClient {
 
         Response response;
 
-//        String function = requestPackage.getFunction();
-//        if (function != null)
-//            address += function;
         String encodedParams = requestPackage.getEncodedParams();
-//        String part2Url = "state=" + requestPackage.getIllinois&city=Chicago&label=%23DePaul";
         String address = String.format("%s?%s", EndPoints.MEDIA_RETRIVE, encodedParams);
 
         Log.d("Adress_retreive", address);
-
 
         OkHttpClient client = new OkHttpClient();
 
