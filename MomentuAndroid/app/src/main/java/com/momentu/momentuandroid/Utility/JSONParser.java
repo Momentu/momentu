@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.momentu.momentuandroid.Model.City;
 import com.momentu.momentuandroid.Model.Hashtag;
+import com.momentu.momentuandroid.Model.ImagesUrlStorage;
 import com.momentu.momentuandroid.Model.State;
 import com.momentu.momentuandroid.Model.StatesAndCities;
 
@@ -75,6 +76,21 @@ public class JSONParser {
                     city = new City(newArr.getJSONObject(i).getString("city"));
                     objArray.add(city);
                 }
+            }
+            else if(code == 3){
+                JSONObject obj = new JSONObject(jason);
+                Log.d("JSON2ARRAYNothingyet", obj.toString());
+                JSONObject newJson = obj.getJSONObject("_embedded");
+                Log.d("JSON2ARRAYNewJASON", newJson.toString());
+
+                JSONArray newArr = newJson.getJSONArray("mediaMetas");
+                Log.d("JSON2ARRAYCities", newArr.toString());
+                ImagesUrlStorage imageUrl;
+                for (int i = 0; i < newArr.length(); i++) {
+                    imageUrl = new ImagesUrlStorage(newArr.getJSONObject(i).getString("imageLocation"));
+                    objArray.add(imageUrl);
+                }
+
             }
             else
                 Log.d("JSONParserOTHER", "THE CODE IS NOT RECOGNIZED");

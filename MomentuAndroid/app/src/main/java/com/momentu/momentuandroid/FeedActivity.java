@@ -9,21 +9,26 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.MediaStore;
+import android.os.Parcelable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
@@ -33,24 +38,40 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import butterknife.BindView;
+import okhttp3.Response;
 
 import com.momentu.momentuandroid.BaseActivity.FeedBaseActivity;
+import com.momentu.momentuandroid.Data.EndPoints;
 import com.momentu.momentuandroid.Data.RestClient;
 import com.momentu.momentuandroid.Model.FeedItem;
 import com.momentu.momentuandroid.Model.Hashtag;
+import com.momentu.momentuandroid.Model.ImagesUrlStorage;
 import com.momentu.momentuandroid.Model.Like;
+import com.momentu.momentuandroid.Model.State;
+import com.momentu.momentuandroid.Model.StatesAndCities;
+import com.momentu.momentuandroid.Services.ConnectionService;
+import com.momentu.momentuandroid.Services.GetImagesService;
+import com.momentu.momentuandroid.Utility.ConvertImagesToStringOfBytes;
 import com.momentu.momentuandroid.Utility.DeviceParameterTools;
 import com.momentu.momentuandroid.Adapter.FeedAdapter;
 import com.momentu.momentuandroid.Adapter.FeedItemAnimator;
+import com.momentu.momentuandroid.Utility.JSONParser;
+import com.momentu.momentuandroid.Utility.RequestPackage;
 import com.momentu.momentuandroid.View.FeedContextMenuManager;
 
-import java.io.ByteArrayOutputStream;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 
-public class FeedsActivity extends FeedBaseActivity implements FeedAdapter.OnFeedItemClickListener {
+public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeedItemClickListener {
     public static final String ACTION_SHOW_LOADING_ITEM = "action_show_loading_item";
     private static final int ANIM_DURATION_TOOLBAR = 300;
     private static final int ANIM_DURATION_FAB = 400;
@@ -67,7 +88,7 @@ public class FeedsActivity extends FeedBaseActivity implements FeedAdapter.OnFee
     @BindView(R.id.content)
     CoordinatorLayout clContent;
 
-    private FeedAdapter feedAdapter;
+    public FeedAdapter feedAdapter;
 
     private boolean pendingIntroAnimation;
 
@@ -83,7 +104,6 @@ public class FeedsActivity extends FeedBaseActivity implements FeedAdapter.OnFee
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
-        Log.d("Before setup","Hello");
         setupFeed();
 
         mCityName = getIntent().getStringExtra("city");
@@ -91,28 +111,72 @@ public class FeedsActivity extends FeedBaseActivity implements FeedAdapter.OnFee
         token = getIntent().getStringExtra("token");
         hashtag = getIntent().getStringExtra("hashtag");
 
+
+        RequestPackage requestPackage = new RequestPackage();
+        requestPackage.setEndpoint(EndPoints.HASHTAGS_ENDPOINT);
+        requestPackage.setParam("label",hashtag);
+        requestPackage.setParam("city",mCityName);
+        requestPackage.setParam("state",mStateName);
+        requestPackage.setToken(token);
+
+        Intent intent = new Intent(this, GetImagesService.class);
+        intent.putExtra(GetImagesService.REQUEST_PACKAGE_IMAGE, requestPackage);
+        startService(intent);
+
+//        convertURL("http://d63o2j1kvb33r.cloudfront.net/2018013028010IvVLpQrEAiDw.jpeg");
+
+        final ArrayList<ImagesUrlStorage> urls = new ArrayList<ImagesUrlStorage>();
+
+
         if (savedInstanceState == null) {
             Log.d("savedInstanceState:", "null");
             pendingIntroAnimation = true;
         } else {
             feedAdapter.updateItems(false);
         }
-        Log.d("Before Camera","Hello");
+
         //Take picture/video
         //TODO: Need a "MediaActivity" to process the photo/video taken.
         ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.CAMERA},
-                FeedsActivity.CAMERA_REQUEST);
-        Log.d("After Camera","Hello");
+                HashTagSearchActivity.CAMERA_REQUEST);
+
         ImageButton cameraButton = (ImageButton) this.findViewById(R.id.bCameraInFeed);
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(cameraIntent, CAMERA_REQUEST);
             }
         });
+
+        //setup reciever 'mBroadcastReceiver'
+        LocalBroadcastManager.getInstance(getApplicationContext())
+                .registerReceiver(mBroadcastReceiver,
+                        new IntentFilter(GetImagesService.MY_IMAGE_SERVICE_MESSAGE));
     }
+
+    //receive response from ConnectionService
+    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            Log.d("IMAGE_Feed","jsut got in here reciever");
+
+            ArrayList<ImagesUrlStorage> temp = intent
+                    .getParcelableArrayListExtra(GetImagesService.MY_IMAGE_SERVICE_PAYLOAD);
+
+            if (temp == null) {
+                Log.d("IMAGE_Feed","temp is null");
+            }
+
+            else {
+//                urls.add(temp.get(0));
+                convertURL(temp);
+                Log.d("IMAGE_Feed", " just got this: " + temp.get(0));
+            }
+        }
+    };
 
     // The method is on activity result after capture a photo. A dialog will be displayed
     // for user to enter the hashtag name.
@@ -142,21 +206,19 @@ public class FeedsActivity extends FeedBaseActivity implements FeedAdapter.OnFee
 
                         RestClient restClient = new RestClient();
                         try {
-                            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-                            byte[] imageBytes = byteArrayOutputStream.toByteArray();
-                            restClient.media_upload(imageBytes, params, token, FeedsActivity.this);
+                            restClient.media_upload(ConvertImagesToStringOfBytes.imageToString(imageBitmap), params, token, FeedActivity.this);
+                            //restClient.media(params, token, FeedActivity.this);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                         if(restClient.status == 0)
-                            Toast.makeText(FeedsActivity.this, hashtagInput.getText().toString() + " posted", Toast.LENGTH_LONG).show();
+                            Toast.makeText(FeedActivity.this, hashtagInput.getText().toString() + " posted", Toast.LENGTH_LONG).show();
                         else
-                            Toast.makeText(FeedsActivity.this, hashtagInput.getText().toString() + " cann't be posted", Toast.LENGTH_LONG).show();
+                            Toast.makeText(FeedActivity.this, hashtagInput.getText().toString() + " cann't be posted", Toast.LENGTH_LONG).show();
 
                     }else
                     {
-                        Toast.makeText(FeedsActivity.this, "Wrong Hashtag Format", Toast.LENGTH_LONG).show();
+                        Toast.makeText(FeedActivity.this, "Wrong Hashtag Format", Toast.LENGTH_LONG).show();
                     }
                 }
             });
@@ -174,7 +236,7 @@ public class FeedsActivity extends FeedBaseActivity implements FeedAdapter.OnFee
                 @Override
                 public void onClick(View v) {
                     dialogToPost.dismiss();
-                    Toast.makeText(FeedsActivity.this, "Post has been canceled", Toast.LENGTH_LONG).show();
+                    Toast.makeText(FeedActivity.this, "Post has been canceled", Toast.LENGTH_LONG).show();
                 }
 
             });
@@ -270,19 +332,45 @@ public class FeedsActivity extends FeedBaseActivity implements FeedAdapter.OnFee
         feedAdapter.updateItems(true);
     }
 
-    public void itemActivity(int position, String url){
-
-        Intent itemIntent = new Intent(this, ImageActivity.class);
-        itemIntent.putExtra("token", token);
-        itemIntent.putExtra("state", mStateName);
-        itemIntent.putExtra("city", mCityName);
-        itemIntent.putExtra("hashtag", hashtag);
-        itemIntent.putExtra("position", position);
-        itemIntent.putExtra("url", url);
-        startActivity(itemIntent);
-    }
-
     public void showLikedSnackbar() {
         Snackbar.make(clContent, "Liked!", Snackbar.LENGTH_SHORT).show();
+    }
+    public void convertURL(final ArrayList<ImagesUrlStorage> response){
+
+        Log.d("ConverURLToImage", "Just got in with a array");
+
+        new AsyncTask<String, Void, Response>() {
+            @Override
+            protected Response doInBackground(String... strings) {
+                try {
+
+                    for (ImagesUrlStorage imageUrl : response) {
+                        FeedItem myFeed = new FeedItem(null, null,
+                                new Hashtag(hashtag, 1), imageUrl.getImageUrl(),
+                                "HI",
+                                null, null, null,
+                                new Like(93, false));
+                        feedAdapter.addFeed(myFeed);
+
+
+
+                }
+                } catch(Exception e){
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        }.execute();
+    }
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+        if ((keyCode == KeyEvent.KEYCODE_BACK))
+        {
+
+            LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(mBroadcastReceiver);
+            finish();
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

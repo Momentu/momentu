@@ -14,21 +14,22 @@
         <activity android:name=".WelcomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".TermAndPolicyActivity" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".HashTagSearchActivity" />
-        <activity android:name=".FeedsActivity" />
-        <activity android:name=".SignUpActivity" />
+        <activity android:name=".FeedActivity" />
+        <activity android:name=".SignUpActivity"></activity>
 
         <service
             android:name=".Services.ConnectionService"
             android:exported="false" />
+        <service
+            android:name=".Services.GetImagesService"
+            android:exported="false" />
 
-        <activity android:name=".ImageActivity"></activity>
     </application>
 
 </manifest>

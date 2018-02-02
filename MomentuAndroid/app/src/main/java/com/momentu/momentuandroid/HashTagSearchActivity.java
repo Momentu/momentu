@@ -18,7 +18,6 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -29,6 +28,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -56,6 +56,7 @@ import com.momentu.momentuandroid.Model.State;
 import com.momentu.momentuandroid.Model.StatesAndCities;
 import com.momentu.momentuandroid.Model.TrendHashTagCard;
 import com.momentu.momentuandroid.Services.ConnectionService;
+import com.momentu.momentuandroid.Utility.ConvertImagesToStringOfBytes;
 import com.momentu.momentuandroid.Utility.RequestPackage;
 
 import java.io.ByteArrayOutputStream;
@@ -233,7 +234,7 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(cameraIntent, CAMERA_REQUEST);
             }
         });
@@ -276,10 +277,8 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
 
                         RestClient restClient = new RestClient();
                         try {
-                            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-                            byte[] imageBytes = byteArrayOutputStream.toByteArray();
-                            restClient.media_upload(imageBytes, params, token, HashTagSearchActivity.this);
+                            restClient.media_upload(ConvertImagesToStringOfBytes.imageToString(imageBitmap), params, token, HashTagSearchActivity.this);
+                            //restClient.media(params, token, HashTagSearchActivity.this);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -596,9 +595,10 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
         String mTrendingHastTag = ((Button) view).getText().toString();
         Toast.makeText(getBaseContext(), "Selected " + mTrendingHastTag,
                 Toast.LENGTH_SHORT).show();
+        FeedAdapter.feedItems.clear();
 
         //TODO: Pass the hashtag to backend, search, and populate feed activity
-        Intent feedIntent = new Intent(this, FeedsActivity.class);
+        Intent feedIntent = new Intent(this, FeedActivity.class);
         feedIntent.putExtra("token", token);
         feedIntent.putExtra("state", mStateName);
         feedIntent.putExtra("city", mCityName);

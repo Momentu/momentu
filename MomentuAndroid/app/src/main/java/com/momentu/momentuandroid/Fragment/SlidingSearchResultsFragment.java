@@ -36,7 +36,7 @@ import com.momentu.momentuandroid.Adapter.SearchResultsListAdapter;
 import com.momentu.momentuandroid.Utility.HashtagSearchHelper;
 import com.momentu.momentuandroid.Model.HashtagSuggestion;
 import com.momentu.momentuandroid.Model.Hashtag;
-import com.momentu.momentuandroid.FeedsActivity;
+import com.momentu.momentuandroid.FeedActivity;
 import com.momentu.momentuandroid.HashTagSearchActivity;
 import com.momentu.momentuandroid.R;
 import com.momentu.momentuandroid.WelcomeActivity;
@@ -340,7 +340,7 @@ public class SlidingSearchResultsFragment extends BaseFragment {
                         Toast.LENGTH_SHORT)
                         .show();
                 //TODO: Pass the hashtag to backend, search, and populate feed activity
-                Intent feedIntent = new Intent(getActivity(), FeedsActivity.class);
+                Intent feedIntent = new Intent(getActivity(), FeedActivity.class);
                 startActivity(feedIntent);
             }
         });

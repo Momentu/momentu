@@ -1,11 +1,8 @@
 package com.momentu.momentuandroid.Data;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -17,12 +14,8 @@ import com.momentu.momentuandroid.Utility.RequestPackage;
 
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -219,7 +212,8 @@ public class RestClient {
             throw new IOException("Exception: response code " + response.code());
         }
     }
-    public void media_upload(final byte[] image, final Map<String, String> params, final String userToken, final Activity currentActivity) throws IOException {
+
+    public void media_upload(final String image, final Map<String, String> params, final String userToken, final Activity currentActivity) throws IOException {
         final MediaType MEDIA_TYPE_JPEG = MediaType.parse("image/JPEG");
         OkHttpClient client = new OkHttpClient();
         Log.d("Response_M_U_Not_yet", "just got in");
@@ -275,5 +269,38 @@ public class RestClient {
                 status = 0;
             }
         }.execute();
+    }
+
+    public static String retrieve_media(final RequestPackage requestPackage)
+            throws IOException {
+
+        Response response;
+
+//        String function = requestPackage.getFunction();
+//        if (function != null)
+//            address += function;
+        String encodedParams = requestPackage.getEncodedParams();
+//        String part2Url = "state=" + requestPackage.getIllinois&city=Chicago&label=%23DePaul";
+        String address = String.format("%s?%s", EndPoints.MEDIA_RETRIVE, encodedParams);
+
+        Log.d("Adress_retreive", address);
+
+
+        OkHttpClient client = new OkHttpClient();
+
+        Request.Builder requestBuilder = new Request.Builder()
+                .addHeader("authorization", requestPackage.getToken())
+                .url(address);
+
+        Request request = requestBuilder.build();
+        response = null;
+        response = client.newCall(request).execute();
+
+        if (response.isSuccessful()) {
+            return response.body().string();
+        } else {
+            throw new IOException("Exception: response code " + response.code());
+        }
+
     }
 }
