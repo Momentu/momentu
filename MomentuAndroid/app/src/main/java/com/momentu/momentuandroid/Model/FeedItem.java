@@ -14,17 +14,19 @@ public class FeedItem {
     private BigInteger userID;
     private Hashtag hashTag;
     private String description;
-    private String media;
+    private String orginalUrl;
+    private String thumbnilUrl;
     private BigInteger locationID;
     private Date createdTime;
     private Boolean removed;
     private Like likeFeed;
 
-    public FeedItem(BigInteger id, BigInteger userID, Hashtag hashTag, String media, String description, BigInteger locationID, Date createdTime, Boolean removed, Like likeFeed) {
+    public FeedItem(BigInteger id, BigInteger userID, Hashtag hashTag, String orginalUrl, String thumbnilUrl, String description, BigInteger locationID, Date createdTime, Boolean removed, Like likeFeed) {
         this.id = id;
         this.userID = userID;
         this.hashTag = hashTag;
-        this.media = media;
+        this.orginalUrl = orginalUrl;
+        this.thumbnilUrl = thumbnilUrl;
         this.description = description;
         this.locationID = locationID;
         this.createdTime = createdTime;
@@ -40,8 +42,12 @@ public class FeedItem {
         return description;
     }
 
-    public String getMedia(){
-        return media;
+    public String getOrginalUrl(){
+        return orginalUrl;
+    }
+
+    public String getThumbnilUrl(){
+        return thumbnilUrl;
     }
 
     public Like getLike(){

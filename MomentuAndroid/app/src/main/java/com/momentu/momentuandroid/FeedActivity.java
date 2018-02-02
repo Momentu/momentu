@@ -388,9 +388,9 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
             protected Response doInBackground(String... strings) {
                 try {
 
-                    for (ImagesUrlStorage imageUrl : response) {
+                    for (ImagesUrlStorage imageUrls : response) {
                         FeedItem myFeed = new FeedItem(null, null,
-                                new Hashtag(hashtag, 1), imageUrl.getImageUrl(),
+                                new Hashtag(hashtag, 1), imageUrls.getOriginalUrl(),imageUrls.getThumbnilUrl(),
                                 "",
                                 null, null, null,
                                 new Like(93, false));

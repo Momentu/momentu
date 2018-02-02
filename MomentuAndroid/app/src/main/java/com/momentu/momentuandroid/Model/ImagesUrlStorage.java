@@ -8,26 +8,39 @@ import android.os.Parcelable;
  */
 
 public class ImagesUrlStorage implements Parcelable {
-    private String imageUrl;
+    private String originalUrl;
+    private String thumbnilUrl;
 
-    public ImagesUrlStorage(String imageUrl){
-        this.imageUrl = imageUrl;
-    }
-    public String getImageUrl() {
-        return imageUrl;
+    public ImagesUrlStorage(String originalUrl, String thumbnilUrl){
+        this.originalUrl = originalUrl;
+        this.thumbnilUrl = thumbnilUrl;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public String getOriginalUrl() {
+        return originalUrl;
+    }
+
+    public void setOriginalUrl(String imageUrl) {
+        this.originalUrl = imageUrl;
+    }
+
+    public String getThumbnilUrl() {
+        return thumbnilUrl;
+    }
+
+    public void setThumbnilUrl(String thumbnilUrl) {
+        this.thumbnilUrl = thumbnilUrl;
     }
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(this.imageUrl);
+        parcel.writeString(this.originalUrl);
+        parcel.writeString(this.thumbnilUrl);
     }
 
     protected ImagesUrlStorage(Parcel in) {
-        this.imageUrl = in.readString();
+        this.originalUrl = in.readString();
+        this.thumbnilUrl = in.readString();
     }
 
     public static final Creator<ImagesUrlStorage> CREATOR = new Creator<ImagesUrlStorage>() {
@@ -50,6 +63,6 @@ public class ImagesUrlStorage implements Parcelable {
 
     @Override
     public String toString(){
-        return this.imageUrl;
+        return this.originalUrl;
     }
 }

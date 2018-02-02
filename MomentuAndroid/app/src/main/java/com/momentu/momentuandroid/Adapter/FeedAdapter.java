@@ -15,6 +15,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.momentu.momentuandroid.FeedActivity;
 import com.momentu.momentuandroid.Model.FeedItem;
@@ -69,7 +70,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 //feedItems.get(adapterPosition).getLike().addLikesCount();
                 //notifyItemChanged(adapterPosition, ACTION_LIKE_IMAGE_CLICKED);
                 if (context instanceof FeedActivity) {
-                    ((FeedActivity) context).goToMediaActivity(adapterPosition, feedItems.get(adapterPosition).getMedia());
+                    ((FeedActivity) context).goToMediaActivity(adapterPosition, feedItems.get(adapterPosition).getOrginalUrl());
+                    //Toast.makeText(context, feedItems.get(adapterPosition).getOrginalUrl()+ " orginal", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(context, feedItems.get(adapterPosition).getThumbnilUrl()+ " thumbnail", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -200,7 +203,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             int adapterPosition = getAdapterPosition();
             Log.d("Feed Position", Integer.toString(adapterPosition));
             Picasso.with(context)
-                    .load(feedItem.getMedia())
+                    .load(feedItem.getThumbnilUrl())
                     .into(ivFeedCenter);
 //            ivFeedCenter.setImageDrawable(feedItem.getMedia());
             ivFeedHashTag.setText(feedItem.getHashTag().getLabel());

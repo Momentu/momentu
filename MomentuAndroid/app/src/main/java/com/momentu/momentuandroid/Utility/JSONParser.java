@@ -85,10 +85,10 @@ public class JSONParser {
 
                 JSONArray newArr = newJson.getJSONArray("mediaMetas");
                 Log.d("JSON2ARRAYCities", newArr.toString());
-                ImagesUrlStorage imageUrl;
+                ImagesUrlStorage imageUrls;
                 for (int i = 0; i < newArr.length(); i++) {
-                    imageUrl = new ImagesUrlStorage(newArr.getJSONObject(i).getString("imageLocation"));
-                    objArray.add(imageUrl);
+                    imageUrls = new ImagesUrlStorage(newArr.getJSONObject(i).getString("imageLocation"),newArr.getJSONObject(i).getString("thumbnailLocation"));
+                    objArray.add(imageUrls);
                 }
 
             }
