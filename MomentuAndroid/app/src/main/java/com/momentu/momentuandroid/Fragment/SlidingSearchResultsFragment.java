@@ -63,6 +63,12 @@ public class SlidingSearchResultsFragment extends BaseFragment {
         // Required empty public constructor
     }
 
+    public void clear(){
+        mSearchView.clearQuery();
+        mSearchView.clearSuggestions();
+        mSearchResultsAdapter.clear();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -94,6 +100,8 @@ public class SlidingSearchResultsFragment extends BaseFragment {
 
         mSearchView.setSearchHint("Search hashtag...");
     }
+
+
 
     private void setupFloatingSearch() {
         mSearchView.setOnQueryChangeListener(new FloatingSearchView.OnQueryChangeListener() {
@@ -340,7 +348,11 @@ public class SlidingSearchResultsFragment extends BaseFragment {
                         Toast.LENGTH_SHORT)
                         .show();
                 //TODO: Pass the hashtag to backend, search, and populate feed activity
-                Intent feedIntent = new Intent(getActivity(), FeedActivity.class);
+                Intent feedIntent = new Intent(getContext(), FeedActivity.class);
+                feedIntent.putExtra("token", HashTagSearchActivity.token);
+                feedIntent.putExtra("state", HashTagSearchActivity.mStateName);
+                feedIntent.putExtra("city", HashTagSearchActivity.mCityName);
+                feedIntent.putExtra("hashtag", Hashtag.getLabel());
                 startActivity(feedIntent);
             }
         });

@@ -32,6 +32,10 @@ public class SearchResultsListAdapter extends RecyclerView.Adapter<SearchResults
         notifyDataSetChanged();
     }
 
+    public void clear(){
+        mDataSet.clear();
+    }
+
     public void setItemsOnClickListener(OnItemClickListener onClickListener) {
         this.mItemsOnClickListener = onClickListener;
     }

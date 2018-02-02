@@ -86,6 +86,7 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
 
     /* Search Fragment */
     private Fragment currentFragment;
+    public SlidingSearchResultsFragment slidingSearchResultsFragment;
 
     /* Location */
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
@@ -97,8 +98,8 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
     };
     private LocationManager mLocationManager = null;
     private List<Address> mAddresses;
-    private String mCityName;
-    private String mStateName;
+    public static String mCityName;
+    public static String mStateName;
 //    private String mCountryName;
     private Location mLocation;
     public EditText hashtagInput;
@@ -115,7 +116,7 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
     private static File file;
     private static Uri imageFileUri;
 
-    static String token;
+    public static String token;
     private ArrayList<Hashtag> Storedhashtags;
     private ArrayList<State> arrayOfStates = new ArrayList<State>();
 //    private ArrayList<City> arrayOfCities = new ArrayList<City>();
@@ -149,8 +150,9 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
 
         // Show UI
         showTrendHashtagPager(Storedhashtags);
-        showSearchFragment(new SlidingSearchResultsFragment());
+        slidingSearchResultsFragment = new SlidingSearchResultsFragment();
 
+        showSearchFragment(slidingSearchResultsFragment);
         //Change location UI
         mChangeLocationDialog = (Button) findViewById(R.id.bChangeLocation);
         mChangeLocationDialog.setOnClickListener(new View.OnClickListener() {
@@ -174,6 +176,7 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
 
                             @Override
                             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
                                ArrayList<String> citiesList =  arrayOfStates.get(i).getCities();
                                 ArrayAdapter<String> adapterCity = new ArrayAdapter<String>(HashTagSearchActivity.this,
                                         android.R.layout.simple_spinner_item,
@@ -208,6 +211,7 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
                             mViewPager.setCurrentItem(0); //ViewPager roll back to the first page (city-wide trend hashtag)
                             loading(0, null);
                             dialogInterface.dismiss();
+                            slidingSearchResultsFragment.clear();
                         }
                     };
                 });

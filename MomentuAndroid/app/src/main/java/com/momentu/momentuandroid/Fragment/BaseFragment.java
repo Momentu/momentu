@@ -14,6 +14,7 @@ public abstract class BaseFragment extends Fragment {
 
     private BaseExampleFragmentCallbacks mCallbacks;
 
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
