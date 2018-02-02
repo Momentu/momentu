@@ -94,4 +94,5 @@
         ]]>
     </string>
 
+    <string name="file_provider_authority" translatable="false">com.momentu.momentuandroid.fileprovider</string>
 </resources>

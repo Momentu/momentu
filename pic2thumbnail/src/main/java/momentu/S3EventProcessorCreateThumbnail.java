@@ -24,8 +24,8 @@ import com.amazonaws.services.s3.model.S3Object;
 
 public class S3EventProcessorCreateThumbnail implements
         RequestHandler<S3Event, String> {
-    private static final float MAX_WIDTH = 100;
-    private static final float MAX_HEIGHT = 100;
+    private static final float MAX_WIDTH = 640;
+    private static final float MAX_HEIGHT = 960;
     private final String JPG_TYPE = (String) "jpg";
     private final String JPG_MIME = (String) "image/jpeg";
     private final String JPEG_TYPE = (String) "jpeg";

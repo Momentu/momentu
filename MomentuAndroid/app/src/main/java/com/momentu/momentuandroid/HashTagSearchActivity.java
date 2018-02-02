@@ -5,23 +5,29 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.FileProvider;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -49,6 +55,7 @@ import com.momentu.momentuandroid.Data.EndPoints;
 import com.momentu.momentuandroid.Data.RestClient;
 import com.momentu.momentuandroid.Fragment.BaseFragment;
 import com.momentu.momentuandroid.Fragment.SlidingSearchResultsFragment;
+import com.momentu.momentuandroid.Manager.PermissionsManager;
 import com.momentu.momentuandroid.Model.FeedItem;
 import com.momentu.momentuandroid.Model.Hashtag;
 import com.momentu.momentuandroid.Model.Like;
@@ -57,12 +64,15 @@ import com.momentu.momentuandroid.Model.StatesAndCities;
 import com.momentu.momentuandroid.Model.TrendHashTagCard;
 import com.momentu.momentuandroid.Services.ConnectionService;
 import com.momentu.momentuandroid.Utility.ConvertImagesToStringOfBytes;
+import com.momentu.momentuandroid.Utility.ImageHelper;
 import com.momentu.momentuandroid.Utility.RequestPackage;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -121,6 +131,7 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
     private ArrayList<State> arrayOfStates = new ArrayList<State>();
 //    private ArrayList<City> arrayOfCities = new ArrayList<City>();
 
+    private String path;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,6 +140,7 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
         feedAdapter = new FeedAdapter(this);
         arrayOfStates.add(new State("Please select state"));
 
+        final PermissionsManager permissionsManager = new PermissionsManager();
         Intent intent = getIntent();
         token = intent.getStringExtra("token");
 
@@ -229,17 +241,16 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
         });
 
         //Take picture/video
-        //TODO: Need a "MediaActivity" to process the photo/video taken.
-        ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.CAMERA},
-                HashTagSearchActivity.CAMERA_REQUEST);
-
         ImageButton cameraButton = (ImageButton) this.findViewById(R.id.bCamera);
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(cameraIntent, CAMERA_REQUEST);
+                if(permissionsManager.userHasPermission(HashTagSearchActivity.this)) {
+                    takePicture();
+                }
+                else {
+                    permissionsManager.requestPermission(HashTagSearchActivity.this);
+                }
             }
         });
 
@@ -252,14 +263,36 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
         loading(1,null);
     }
 
+    private void takePicture() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            Uri photoURI = null;
+            try {
+                File imageFile = ImageHelper.createTempImageFile();
+                path = imageFile.getAbsolutePath();
+                photoURI = FileProvider.getUriForFile(HashTagSearchActivity.this,
+                        getString(R.string.file_provider_authority),
+                        imageFile);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
+                takePictureIntent.setClipData(ClipData.newRawUri("", photoURI));
+                takePictureIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            }
+            startActivityForResult(takePictureIntent, CAMERA_REQUEST);
+        }
+    }
+
     // The method is on activity result after capture a photo. A dialog will be displayed
     // for user to enter the hashtag name.
     //It passes the hashtage along with the location to RestClient to pass it to the backend
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
-
-            Bundle extras = data.getExtras();
-            final Bitmap imageBitmap = (Bitmap) extras.get("data");
+            BitmapFactory.Options bitmapOptions = ImageHelper.provideCompressionBitmapFactoryOptions();
+            final Bitmap imageBitmap = BitmapFactory.decodeFile(path, bitmapOptions);
 
             final Dialog dialogToPost = new Dialog(this);
             dialogToPost.setContentView(R.layout.dialog_to_post);
@@ -282,6 +315,7 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
                         RestClient restClient = new RestClient();
                         try {
                             restClient.media_upload(ConvertImagesToStringOfBytes.imageToString(imageBitmap), params, token, HashTagSearchActivity.this);
+                            recreate();
                             //restClient.media(params, token, HashTagSearchActivity.this);
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -473,7 +507,13 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
         if(doSwitch){
             mViewPager.setVisibility(View.INVISIBLE);
             mViewEmpty.setVisibility(View.VISIBLE);
-            mViewEmpty.setText("Welcome to " + mCityName + "\nPost to get your #hashtag to trend");
+            String welcomeMessage;
+            if (mCityName != null) {
+                welcomeMessage = "Welcome to " + mCityName + "\nPost to get your #hashtag to trend";
+            } else {
+                welcomeMessage = "Welcome\nPost to get your #hashtag to trend";
+            }
+            mViewEmpty.setText(welcomeMessage);
         } else {
             mViewPager.setVisibility(View.VISIBLE);
             mViewEmpty.setVisibility(View.INVISIBLE);
@@ -610,6 +650,7 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
 
     private class LocationListener implements android.location.LocationListener {
         Location mLastLocation;
+        boolean initialLocationSet = false;
 
         public LocationListener(String provider) {
             Log.e(TAG, "LocationListener " + provider);
@@ -619,8 +660,10 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
         @Override
         public void onLocationChanged(Location location) {
             Log.e(TAG, "onLocationChanged: " + location);
-            mLastLocation.set(location);
-            checkLocation();
+            if(!initialLocationSet) {
+                mLastLocation.set(location);
+                //checkLocation();
+            }
         }
 
         @Override

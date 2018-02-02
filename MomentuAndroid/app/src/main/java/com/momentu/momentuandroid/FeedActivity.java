@@ -10,20 +10,25 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
+import android.provider.MediaStore;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -43,6 +48,7 @@ import okhttp3.Response;
 import com.momentu.momentuandroid.BaseActivity.FeedBaseActivity;
 import com.momentu.momentuandroid.Data.EndPoints;
 import com.momentu.momentuandroid.Data.RestClient;
+import com.momentu.momentuandroid.Manager.PermissionsManager;
 import com.momentu.momentuandroid.Model.FeedItem;
 import com.momentu.momentuandroid.Model.Hashtag;
 import com.momentu.momentuandroid.Model.ImagesUrlStorage;
@@ -55,6 +61,7 @@ import com.momentu.momentuandroid.Utility.ConvertImagesToStringOfBytes;
 import com.momentu.momentuandroid.Utility.DeviceParameterTools;
 import com.momentu.momentuandroid.Adapter.FeedAdapter;
 import com.momentu.momentuandroid.Adapter.FeedItemAnimator;
+import com.momentu.momentuandroid.Utility.ImageHelper;
 import com.momentu.momentuandroid.Utility.JSONParser;
 import com.momentu.momentuandroid.Utility.RequestPackage;
 import com.momentu.momentuandroid.View.FeedContextMenuManager;
@@ -63,6 +70,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -100,12 +108,16 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
     static String token;
 
     public String hashtag;
+
+    private String path;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
         setupFeed();
 
+        final PermissionsManager permissionsManager = new PermissionsManager();
         mCityName = getIntent().getStringExtra("city");
         mStateName = getIntent().getStringExtra("state");
         token = getIntent().getStringExtra("token");
@@ -145,8 +157,12 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(cameraIntent, CAMERA_REQUEST);
+                if(permissionsManager.userHasPermission(FeedActivity.this)) {
+                    takePicture();
+                }
+                else {
+                    permissionsManager.requestPermission(FeedActivity.this);
+                }
             }
         });
 
@@ -178,13 +194,36 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
         }
     };
 
+    private void takePicture() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            Uri photoURI = null;
+            try {
+                File imageFile = ImageHelper.createTempImageFile();
+                path = imageFile.getAbsolutePath();
+                photoURI = FileProvider.getUriForFile(FeedActivity.this,
+                        getString(R.string.file_provider_authority),
+                        imageFile);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
+                takePictureIntent.setClipData(ClipData.newRawUri("", photoURI));
+                takePictureIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            }
+            startActivityForResult(takePictureIntent, CAMERA_REQUEST);
+        }
+    }
+
     // The method is on activity result after capture a photo. A dialog will be displayed
     // for user to enter the hashtag name.
     //It passes the hashtage along with the location to RestClient to pass it to the backend
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
-            Bundle extras = data.getExtras();
-           final Bitmap imageBitmap = (Bitmap) extras.get("data");
+            BitmapFactory.Options bitmapOptions = ImageHelper.provideCompressionBitmapFactoryOptions();
+            final Bitmap imageBitmap = BitmapFactory.decodeFile(path, bitmapOptions);
 
             final Dialog dialogToPost = new Dialog(this);
             dialogToPost.setContentView(R.layout.dialog_to_post);
@@ -352,7 +391,7 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
                     for (ImagesUrlStorage imageUrl : response) {
                         FeedItem myFeed = new FeedItem(null, null,
                                 new Hashtag(hashtag, 1), imageUrl.getImageUrl(),
-                                "HI",
+                                "",
                                 null, null, null,
                                 new Like(93, false));
                         feedAdapter.addFeed(myFeed);
