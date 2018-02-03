@@ -209,21 +209,28 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
                 mBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        String newStateName = mSpinnerState.getSelectedItem().toString();
-                        String newCityName = mSpinnerCity.getSelectedItem().toString();
-                        if(!newStateName.equalsIgnoreCase("Please select state…") &
-                                !newCityName.equalsIgnoreCase("Please select city…")){
+                        if(mSpinnerState.getSelectedItem()!=null && mSpinnerCity.getSelectedItem()!=null){
+                            String newStateName = mSpinnerState.getSelectedItem().toString();
+                            String newCityName = mSpinnerCity.getSelectedItem().toString();
+                            if(!newStateName.equalsIgnoreCase("Please select state…") &
+                                    !newCityName.equalsIgnoreCase("Please select city…")) {
+                                Toast.makeText(HashTagSearchActivity.this,
+                                        "Selected " + newStateName + " " + newCityName,
+                                        Toast.LENGTH_SHORT)
+                                        .show();
+                                mCityName = newCityName;
+                                mStateName = newStateName;
+                                mWhereAmI.setText(((mCityName == null) ? "Where am I" : mCityName));
+                                mViewPager.setCurrentItem(0); //ViewPager roll back to the first page (city-wide trend hashtag)
+                                loading(0, null);
+                                dialogInterface.dismiss();
+                                slidingSearchResultsFragment.clear();
+                            }
+                        }else{
                             Toast.makeText(HashTagSearchActivity.this,
-                                    "Selected " + newStateName + " " + newCityName,
+                                    "Please, select state and city ",
                                     Toast.LENGTH_SHORT)
                                     .show();
-                            mCityName = newCityName;
-                            mStateName = newStateName;
-                            mWhereAmI.setText(((mCityName == null) ? "Where am I" : mCityName));
-                            mViewPager.setCurrentItem(0); //ViewPager roll back to the first page (city-wide trend hashtag)
-                            loading(0, null);
-                            dialogInterface.dismiss();
-                            slidingSearchResultsFragment.clear();
                         }
                     };
                 });
