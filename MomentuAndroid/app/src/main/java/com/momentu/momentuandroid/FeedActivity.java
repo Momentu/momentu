@@ -231,6 +231,7 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
             Button cancel = (Button) dialogToPost.findViewById(R.id.cancel);
             hashtagInput = (EditText) dialogToPost.findViewById(R.id.hashtagInput);
 
+            hashtagInput.setText(hashtag);
             //On click listener for post button
             post.setOnClickListener(new View.OnClickListener(){
 
