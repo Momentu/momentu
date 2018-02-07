@@ -69,7 +69,8 @@ public class MediaController {
     @RequestMapping(value = "/media_upload", method = RequestMethod.POST)
     public @ResponseBody Map uploadMedia(@RequestHeader HttpHeaders headers, @RequestParam("file") MultipartFile file,
                                          @RequestParam("hashtagLabel") String hashtagLabel, @RequestParam("city") String city,
-                                         @RequestParam("state") String state) {
+                                         @RequestParam("state") String state,
+                                         @RequestParam(value = "mediaType", required = false) String mediaType) {
         HashtagAndLocation hashtagAndLocation = new HashtagAndLocation(hashtagLabel, city, state);
         InputStream inputStream = null;
 
@@ -145,6 +146,12 @@ public class MediaController {
                 mediaMeta.setLocation(locationWithId);
                 mediaMeta.setImageLocation(imageUrl);
                 mediaMeta.setThumbnailLocation(thumbnailUrl);
+                if(mediaType != null) {
+                    mediaMeta.setMediaType(mediaType);
+                } else {
+                    //TODO: Remove whenever app is ready. Defaults to "image" for now
+                    mediaMeta.setMediaType("image");
+                }
                 mediaMeta = mediaMetaRepository.save(mediaMeta);
 
                 return Collections.singletonMap("status", "success");

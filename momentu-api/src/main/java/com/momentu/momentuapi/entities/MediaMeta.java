@@ -25,8 +25,14 @@ public class MediaMeta extends AbstractEntity {
     @Column(name="imageLocation")
     private String imageLocation;
 
+    @Column(name="videoLocation")
+    private String videoLocation;
+
     @Column(name="thumbnailLocation")
     private String thumbnailLocation;
+
+    @Column(name="mediaType")
+    private String mediaType;
 
     public MediaMeta() {}
 
@@ -84,11 +90,28 @@ public class MediaMeta extends AbstractEntity {
         this.imageLocation = imageLocation;
     }
 
+
+    public String getVideoLocation() {
+        return videoLocation;
+    }
+
+    public void setVideoLocation(String videoLocation) {
+        this.videoLocation = videoLocation;
+    }
+
     public String getThumbnailLocation() {
         return thumbnailLocation;
     }
 
     public void setThumbnailLocation(String thumbnailLocation) {
         this.thumbnailLocation = thumbnailLocation;
+    }
+
+    public String getMediaType() {
+        return mediaType;
+    }
+
+    public void setMediaType(String mediaType) {
+        this.mediaType = mediaType;
     }
 }
