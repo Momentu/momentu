@@ -16,13 +16,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -51,29 +49,19 @@ import com.momentu.momentuandroid.Data.RestClient;
 import com.momentu.momentuandroid.Manager.PermissionsManager;
 import com.momentu.momentuandroid.Model.FeedItem;
 import com.momentu.momentuandroid.Model.Hashtag;
-import com.momentu.momentuandroid.Model.ImagesUrlStorage;
+import com.momentu.momentuandroid.Model.MediaUrlStorage;
 import com.momentu.momentuandroid.Model.Like;
-import com.momentu.momentuandroid.Model.State;
-import com.momentu.momentuandroid.Model.StatesAndCities;
-import com.momentu.momentuandroid.Services.ConnectionService;
 import com.momentu.momentuandroid.Services.GetImagesService;
 import com.momentu.momentuandroid.Utility.ConvertImagesToStringOfBytes;
 import com.momentu.momentuandroid.Utility.DeviceParameterTools;
 import com.momentu.momentuandroid.Adapter.FeedAdapter;
 import com.momentu.momentuandroid.Adapter.FeedItemAnimator;
 import com.momentu.momentuandroid.Utility.ImageHelper;
-import com.momentu.momentuandroid.Utility.JSONParser;
 import com.momentu.momentuandroid.Utility.RequestPackage;
 import com.momentu.momentuandroid.View.FeedContextMenuManager;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -135,9 +123,7 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
         intent.putExtra(GetImagesService.REQUEST_PACKAGE_IMAGE, requestPackage);
         startService(intent);
 
-//        convertURL("http://d63o2j1kvb33r.cloudfront.net/2018013028010IvVLpQrEAiDw.jpeg");
-
-        final ArrayList<ImagesUrlStorage> urls = new ArrayList<ImagesUrlStorage>();
+        final ArrayList<MediaUrlStorage> urls = new ArrayList<MediaUrlStorage>();
 
 
         if (savedInstanceState == null) {
@@ -179,7 +165,7 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
 
             Log.d("IMAGE_Feed","jsut got in here reciever");
 
-            ArrayList<ImagesUrlStorage> temp = intent
+            ArrayList<MediaUrlStorage> temp = intent
                     .getParcelableArrayListExtra(GetImagesService.MY_IMAGE_SERVICE_PAYLOAD);
 
             if (temp == null) {
@@ -380,18 +366,18 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
         startActivity(itemIntent);
     }
 
-    public void convertURL(final ArrayList<ImagesUrlStorage> response){
+    public void convertURL(final ArrayList<MediaUrlStorage> response){
 
-        Log.d("ConverURLToImage", "Just got in with a array");
+        Log.d("ConverURLToImage", "Just got in with an array");
 
         new AsyncTask<String, Void, Response>() {
             @Override
             protected Response doInBackground(String... strings) {
                 try {
 
-                    for (ImagesUrlStorage imageUrls : response) {
+                    for (MediaUrlStorage imageUrls : response) {
                         FeedItem myFeed = new FeedItem(null, null,
-                                new Hashtag(hashtag, 1), imageUrls.getOriginalUrl(),imageUrls.getThumbnilUrl(),
+                                new Hashtag(hashtag, 1), imageUrls.getOriginalUrl(),imageUrls.getThumbnilUrl(), "",
                                 "",
                                 null, null, null,
                                 new Like(93, false));

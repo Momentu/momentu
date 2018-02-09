@@ -43,7 +43,7 @@ public class FeedItemTest {
             Date createdTime = new Date();
             Boolean removed = false;
             Like likeFeed = new Like(10, true);
-            feedItem = new FeedItem(id,userID,hashTag,media,description,locationID,createdTime,removed,likeFeed);
+            feedItem = new FeedItem(id,userID,hashTag,null, null, "image",description,locationID,createdTime,removed,likeFeed);
             assertNotNull(feedItem);
         }catch (Exception e){
             fail("Creating a like object with parameters fails.");
@@ -64,7 +64,7 @@ public class FeedItemTest {
             Date createdTime = new Date();
             Boolean removed = false;
             Like likeFeed = new Like(10, true);
-            feedItem = new FeedItem(id,userID,hashTag,media,description,locationID,createdTime,removed,likeFeed);
+            feedItem = new FeedItem(id,userID,hashTag,null, null, "image",description,locationID,createdTime,removed,likeFeed);
             assertEquals(hashTag,feedItem.getHashTag());
         }catch (Exception e){
             fail("getHashTag method doesn't work properly.");
@@ -85,7 +85,7 @@ public class FeedItemTest {
             Date createdTime = new Date();
             Boolean removed = false;
             Like likeFeed = new Like(10, true);
-            feedItem = new FeedItem(id,userID,hashTag,media,description,locationID,createdTime,removed,likeFeed);
+            feedItem = new FeedItem(id,userID,hashTag,null, null, "image",description,locationID,createdTime,removed,likeFeed);
             assertEquals("This is a test description",feedItem.getDescription());
         }catch (Exception e){
             fail("getDescription method doesn't work properly.");
@@ -106,8 +106,8 @@ public class FeedItemTest {
             Date createdTime = new Date();
             Boolean removed = false;
             Like likeFeed = new Like(10, true);
-            feedItem = new FeedItem(id,userID,hashTag,media,description,locationID,createdTime,removed,likeFeed);
-            assertEquals(null,feedItem.getMedia());
+            feedItem = new FeedItem(id,userID,hashTag,null, null, "image", description,locationID,createdTime,removed,likeFeed);
+            assertEquals(null,feedItem.getOrginalUrl());
         }catch (Exception e){
             fail("getMedia method doesn't work properly.");
         }
@@ -126,8 +126,9 @@ public class FeedItemTest {
             BigInteger locationID= BigInteger.valueOf(1L);
             Date createdTime = new Date();
             Boolean removed = false;
+            String mediaType = "image";
             Like likeFeed = new Like(10, true);
-            feedItem = new FeedItem(id,userID,hashTag,media,description,locationID,createdTime,removed,likeFeed);
+            feedItem = new FeedItem(id,userID,hashTag,null ,null, mediaType,description,locationID,createdTime,removed,likeFeed);
             assertEquals(likeFeed,feedItem.getLike());
         }catch (Exception e){
             fail("getLike method doesn't work properly.");

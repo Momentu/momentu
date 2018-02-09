@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.momentu.momentuandroid.Model.City;
 import com.momentu.momentuandroid.Model.Hashtag;
-import com.momentu.momentuandroid.Model.ImagesUrlStorage;
+import com.momentu.momentuandroid.Model.MediaUrlStorage;
 import com.momentu.momentuandroid.Model.State;
 import com.momentu.momentuandroid.Model.StatesAndCities;
 
@@ -85,9 +85,10 @@ public class JSONParser {
 
                 JSONArray newArr = newJson.getJSONArray("mediaMetas");
                 Log.d("JSON2ARRAYCities", newArr.toString());
-                ImagesUrlStorage imageUrls;
+                MediaUrlStorage imageUrls;
                 for (int i = 0; i < newArr.length(); i++) {
-                    imageUrls = new ImagesUrlStorage(newArr.getJSONObject(i).getString("imageLocation"),newArr.getJSONObject(i).getString("thumbnailLocation"));
+                    imageUrls = new MediaUrlStorage(newArr.getJSONObject(i).getString("imageLocation"),newArr.getJSONObject(i).getString("thumbnailLocation")
+                            ,newArr.getJSONObject(i).getString("mediaType"));
                     objArray.add(imageUrls);
                 }
 

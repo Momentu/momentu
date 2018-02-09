@@ -2,9 +2,6 @@ package com.momentu.momentuandroid.Services;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
@@ -12,10 +9,7 @@ import android.util.Log;
 
 import com.momentu.momentuandroid.Data.RestClient;
 import com.momentu.momentuandroid.FeedActivity;
-import com.momentu.momentuandroid.Model.FeedItem;
-import com.momentu.momentuandroid.Model.Hashtag;
-import com.momentu.momentuandroid.Model.ImagesUrlStorage;
-import com.momentu.momentuandroid.Model.Like;
+import com.momentu.momentuandroid.Model.MediaUrlStorage;
 import com.momentu.momentuandroid.Utility.JSONParser;
 import com.momentu.momentuandroid.Utility.RequestPackage;
 
@@ -24,8 +18,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
 
 /**
@@ -69,7 +61,7 @@ public class GetImagesService extends IntentService {
         messageIntent.putExtra(MY_IMAGE_SERVICE_PAYLOAD, objectArray);
 
         //**************
-        ArrayList<ImagesUrlStorage> objArray = new ArrayList<ImagesUrlStorage>();
+        ArrayList<MediaUrlStorage> objArray = new ArrayList<MediaUrlStorage>();
         JSONObject obj = null;
         try {
             obj = new JSONObject(response);
@@ -80,10 +72,11 @@ public class GetImagesService extends IntentService {
 
         JSONArray newArr = newJson.getJSONArray("mediaMetas");
         Log.d("JSON2ARRAYCities", newArr.toString());
-        ImagesUrlStorage imageUrls;
+        MediaUrlStorage imageUrls;
 
         for (int i = 0; i < newArr.length(); i++) {
-            imageUrls = new ImagesUrlStorage(newArr.getJSONObject(i).getString("imageLocation"),newArr.getJSONObject(i).getString("thumbnailLocation"));
+            imageUrls = new MediaUrlStorage(newArr.getJSONObject(i).getString("imageLocation"),
+                    newArr.getJSONObject(i).getString("thumbnailLocation"), newArr.getJSONObject(i).getString("mediaType"));
             objArray.add(imageUrls);
         }
         } catch (JSONException e) {

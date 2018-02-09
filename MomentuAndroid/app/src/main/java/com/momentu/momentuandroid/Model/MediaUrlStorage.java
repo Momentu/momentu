@@ -7,13 +7,15 @@ import android.os.Parcelable;
  * Created by ialawwad on 1/29/18.
  */
 
-public class ImagesUrlStorage implements Parcelable {
+public class MediaUrlStorage implements Parcelable {
     private String originalUrl;
     private String thumbnilUrl;
+    private String media_type;
 
-    public ImagesUrlStorage(String originalUrl, String thumbnilUrl){
+    public MediaUrlStorage(String originalUrl, String thumbnilUrl, String media_type){
         this.originalUrl = originalUrl;
         this.thumbnilUrl = thumbnilUrl;
+        this.media_type = media_type;
     }
 
     public String getOriginalUrl() {
@@ -32,26 +34,34 @@ public class ImagesUrlStorage implements Parcelable {
         this.thumbnilUrl = thumbnilUrl;
     }
 
+    public String getMedia_type() {
+        return media_type;
+    }
+
+    public void setMedia_type(String media_type) {
+        this.media_type = media_type;
+    }
+
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(this.originalUrl);
         parcel.writeString(this.thumbnilUrl);
     }
 
-    protected ImagesUrlStorage(Parcel in) {
+    protected MediaUrlStorage(Parcel in) {
         this.originalUrl = in.readString();
         this.thumbnilUrl = in.readString();
     }
 
-    public static final Creator<ImagesUrlStorage> CREATOR = new Creator<ImagesUrlStorage>() {
+    public static final Creator<MediaUrlStorage> CREATOR = new Creator<MediaUrlStorage>() {
         @Override
-        public ImagesUrlStorage createFromParcel(Parcel in) {
-            return new ImagesUrlStorage(in);
+        public MediaUrlStorage createFromParcel(Parcel in) {
+            return new MediaUrlStorage(in);
         }
 
         @Override
-        public ImagesUrlStorage[] newArray(int size) {
-            return new ImagesUrlStorage[size];
+        public MediaUrlStorage[] newArray(int size) {
+            return new MediaUrlStorage[size];
         }
     };
 
