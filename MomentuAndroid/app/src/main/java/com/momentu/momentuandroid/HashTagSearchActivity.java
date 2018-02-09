@@ -116,6 +116,7 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
 
     /* Camera */
     public static final int CAMERA_REQUEST = 1888;
+    public static final int CAMERA_REQUEST_VIDEO = 2888;
     private final String TAG = "HashTagSearchActivity";
 
     /* Other Views */
@@ -253,9 +254,41 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
             @Override
             public void onClick(View v) {
                 if(permissionsManager.userHasPermission(HashTagSearchActivity.this)) {
-                    takePicture();
-                }
-                else {
+                    final Dialog dialogCameraMode = new Dialog(HashTagSearchActivity.this);
+                    dialogCameraMode.setContentView(R.layout.dialog_camera_mode);
+                    Button photo = (Button) dialogCameraMode.findViewById(R.id.photo);
+                    Button video = (Button) dialogCameraMode.findViewById(R.id.video);
+                    Button cancel = (Button) dialogCameraMode.findViewById(R.id.cancel);
+
+                    photo.setOnClickListener(new View.OnClickListener() {
+
+                        @Override
+                        public void onClick(View v) {
+                            dialogCameraMode.dismiss();
+                            takePicture();
+                        }
+                    });
+
+                    video.setOnClickListener(new View.OnClickListener() {
+
+                        @Override
+                        public void onClick(View v) {
+                            dialogCameraMode.dismiss();
+                            recordVideo();
+                        }
+                    });
+                    dialogCameraMode.show();
+
+                    cancel.setOnClickListener(new View.OnClickListener(){
+
+                        @Override
+                        public void onClick(View v) {
+                            dialogCameraMode.dismiss();
+                        }
+
+                    });
+
+                }else {
                     permissionsManager.requestPermission(HashTagSearchActivity.this);
                 }
             }
@@ -268,6 +301,30 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
 
         //this single line populate the state array
         loading(1,null);
+    }
+
+    private void recordVideo() {
+        Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+        if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
+            Uri videoURI = null;
+            try {
+                File videoFile = ImageHelper.createTempImageFile();
+                path = videoFile.getAbsolutePath();
+                videoURI = FileProvider.getUriForFile(HashTagSearchActivity.this,
+                        getString(R.string.file_provider_authority),
+                        videoFile);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            takeVideoIntent.putExtra(MediaStore.EXTRA_OUTPUT, videoURI);
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
+                takeVideoIntent.setClipData(ClipData.newRawUri("", videoURI));
+                takeVideoIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            }
+            takeVideoIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT,10);
+            startActivityForResult(takeVideoIntent, CAMERA_REQUEST_VIDEO);
+        }
     }
 
     private void takePicture() {
@@ -338,14 +395,60 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
                 }
             });
             dialogToPost.show();
-//            FeedItem myFeed = new FeedItem(null,null,
-//                    new Hashtag(hashtagInput.getText().toString(), 1),
-//                    new BitmapDrawable(getResources(), imageBitmap),
-//                    "HI",
-//                    null, null, null,
-//                    new Like(93, false));
-//            feedAdapter.addFeed(myFeed);
-            //On click listener for cancel button
+
+            cancel.setOnClickListener(new View.OnClickListener(){
+
+                @Override
+                public void onClick(View v) {
+                    dialogToPost.dismiss();
+                    Toast.makeText(HashTagSearchActivity.this, "Post has been canceled", Toast.LENGTH_LONG).show();
+                }
+
+            });
+        }else if (requestCode == CAMERA_REQUEST_VIDEO && resultCode == Activity.RESULT_OK){
+            Uri uriVideo = data.getData();
+
+            final Dialog dialogToPost = new Dialog(this);
+            dialogToPost.setContentView(R.layout.dialog_to_post);
+            Button post = (Button) dialogToPost.findViewById(R.id.post);
+            Button cancel = (Button) dialogToPost.findViewById(R.id.cancel);
+            hashtagInput = (EditText) dialogToPost.findViewById(R.id.hashtagInput);
+
+            //On click listener for post button
+            post.setOnClickListener(new View.OnClickListener(){
+
+                @Override
+                public void onClick(View v) {
+                    if (hashtagInput.getText().toString().contains("#")) {
+                        dialogToPost.dismiss();
+                        Toast.makeText(HashTagSearchActivity.this, hashtagInput.getText().toString() + "Video Posted", Toast.LENGTH_LONG).show();
+
+                        //Map<String, String> params = new HashMap<String, String>();
+                        //params.put("hashtagLabel", hashtagInput.getText().toString());
+                        //params.put("city", mCityName);
+                        //params.put("state", mStateName);
+
+                        //RestClient restClient = new RestClient();
+                        //try {
+                        //    restClient.media_upload(ConvertImagesToStringOfBytes.imageToString(imageBitmap), params, token, HashTagSearchActivity.this);
+                        //    recreate();
+                        //    //restClient.media(params, token, HashTagSearchActivity.this);
+                        //} catch (IOException e) {
+                        //    e.printStackTrace();
+                        //}
+                        //if(restClient.status == 0)
+                        //    Toast.makeText(HashTagSearchActivity.this, hashtagInput.getText().toString() + " posted", Toast.LENGTH_LONG).show();
+                        //else
+                        //    Toast.makeText(HashTagSearchActivity.this, hashtagInput.getText().toString() + " cann't be posted", Toast.LENGTH_LONG).show();
+                    //}else
+                    //{
+                    //    Toast.makeText(HashTagSearchActivity.this, "Wrong Hashtag Format", Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+
+            dialogToPost.show();
+
             cancel.setOnClickListener(new View.OnClickListener(){
 
                 @Override

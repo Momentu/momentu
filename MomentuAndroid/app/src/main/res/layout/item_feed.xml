@@ -24,6 +24,13 @@
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop" />
 
+            <VideoView
+                android:id="@+id/ivFeedCenterVideo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:visibility="invisible" />
+
             <View
                 android:id="@+id/vBgLike"
                 android:layout_width="match_parent"
@@ -38,6 +45,16 @@
                 android:scaleType="center"
                 android:src="@drawable/ic_heart_outline_white"
                 android:visibility="invisible" />
+
+            <ImageButton
+                android:id="@+id/videoIcon"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="right"
+                android:layout_margin="10dp"
+                android:background="@color/white"
+                android:visibility="invisible"
+                card_view:srcCompat="@android:drawable/presence_video_online" />
 
         </com.momentu.momentuandroid.View.SquaredFrameLayout>
 

@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.momentu.momentuandroid.FeedActivity;
 import com.momentu.momentuandroid.Model.FeedItem;
@@ -174,6 +175,10 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     //Define the UI for each feed
     public static class CellFeedViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.ivFeedCenterVideo)
+        VideoView ivFeedCenterVideo;
+        @BindView(R.id.videoIcon)
+        ImageButton videoIcon;
         @BindView(R.id.ivFeedCenter)
         ImageView ivFeedCenter;
         @BindView(R.id.ivFeedHashTag)

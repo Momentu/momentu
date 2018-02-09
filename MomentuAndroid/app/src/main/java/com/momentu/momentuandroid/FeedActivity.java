@@ -84,6 +84,7 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
     private static final int ANIM_DURATION_TOOLBAR = 300;
     private static final int ANIM_DURATION_FAB = 400;
     public static final int CAMERA_REQUEST = 1999;
+    public static final int CAMERA_REQUEST_VIDEO = 2999;
 
     //Feed RecyclerView
     @BindView(R.id.rvFeed)
@@ -151,16 +152,48 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
         //TODO: Need a "MediaActivity" to process the photo/video taken.
         ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.CAMERA},
-                HashTagSearchActivity.CAMERA_REQUEST);
+                FeedActivity.CAMERA_REQUEST);
 
         ImageButton cameraButton = (ImageButton) this.findViewById(R.id.bCameraInFeed);
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(permissionsManager.userHasPermission(FeedActivity.this)) {
-                    takePicture();
-                }
-                else {
+                    final Dialog dialogCameraMode = new Dialog(FeedActivity.this);
+                    dialogCameraMode.setContentView(R.layout.dialog_camera_mode);
+                    Button photo = (Button) dialogCameraMode.findViewById(R.id.photo);
+                    Button video = (Button) dialogCameraMode.findViewById(R.id.video);
+                    Button cancel = (Button) dialogCameraMode.findViewById(R.id.cancel);
+
+                    photo.setOnClickListener(new View.OnClickListener() {
+
+                        @Override
+                        public void onClick(View v) {
+                            dialogCameraMode.dismiss();
+                            takePicture();
+                        }
+                    });
+
+                    video.setOnClickListener(new View.OnClickListener() {
+
+                        @Override
+                        public void onClick(View v) {
+                            dialogCameraMode.dismiss();
+                            recordVideo();
+                        }
+                    });
+                    dialogCameraMode.show();
+
+                    cancel.setOnClickListener(new View.OnClickListener(){
+
+                        @Override
+                        public void onClick(View v) {
+                            dialogCameraMode.dismiss();
+                        }
+
+                    });
+
+                }else {
                     permissionsManager.requestPermission(FeedActivity.this);
                 }
             }
@@ -193,6 +226,30 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
             }
         }
     };
+
+    private void recordVideo() {
+        Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+        if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
+            Uri videoURI = null;
+            try {
+                File videoFile = ImageHelper.createTempImageFile();
+                path = videoFile.getAbsolutePath();
+                videoURI = FileProvider.getUriForFile(FeedActivity.this,
+                        getString(R.string.file_provider_authority),
+                        videoFile);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            takeVideoIntent.putExtra(MediaStore.EXTRA_OUTPUT, videoURI);
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
+                takeVideoIntent.setClipData(ClipData.newRawUri("", videoURI));
+                takeVideoIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            }
+            takeVideoIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT,10);
+            startActivityForResult(takeVideoIntent, CAMERA_REQUEST_VIDEO);
+        }
+    }
 
     private void takePicture() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -273,6 +330,59 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
 
             });
 
+        }else if (requestCode == CAMERA_REQUEST_VIDEO && resultCode == Activity.RESULT_OK){
+            Uri uriVideo = data.getData();
+
+            final Dialog dialogToPost = new Dialog(this);
+            dialogToPost.setContentView(R.layout.dialog_to_post);
+            Button post = (Button) dialogToPost.findViewById(R.id.post);
+            Button cancel = (Button) dialogToPost.findViewById(R.id.cancel);
+            hashtagInput = (EditText) dialogToPost.findViewById(R.id.hashtagInput);
+
+            //On click listener for post button
+            post.setOnClickListener(new View.OnClickListener(){
+
+                @Override
+                public void onClick(View v) {
+                    if (hashtagInput.getText().toString().contains("#")) {
+                        dialogToPost.dismiss();
+                        Toast.makeText(FeedActivity.this, hashtagInput.getText().toString() + "Video Posted", Toast.LENGTH_LONG).show();
+
+                        //Map<String, String> params = new HashMap<String, String>();
+                        //params.put("hashtagLabel", hashtagInput.getText().toString());
+                        //params.put("city", mCityName);
+                        //params.put("state", mStateName);
+
+                        //RestClient restClient = new RestClient();
+                        //try {
+                        //    restClient.media_upload(ConvertImagesToStringOfBytes.imageToString(imageBitmap), params, token, HashTagSearchActivity.this);
+                        //    recreate();
+                        //    //restClient.media(params, token, HashTagSearchActivity.this);
+                        //} catch (IOException e) {
+                        //    e.printStackTrace();
+                        //}
+                        //if(restClient.status == 0)
+                        //    Toast.makeText(HashTagSearchActivity.this, hashtagInput.getText().toString() + " posted", Toast.LENGTH_LONG).show();
+                        //else
+                        //    Toast.makeText(HashTagSearchActivity.this, hashtagInput.getText().toString() + " cann't be posted", Toast.LENGTH_LONG).show();
+                        //}else
+                        //{
+                        //    Toast.makeText(HashTagSearchActivity.this, "Wrong Hashtag Format", Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+
+            dialogToPost.show();
+
+            cancel.setOnClickListener(new View.OnClickListener(){
+
+                @Override
+                public void onClick(View v) {
+                    dialogToPost.dismiss();
+                    Toast.makeText(FeedActivity.this, "Post has been canceled", Toast.LENGTH_LONG).show();
+                }
+
+            });
         }
     }
 
