@@ -1,6 +1,8 @@
 package com.momentu.momentuapi.repos;
 
 import com.momentu.momentuapi.entities.MediaMeta;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -20,11 +22,11 @@ public interface MediaMetaRepository extends CrudRepository<MediaMeta, Long> {
             "where lo.state=:state order by m.created desc")
     List<MediaMeta> findByState(@Param("state") String state);
 
-    @Query("select m from MediaMeta m left join fetch m.location lo " +
+    @Query("select m from MediaMeta m left join m.location lo " +
             "where lo.state=:state and lo.city=:city and m.hashtagLabel=:label " +
             "order by m.created desc")
-    List<MediaMeta> findByStateCityLabel(@Param("state") String state, @Param("city") String city,
-                                    @Param("label") String label);
+    Page<MediaMeta> findByStateCityLabel(@Param("state") String state, @Param("city") String city,
+                                         @Param("label") String label, Pageable pageable);
 
     @Query("select m from MediaMeta m left join fetch m.location lo " +
             "where lo.state=:state and m.hashtagLabel=:label " +
