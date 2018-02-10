@@ -4,22 +4,21 @@
     android:id="@+id/cardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_gravity="center"
     app:cardUseCompatPadding="true">
 
-    <FrameLayout
+    <TableLayout
+        android:id="@+id/tableForButtons"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp"
+        android:shrinkColumns="1,2,3">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
+        <TableRow
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:background="@color/trend_hashtag_pager_light_gray"
-            android:padding="8dp">
-
+            android:layout_marginBottom="2dp">
             <Button
+                android:layout_column="1"
+                android:layout_weight="0"
                 android:id="@+id/bTag1"
                 android:onClick="clickToSearch"
                 android:layout_width="@dimen/trending_tag_button_width"
@@ -31,12 +30,12 @@
                 android:textColor="@color/white" />
 
             <Button
+                android:layout_column="2"
+                android:layout_weight="0"
                 android:id="@+id/bTag2"
                 android:onClick="clickToSearch"
                 android:layout_width="@dimen/trending_tag_button_width"
                 android:layout_height="@dimen/trending_tag_button_height"
-                android:layout_marginLeft="10dp"
-                android:layout_toRightOf="@+id/bTag1"
                 android:background="@drawable/capsule_button"
                 android:text="#Tag2"
                 android:visibility="invisible"
@@ -44,27 +43,28 @@
                 android:textColor="@color/white" />
 
             <Button
+                android:layout_column="3"
+                android:layout_weight="1"
                 android:id="@+id/bTag3"
                 android:onClick="clickToSearch"
                 android:layout_width="@dimen/trending_tag_button_width"
                 android:layout_height="@dimen/trending_tag_button_height"
-                android:layout_marginLeft="10dp"
-                android:layout_toRightOf="@+id/bTag2"
                 android:background="@drawable/capsule_button"
                 android:text="#Tag3"
                 android:visibility="invisible"
                 android:textAllCaps="false"
                 android:textColor="@color/white" />
 
+        </TableRow>
+        <TableRow
+            android:layout_height="wrap_content">
             <Button
+                android:layout_column="1"
+                android:layout_weight="0"
                 android:id="@+id/bTag4"
                 android:onClick="clickToSearch"
                 android:layout_width="@dimen/trending_tag_button_width"
                 android:layout_height="@dimen/trending_tag_button_height"
-                android:layout_alignLeft="@+id/bTag1"
-                android:layout_alignStart="@+id/bTag1"
-                android:layout_below="@+id/bTag1"
-                android:layout_marginTop="5dp"
                 android:background="@drawable/capsule_button"
                 android:text="#Tag4"
                 android:visibility="invisible"
@@ -72,13 +72,12 @@
                 android:textColor="@color/white" />
 
             <Button
+                android:layout_column="2"
+                android:layout_weight="0"
                 android:id="@+id/bTag5"
                 android:onClick="clickToSearch"
                 android:layout_width="@dimen/trending_tag_button_width"
                 android:layout_height="@dimen/trending_tag_button_height"
-                android:layout_alignEnd="@+id/bTag2"
-                android:layout_alignRight="@+id/bTag2"
-                android:layout_alignTop="@+id/bTag4"
                 android:background="@drawable/capsule_button"
                 android:text="#Tag5"
                 android:visibility="invisible"
@@ -86,20 +85,19 @@
                 android:textColor="@color/white" />
 
             <Button
+                android:layout_column="3"
+                android:layout_weight="1"
                 android:id="@+id/bTag6"
                 android:onClick="clickToSearch"
                 android:layout_width="@dimen/trending_tag_button_width"
                 android:layout_height="@dimen/trending_tag_button_height"
-                android:layout_alignEnd="@+id/bTag3"
-                android:layout_alignRight="@+id/bTag3"
-                android:layout_alignTop="@+id/bTag4"
                 android:background="@drawable/capsule_button"
                 android:text="#Tag6"
                 android:visibility="invisible"
                 android:textAllCaps="false"
                 android:textColor="@color/white" />
-        </RelativeLayout>
+        </TableRow>
 
-    </FrameLayout>
+    </TableLayout>
 
 </android.support.v7.widget.CardView>
