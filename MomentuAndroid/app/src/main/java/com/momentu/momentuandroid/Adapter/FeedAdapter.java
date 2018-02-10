@@ -5,6 +5,7 @@ package com.momentu.momentuandroid.Adapter;
  */
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,6 +26,9 @@ import com.momentu.momentuandroid.Model.Like;
 import com.momentu.momentuandroid.R;
 import com.squareup.picasso.Picasso;
 
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -71,9 +75,11 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 //feedItems.get(adapterPosition).getLike().addLikesCount();
                 //notifyItemChanged(adapterPosition, ACTION_LIKE_IMAGE_CLICKED);
                 if (context instanceof FeedActivity) {
-                    ((FeedActivity) context).goToMediaActivity(adapterPosition, feedItems.get(adapterPosition).getOrginalUrl());
-                    //Toast.makeText(context, feedItems.get(adapterPosition).getOrginalUrl()+ " orginal", Toast.LENGTH_LONG).show();
-                    //Toast.makeText(context, feedItems.get(adapterPosition).getThumbnilUrl()+ " thumbnail", Toast.LENGTH_LONG).show();
+                    if (feedItems.get(adapterPosition).getMedia_type().equals("image")) {
+                        ((FeedActivity) context).goToMediaActivity(adapterPosition, feedItems.get(adapterPosition).getOrginalUrl(), feedItems.get(adapterPosition).getMedia_type());
+                        //Toast.makeText(context, feedItems.get(adapterPosition).getOrginalUrl()+ " orginal", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(context, feedItems.get(adapterPosition).getThumbnilUrl()+ " thumbnail", Toast.LENGTH_LONG).show();
+                    }
                 }
             }
         });
@@ -207,10 +213,29 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             this.feedItem = feedItem;
             int adapterPosition = getAdapterPosition();
             Log.d("Feed Position", Integer.toString(adapterPosition));
-            Picasso.with(context)
-                    .load(feedItem.getThumbnilUrl())
-                    .into(ivFeedCenter);
-//            ivFeedCenter.setImageDrawable(feedItem.getMedia());
+            if (feedItem.getMedia_type().equals("image")){
+                ivFeedCenterVideo.setVisibility(View.INVISIBLE);
+                videoIcon.setVisibility(View.INVISIBLE);
+                ivFeedCenter.setVisibility(View.VISIBLE);
+                Picasso.with(context)
+                        .load(feedItem.getThumbnilUrl())
+                        .into(ivFeedCenter);
+            }else if (feedItem.getMedia_type().equals("video")){
+                ivFeedCenterVideo.setVisibility(View.VISIBLE);
+                videoIcon.setVisibility(View.VISIBLE);
+                ivFeedCenter.setVisibility(View.INVISIBLE);
+                Uri uri = null;
+                try {
+                    URL myurl = new URL(feedItem.getThumbnilUrl());
+                    uri = Uri.parse(myurl.toURI().toString());
+                }catch(MalformedURLException e){
+                    System.out.print(e.getMessage());
+                }catch (URISyntaxException e){
+                    System.out.print(e.getMessage());
+                }
+                ivFeedCenterVideo.setVideoURI(uri);
+
+            }
             ivFeedHashTag.setText(feedItem.getHashTag().getLabel());
             ivFeedDescription.setText(feedItem.getDescription());
             btnLike.setImageResource(feedItem.getLike().getIsLiked() ? R.drawable.ic_heart_red : R.drawable.ic_heart_outline_grey);

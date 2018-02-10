@@ -46,11 +46,13 @@ public class MediaUrlStorage implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(this.originalUrl);
         parcel.writeString(this.thumbnilUrl);
+        parcel.writeString(this.media_type);
     }
 
     protected MediaUrlStorage(Parcel in) {
         this.originalUrl = in.readString();
         this.thumbnilUrl = in.readString();
+        this.media_type = in.readString();
     }
 
     public static final Creator<MediaUrlStorage> CREATOR = new Creator<MediaUrlStorage>() {

@@ -464,7 +464,7 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
         Snackbar.make(clContent, "Liked!", Snackbar.LENGTH_SHORT).show();
     }
 
-    public void goToMediaActivity(int position, String url){
+    public void goToMediaActivity(int position, String url, String mediaType){
 
         Intent itemIntent = new Intent(this, MediaActivity.class);
         itemIntent.putExtra("token", token);
@@ -472,6 +472,7 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
         itemIntent.putExtra("city", mCityName);
         itemIntent.putExtra("hashtag", hashtag);
         itemIntent.putExtra("position", position);
+        itemIntent.putExtra("mediaType", mediaType);
         itemIntent.putExtra("url", url);
         startActivity(itemIntent);
     }
@@ -487,7 +488,7 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
 
                     for (MediaUrlStorage imageUrls : response) {
                         FeedItem myFeed = new FeedItem(null, null,
-                                new Hashtag(hashtag, 1), imageUrls.getOriginalUrl(),imageUrls.getThumbnilUrl(), "",
+                                new Hashtag(hashtag, 1), imageUrls.getOriginalUrl(),imageUrls.getThumbnilUrl(), imageUrls.getMedia_type(),
                                 "",
                                 null, null, null,
                                 new Like(93, false));
