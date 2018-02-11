@@ -16,86 +16,88 @@
         <TableRow
             android:layout_height="wrap_content"
             android:layout_marginBottom="2dp">
+
             <Button
-                android:layout_column="1"
-                android:layout_weight="0"
                 android:id="@+id/bTag1"
-                android:onClick="clickToSearch"
                 android:layout_width="@dimen/trending_tag_button_width"
                 android:layout_height="@dimen/trending_tag_button_height"
+                android:layout_column="1"
+                android:layout_weight="1"
                 android:background="@drawable/capsule_button"
+                android:onClick="clickToSearch"
                 android:text="#Tag1"
-                android:visibility="invisible"
                 android:textAllCaps="false"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:visibility="invisible" />
 
             <Button
-                android:layout_column="2"
-                android:layout_weight="0"
                 android:id="@+id/bTag2"
-                android:onClick="clickToSearch"
                 android:layout_width="@dimen/trending_tag_button_width"
                 android:layout_height="@dimen/trending_tag_button_height"
+                android:layout_column="2"
+                android:layout_weight="1"
                 android:background="@drawable/capsule_button"
+                android:onClick="clickToSearch"
                 android:text="#Tag2"
-                android:visibility="invisible"
                 android:textAllCaps="false"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:visibility="invisible" />
 
             <Button
+                android:id="@+id/bTag3"
+                android:layout_width="@dimen/trending_tag_button_width"
+                android:layout_height="@dimen/trending_tag_button_height"
                 android:layout_column="3"
                 android:layout_weight="1"
-                android:id="@+id/bTag3"
-                android:onClick="clickToSearch"
-                android:layout_width="@dimen/trending_tag_button_width"
-                android:layout_height="@dimen/trending_tag_button_height"
                 android:background="@drawable/capsule_button"
+                android:onClick="clickToSearch"
                 android:text="#Tag3"
-                android:visibility="invisible"
                 android:textAllCaps="false"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:visibility="invisible" />
 
         </TableRow>
-        <TableRow
-            android:layout_height="wrap_content">
+
+        <TableRow android:layout_height="wrap_content">
+
             <Button
-                android:layout_column="1"
-                android:layout_weight="0"
                 android:id="@+id/bTag4"
-                android:onClick="clickToSearch"
                 android:layout_width="@dimen/trending_tag_button_width"
                 android:layout_height="@dimen/trending_tag_button_height"
+                android:layout_column="1"
+                android:layout_weight="1"
                 android:background="@drawable/capsule_button"
+                android:onClick="clickToSearch"
                 android:text="#Tag4"
-                android:visibility="invisible"
                 android:textAllCaps="false"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:visibility="invisible" />
 
             <Button
-                android:layout_column="2"
-                android:layout_weight="0"
                 android:id="@+id/bTag5"
-                android:onClick="clickToSearch"
                 android:layout_width="@dimen/trending_tag_button_width"
                 android:layout_height="@dimen/trending_tag_button_height"
+                android:layout_column="2"
+                android:layout_weight="1"
                 android:background="@drawable/capsule_button"
+                android:onClick="clickToSearch"
                 android:text="#Tag5"
-                android:visibility="invisible"
                 android:textAllCaps="false"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:visibility="invisible" />
 
             <Button
+                android:id="@+id/bTag6"
+                android:layout_width="@dimen/trending_tag_button_width"
+                android:layout_height="@dimen/trending_tag_button_height"
                 android:layout_column="3"
                 android:layout_weight="1"
-                android:id="@+id/bTag6"
-                android:onClick="clickToSearch"
-                android:layout_width="@dimen/trending_tag_button_width"
-                android:layout_height="@dimen/trending_tag_button_height"
                 android:background="@drawable/capsule_button"
+                android:onClick="clickToSearch"
                 android:text="#Tag6"
-                android:visibility="invisible"
                 android:textAllCaps="false"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:visibility="invisible" />
         </TableRow>
 
     </TableLayout>
