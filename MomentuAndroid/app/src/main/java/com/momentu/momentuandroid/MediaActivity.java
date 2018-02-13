@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.VideoView;
 
 import com.otaliastudios.zoom.ZoomImageView;
@@ -20,15 +21,13 @@ public class MediaActivity extends AppCompatActivity {
     private String mCityName;
     private String mStateName;
     VideoView iv;
-
-    ImageButton playIcon;
-    ImageButton pauseIcon;
     static String token;
     public String hashtag;
     public String mediaType ="";
     ZoomImageView zoomImageView;
     public String url;
     int position = 0;
+    MediaController mediaController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,66 +42,30 @@ public class MediaActivity extends AppCompatActivity {
         url = getIntent().getStringExtra("url");
         mediaType = getIntent().getStringExtra("mediaType");
         iv = (VideoView) findViewById(R.id.videoCenter);
-        playIcon = (ImageButton)findViewById(R.id.playIcon);
-        pauseIcon = (ImageButton)findViewById(R.id.pauseIcon);
         zoomImageView = (ZoomImageView) findViewById(R.id.imageView);
 
         if(mediaType.equals("image")){
             iv.setVisibility(View.INVISIBLE);
-            playIcon.setVisibility(View.INVISIBLE);
-            pauseIcon.setVisibility(View.INVISIBLE);
             zoomImageView.setVisibility(View.VISIBLE);
             Picasso.with(this).load(url).into(zoomImageView);
         }else if(mediaType.equals("video")){
+            mediaController = new MediaController(this);
             zoomImageView.setVisibility(View.INVISIBLE);
             iv.setVisibility(View.VISIBLE);
-            playIcon.setVisibility(View.VISIBLE);
-            pauseIcon.setVisibility(View.VISIBLE);
             Uri uri = null;
-            try {
-                URL myurl = new URL(url);
-                uri = Uri.parse(myurl.toURI().toString());
-            }catch(MalformedURLException e){
-                System.out.print(e.getMessage());
-            }catch (URISyntaxException e){
-                System.out.print(e.getMessage());
-            }
+           // try {
+                //URL myurl = new URL(url);
+                uri = Uri.parse(url.toString());
+//            }catch(MalformedURLException e) {
+//                System.out.print(e.getMessage());
+//            }
+////            }catch (URISyntaxException e){
+////                System.out.print(e.getMessage());
+////            }
             iv.setVideoURI(uri);
-
-            playIcon.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    iv.start();
-                    playIcon.setVisibility(View.INVISIBLE);
-                }
-            });
-
-            iv.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (iv.isPlaying()){
-                        playIcon.setVisibility(View.INVISIBLE);
-                        pauseIcon.setVisibility(View.VISIBLE);
-                        iv.stopPlayback();
-                    }else{
-                        playIcon.setVisibility(View.INVISIBLE);
-                        pauseIcon.setVisibility(View.INVISIBLE);
-                        iv.start();
-
-                    }
-                }
-            });
-
-            pauseIcon.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    iv.start();
-                    pauseIcon.setVisibility(View.INVISIBLE);
-                    playIcon.setVisibility(View.INVISIBLE);
-                }
-            });
-
-
+            iv.setMediaController(mediaController);
+            mediaController.setAnchorView(iv);
+            iv.start();
         }
 
     }

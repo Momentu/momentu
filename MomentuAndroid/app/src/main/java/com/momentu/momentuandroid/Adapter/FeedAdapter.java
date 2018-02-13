@@ -75,11 +75,27 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 //feedItems.get(adapterPosition).getLike().addLikesCount();
                 //notifyItemChanged(adapterPosition, ACTION_LIKE_IMAGE_CLICKED);
                 if (context instanceof FeedActivity) {
-                    if (feedItems.get(adapterPosition).getMedia_type().equals("image")) {
+                    //if (feedItems.get(adapterPosition).getMedia_type().equals("image")) {
                         ((FeedActivity) context).goToMediaActivity(adapterPosition, feedItems.get(adapterPosition).getOrginalUrl(), feedItems.get(adapterPosition).getMedia_type());
                         //Toast.makeText(context, feedItems.get(adapterPosition).getOrginalUrl()+ " orginal", Toast.LENGTH_LONG).show();
                         //Toast.makeText(context, feedItems.get(adapterPosition).getThumbnilUrl()+ " thumbnail", Toast.LENGTH_LONG).show();
-                    }
+                    //}
+                }
+            }
+        });
+
+        cellFeedViewHolder.ivFeedCenterVideo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int adapterPosition = cellFeedViewHolder.getAdapterPosition();
+                //feedItems.get(adapterPosition).getLike().addLikesCount();
+                //notifyItemChanged(adapterPosition, ACTION_LIKE_IMAGE_CLICKED);
+                if (context instanceof FeedActivity) {
+                    //if (feedItems.get(adapterPosition).getMedia_type().equals("image")) {
+                    ((FeedActivity) context).goToMediaActivity(adapterPosition, feedItems.get(adapterPosition).getOrginalUrl(), feedItems.get(adapterPosition).getMedia_type());
+                    //Toast.makeText(context, feedItems.get(adapterPosition).getOrginalUrl()+ " orginal", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(context, feedItems.get(adapterPosition).getThumbnilUrl()+ " thumbnail", Toast.LENGTH_LONG).show();
+                    //}
                 }
             }
         });
@@ -120,14 +136,15 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public void updateItems(boolean animated) {
 //        feedItems.clear();
-//        feedItems.addAll(Arrays.asList(
-//                //TODO: Hard Coded feed item
-//                new FeedItem(null,null,
-//                        new Hashtag(context.getString(R.string.feed_hashtag), 1),
-//                        context.getResources().getDrawable(R.drawable.img_feed_center_1),
-//                        context.getString(R.string.feed_description_1),
-//                        null, null, null,
-//                        new Like(23, false)),
+        feedItems.addAll(Arrays.asList(
+                //TODO: Hard Coded feed item
+                new FeedItem(null,null,
+                        new Hashtag("Video", 1),
+                        "https://s3.amazonaws.com/androidvideostutorial/862009639.mp4",
+                        "https://s3.amazonaws.com/androidvideostutorial/862009639.mp4",
+                        "video","Video HardCoded",
+                        null, null, null,
+                        new Like(23, false))));
 //                new FeedItem(null,null,
 //                        new Hashtag(context.getString(R.string.feed_hashtag), 1),
 //                        context.getResources().getDrawable(R.drawable.img_feed_center_2),

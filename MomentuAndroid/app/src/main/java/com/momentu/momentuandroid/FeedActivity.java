@@ -62,7 +62,10 @@ import com.momentu.momentuandroid.View.FeedContextMenuManager;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -317,7 +320,7 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
             });
 
         }else if (requestCode == CAMERA_REQUEST_VIDEO && resultCode == Activity.RESULT_OK){
-            Uri uriVideo = data.getData();
+            final Uri uriVideo = data.getData();
 
             final Dialog dialogToPost = new Dialog(this);
             dialogToPost.setContentView(R.layout.dialog_to_post);
@@ -333,6 +336,15 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
                     if (hashtagInput.getText().toString().contains("#")) {
                         dialogToPost.dismiss();
                         Toast.makeText(FeedActivity.this, hashtagInput.getText().toString() + "Video Posted", Toast.LENGTH_LONG).show();
+                        Toast.makeText(FeedActivity.this, uriVideo.toString(), Toast.LENGTH_LONG).show();
+                        feedAdapter.addFeed(
+                                new FeedItem(null,null,
+                                        new Hashtag("Video", 1),
+                                        uriVideo.toString(),
+                                        uriVideo.toString(),
+                                        "video","Video HardCoded",
+                                        null, null, null,
+                                        new Like(23, false)));
 
                         //Map<String, String> params = new HashMap<String, String>();
                         //params.put("hashtagLabel", hashtagInput.getText().toString());
