@@ -75,6 +75,6 @@ public class MediaUrlStorage implements Parcelable {
 
     @Override
     public String toString(){
-        return this.originalUrl;
+        return "MediaType: " + media_type + ", Original Url: " + this.originalUrl;
     }
 }

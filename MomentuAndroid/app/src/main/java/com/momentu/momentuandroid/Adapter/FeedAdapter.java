@@ -5,7 +5,11 @@ package com.momentu.momentuandroid.Adapter;
  */
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,7 +35,9 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -84,22 +90,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
         });
 
-        cellFeedViewHolder.ivFeedCenterVideo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int adapterPosition = cellFeedViewHolder.getAdapterPosition();
-                //feedItems.get(adapterPosition).getLike().addLikesCount();
-                //notifyItemChanged(adapterPosition, ACTION_LIKE_IMAGE_CLICKED);
-                if (context instanceof FeedActivity) {
-                    //if (feedItems.get(adapterPosition).getMedia_type().equals("image")) {
-                    ((FeedActivity) context).goToMediaActivity(adapterPosition, feedItems.get(adapterPosition).getOrginalUrl(), feedItems.get(adapterPosition).getMedia_type());
-                    //Toast.makeText(context, feedItems.get(adapterPosition).getOrginalUrl()+ " orginal", Toast.LENGTH_LONG).show();
-                    //Toast.makeText(context, feedItems.get(adapterPosition).getThumbnilUrl()+ " thumbnail", Toast.LENGTH_LONG).show();
-                    //}
-                }
-            }
-        });
-
+        //TODO: increment Likes and send it to the backend
         // When clicking the like button, like the feed
         cellFeedViewHolder.btnLike.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,46 +127,15 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public void updateItems(boolean animated) {
 //        feedItems.clear();
-        feedItems.addAll(Arrays.asList(
-                //TODO: Hard Coded feed item
-                new FeedItem(null,null,
-                        new Hashtag("Video", 1),
-                        "https://s3.amazonaws.com/androidvideostutorial/862009639.mp4",
-                        "https://s3.amazonaws.com/androidvideostutorial/862009639.mp4",
-                        "video","Video HardCoded",
-                        null, null, null,
-                        new Like(23, false))));
+//        feedItems.addAll(Arrays.asList(
+//                //TODO: Hard Coded feed item
 //                new FeedItem(null,null,
-//                        new Hashtag(context.getString(R.string.feed_hashtag), 1),
-//                        context.getResources().getDrawable(R.drawable.img_feed_center_2),
-//                        context.getString(R.string.feed_description_2),
+//                        new Hashtag("Video", 1),
+//                        "https://s3.amazonaws.com/androidvideostutorial/862009639.mp4",
+//                        "https://s3.amazonaws.com/androidvideostutorial/862009639.mp4",
+//                        "video/mp4","Video HardCoded",
 //                        null, null, null,
-//                        new Like(2, false)),
-//                new FeedItem(null,null,
-//                        new Hashtag(context.getString(R.string.feed_hashtag), 1),
-//                        context.getResources().getDrawable(R.drawable.img_feed_center_1),
-//                        context.getString(R.string.feed_description_1),
-//                        null, null, null,
-//                        new Like(45, false)),
-//                new FeedItem(null,null,
-//                        new Hashtag(context.getString(R.string.feed_hashtag), 1),
-//                        context.getResources().getDrawable(R.drawable.img_feed_center_2),
-//                        context.getString(R.string.feed_description_2),
-//                        null, null, null,
-//                        new Like(159, false)),
-//                new FeedItem(null,null,
-//                        new Hashtag(context.getString(R.string.feed_hashtag), 1),
-//                        context.getResources().getDrawable(R.drawable.img_feed_center_1),
-//                        context.getString(R.string.feed_description_1),
-//                        null, null, null,
-//                        new Like(362, false)),
-//                new FeedItem(null,null,
-//                        new Hashtag(context.getString(R.string.feed_hashtag), 1),
-//                        context.getResources().getDrawable(R.drawable.img_feed_center_2),
-//                        context.getString(R.string.feed_description_2),
-//                        null, null, null,
-//                        new Like(93, false))
-//        ));
+//                        new Like(23, false))));
         if (animated) {
             notifyItemRangeInserted(0, feedItems.size());
         } else {
@@ -237,10 +197,11 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 Picasso.with(context)
                         .load(feedItem.getThumbnilUrl())
                         .into(ivFeedCenter);
-            }else if (feedItem.getMedia_type().equals("video")){
-                ivFeedCenterVideo.setVisibility(View.VISIBLE);
+            }else if (feedItem.getMedia_type().equals("video/mp4")){
+                ivFeedCenterVideo.setVisibility(View.INVISIBLE);
                 videoIcon.setVisibility(View.VISIBLE);
-                ivFeedCenter.setVisibility(View.INVISIBLE);
+                ivFeedCenter.setVisibility(View.VISIBLE);
+                ivFeedCenter.setImageBitmap(getVideoThumbnail(feedItem.getOrginalUrl()));
                 Uri uri = null;
                 try {
                     URL myurl = new URL(feedItem.getThumbnilUrl());
@@ -269,5 +230,42 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
     public void addFeed(FeedItem myFeed){
         feedItems.add(myFeed);
+    }
+    public static Bitmap getVideoThumbnail(String path) {
+        Bitmap bitmap = null;
+        try {
+            bitmap = new AsyncTask<String,Void,Bitmap>(){
+
+                @Override
+                protected Bitmap doInBackground(String... strings) {
+                    Bitmap bitmap1 = null;
+                    MediaMetadataRetriever mediaMetadataRetriever = null;
+                    try {
+                        mediaMetadataRetriever = new MediaMetadataRetriever();
+                        if (Build.VERSION.SDK_INT >= 14)
+                            mediaMetadataRetriever.setDataSource(strings[0], new HashMap<String, String>());
+                        else
+                            mediaMetadataRetriever.setDataSource(strings[0]);
+                        //   mediaMetadataRetriever.setDataSource(videoPath);
+                        bitmap1 = mediaMetadataRetriever.getFrameAtTime();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Log.d("Exception", "Exception in retriveVideoFrameFromVideo(String videoPath) for: "+ strings[0] + e.getMessage());
+
+                    } finally {
+                        if (mediaMetadataRetriever != null) {
+                            mediaMetadataRetriever.release();
+                        }
+                    }
+                    Log.d("GetAThumbnail","just made it");
+                    return bitmap1;            }
+            }.execute(path).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        return bitmap;
     }
 }

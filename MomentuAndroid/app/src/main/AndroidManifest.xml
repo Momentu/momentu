@@ -30,7 +30,7 @@
             android:name=".Services.ConnectionService"
             android:exported="false" />
         <service
-            android:name=".Services.GetImagesService"
+            android:name=".Services.GetMediaService"
             android:exported="false" />
 
         <activity android:name=".MediaActivity"></activity>

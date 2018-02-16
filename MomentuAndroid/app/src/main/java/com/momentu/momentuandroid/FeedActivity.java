@@ -51,7 +51,7 @@ import com.momentu.momentuandroid.Model.FeedItem;
 import com.momentu.momentuandroid.Model.Hashtag;
 import com.momentu.momentuandroid.Model.MediaUrlStorage;
 import com.momentu.momentuandroid.Model.Like;
-import com.momentu.momentuandroid.Services.GetImagesService;
+import com.momentu.momentuandroid.Services.GetMediaService;
 import com.momentu.momentuandroid.Utility.ConvertImagesToStringOfBytes;
 import com.momentu.momentuandroid.Utility.DeviceParameterTools;
 import com.momentu.momentuandroid.Adapter.FeedAdapter;
@@ -62,13 +62,9 @@ import com.momentu.momentuandroid.View.FeedContextMenuManager;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-
 
 public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeedItemClickListener {
     public static final String ACTION_SHOW_LOADING_ITEM = "action_show_loading_item";
@@ -123,8 +119,8 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
         requestPackage.setParam("state",mStateName);
         requestPackage.setToken(token);
 
-        Intent intent = new Intent(this, GetImagesService.class);
-        intent.putExtra(GetImagesService.REQUEST_PACKAGE_IMAGE, requestPackage);
+        Intent intent = new Intent(this, GetMediaService.class);
+        intent.putExtra(GetMediaService.REQUEST_PACKAGE_IMAGE, requestPackage);
         startService(intent);
 
         final ArrayList<MediaUrlStorage> urls = new ArrayList<MediaUrlStorage>();
@@ -191,7 +187,7 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
         //setup reciever 'mBroadcastReceiver'
         LocalBroadcastManager.getInstance(getApplicationContext())
                 .registerReceiver(mBroadcastReceiver,
-                        new IntentFilter(GetImagesService.MY_IMAGE_SERVICE_MESSAGE));
+                        new IntentFilter(GetMediaService.MY_IMAGE_SERVICE_MESSAGE));
     }
 
     //receive response from ConnectionService
@@ -202,14 +198,13 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
             Log.d("IMAGE_Feed","jsut got in here reciever");
 
             ArrayList<MediaUrlStorage> temp = intent
-                    .getParcelableArrayListExtra(GetImagesService.MY_IMAGE_SERVICE_PAYLOAD);
+                    .getParcelableArrayListExtra(GetMediaService.MY_IMAGE_SERVICE_PAYLOAD);
 
             if (temp == null) {
                 Log.d("IMAGE_Feed","temp is null");
             }
 
             else {
-//                urls.add(temp.get(0));
                 convertURL(temp);
                 Log.d("IMAGE_Feed", " just got this: " + temp.get(0));
             }
@@ -221,7 +216,7 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
         if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
             Uri videoURI = null;
             try {
-                File videoFile = ImageHelper.createTempImageFile();
+                File videoFile = ImageHelper.createTempVideoFile();
                 path = videoFile.getAbsolutePath();
                 videoURI = FileProvider.getUriForFile(FeedActivity.this,
                         getString(R.string.file_provider_authority),
@@ -292,7 +287,7 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
 
                         RestClient restClient = new RestClient();
                         try {
-                            restClient.media_upload(ConvertImagesToStringOfBytes.imageToString(imageBitmap), params, token, FeedActivity.this);
+                            restClient.media_upload(ConvertImagesToStringOfBytes.mediaToByteArray(imageBitmap), "image", params, token, FeedActivity.this);
                             //restClient.media(params, token, FeedActivity.this);
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -335,37 +330,27 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
                 public void onClick(View v) {
                     if (hashtagInput.getText().toString().contains("#")) {
                         dialogToPost.dismiss();
-                        Toast.makeText(FeedActivity.this, hashtagInput.getText().toString() + "Video Posted", Toast.LENGTH_LONG).show();
-                        Toast.makeText(FeedActivity.this, uriVideo.toString(), Toast.LENGTH_LONG).show();
-                        feedAdapter.addFeed(
-                                new FeedItem(null,null,
-                                        new Hashtag("Video", 1),
-                                        uriVideo.toString(),
-                                        uriVideo.toString(),
-                                        "video","Video HardCoded",
-                                        null, null, null,
-                                        new Like(23, false)));
 
-                        //Map<String, String> params = new HashMap<String, String>();
-                        //params.put("hashtagLabel", hashtagInput.getText().toString());
-                        //params.put("city", mCityName);
-                        //params.put("state", mStateName);
+                        Map<String, String> params = new HashMap<String, String>();
+                        params.put("hashtagLabel", hashtagInput.getText().toString());
+                        params.put("city", mCityName);
+                        params.put("state", mStateName);
 
-                        //RestClient restClient = new RestClient();
-                        //try {
-                        //    restClient.media_upload(ConvertImagesToStringOfBytes.imageToString(imageBitmap), params, token, HashTagSearchActivity.this);
-                        //    recreate();
-                        //    //restClient.media(params, token, HashTagSearchActivity.this);
-                        //} catch (IOException e) {
-                        //    e.printStackTrace();
-                        //}
-                        //if(restClient.status == 0)
-                        //    Toast.makeText(HashTagSearchActivity.this, hashtagInput.getText().toString() + " posted", Toast.LENGTH_LONG).show();
-                        //else
-                        //    Toast.makeText(HashTagSearchActivity.this, hashtagInput.getText().toString() + " cann't be posted", Toast.LENGTH_LONG).show();
-                        //}else
-                        //{
-                        //    Toast.makeText(HashTagSearchActivity.this, "Wrong Hashtag Format", Toast.LENGTH_LONG).show();
+                        RestClient restClient = new RestClient();
+                        try {
+                            restClient.media_upload(ConvertImagesToStringOfBytes.mediaToByteArray(uriVideo),"video/mp4", params, token, FeedActivity.this);
+                            recreate();
+                            //restClient.media(params, token, HashTagSearchActivity.this);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        if(restClient.status == 0)
+                            Toast.makeText(FeedActivity.this, hashtagInput.getText().toString() + " posted", Toast.LENGTH_LONG).show();
+                        else
+                            Toast.makeText(FeedActivity.this, hashtagInput.getText().toString() + " cann't be posted", Toast.LENGTH_LONG).show();
+                    }else
+                    {
+                        Toast.makeText(FeedActivity.this, "Wrong Hashtag Format", Toast.LENGTH_LONG).show();
                     }
                 }
             });

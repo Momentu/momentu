@@ -24,14 +24,14 @@ import java.util.ArrayList;
  * Created by ialawwad on 1/29/18.
  */
 
-public class GetImagesService extends IntentService {
+public class GetMediaService extends IntentService {
     public static final String REQUEST_PACKAGE_IMAGE = "requestPackage";
     public static final String MY_IMAGE_SERVICE_MESSAGE = "myImageServiceMessage";
     public static final String MY_IMAGE_SERVICE_PAYLOAD = "myImageServicePayload";
-    private static final String TAG = "GetImagesService";
+    private static final String TAG = "GetMediaService";
 
 
-    public GetImagesService(){super("GetImagesService");}
+    public GetMediaService(){super("GetMediaService");}
 
 
     @Override
@@ -76,7 +76,8 @@ public class GetImagesService extends IntentService {
 
         for (int i = 0; i < newArr.length(); i++) {
             imageUrls = new MediaUrlStorage(newArr.getJSONObject(i).getString("imageLocation"),
-                    newArr.getJSONObject(i).getString("thumbnailLocation"), newArr.getJSONObject(i).getString("mediaType"));
+                    newArr.getJSONObject(i).getString("thumbnailLocation"),
+                    newArr.getJSONObject(i).getString("mediaType"));
             objArray.add(imageUrls);
         }
         } catch (JSONException e) {
@@ -84,7 +85,6 @@ public class GetImagesService extends IntentService {
         }
         //**************
 
-            Log.d("ConverURLToImage", "Just got in with a string");
         LocalBroadcastManager manager =
                 LocalBroadcastManager.getInstance(getApplicationContext());
         manager.sendBroadcast(messageIntent);

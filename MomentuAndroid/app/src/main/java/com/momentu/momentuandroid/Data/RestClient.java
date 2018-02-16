@@ -212,8 +212,8 @@ public class RestClient {
         }
     }
 
-    public void media_upload(final byte[] image, final Map<String, String> params, final String userToken, final Activity currentActivity) throws IOException {
-        final MediaType MEDIA_TYPE_JPEG = MediaType.parse("image/JPEG");
+    public void media_upload(final byte[] media, final String mediaType,final Map<String, String> params, final String userToken, final Activity currentActivity) throws IOException {
+        final MediaType MEDIA_TYPE_JPEG = MediaType.parse(mediaType=="image"? "image/JPEG":"video/mp4");//"image/JPEG"
         OkHttpClient client = new OkHttpClient();
         Log.d("Response_M_U_Not_yet", "just got in");
 
@@ -233,7 +233,8 @@ public class RestClient {
                 // Stay clear & functional, just convert input to output and return it
                 OkHttpClient client = new OkHttpClient();
                 RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
-                        .addFormDataPart("file","image.jpeg",RequestBody.create(MEDIA_TYPE_JPEG,image))
+                        .addFormDataPart("file","",RequestBody.create(MEDIA_TYPE_JPEG, media))
+                        .addFormDataPart("mediaType",mediaType)
                         .addFormDataPart("city",params.get("city"))
                         .addFormDataPart("hashtagLabel",params.get("hashtagLabel"))
                         .addFormDataPart("state",params.get("state"))

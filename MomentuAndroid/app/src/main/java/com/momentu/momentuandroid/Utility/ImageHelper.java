@@ -17,6 +17,13 @@ public class ImageHelper {
         storageDir.mkdirs();
         return File.createTempFile(imageFileName, ".jpg", storageDir);
     }
+    public static File createTempVideoFile() throws IOException {
+        final String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        final String videoFileName = "MP4_" + timestamp;
+        File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES), "videos");
+        storageDir.mkdirs();
+        return File.createTempFile(videoFileName, ".mp4", storageDir);
+    }
 
     public static BitmapFactory.Options provideCompressionBitmapFactoryOptions() {
         BitmapFactory.Options opt = new BitmapFactory.Options();

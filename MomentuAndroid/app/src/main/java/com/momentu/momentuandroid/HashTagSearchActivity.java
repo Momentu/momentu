@@ -13,7 +13,6 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -34,7 +33,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -56,9 +54,7 @@ import com.momentu.momentuandroid.Data.RestClient;
 import com.momentu.momentuandroid.Fragment.BaseFragment;
 import com.momentu.momentuandroid.Fragment.SlidingSearchResultsFragment;
 import com.momentu.momentuandroid.Manager.PermissionsManager;
-import com.momentu.momentuandroid.Model.FeedItem;
 import com.momentu.momentuandroid.Model.Hashtag;
-import com.momentu.momentuandroid.Model.Like;
 import com.momentu.momentuandroid.Model.State;
 import com.momentu.momentuandroid.Model.StatesAndCities;
 import com.momentu.momentuandroid.Model.TrendHashTagCard;
@@ -67,16 +63,17 @@ import com.momentu.momentuandroid.Utility.ConvertImagesToStringOfBytes;
 import com.momentu.momentuandroid.Utility.ImageHelper;
 import com.momentu.momentuandroid.Utility.RequestPackage;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import static com.momentu.momentuandroid.Adapter.FeedAdapter.context;
 
 /**
  * Created by Jane on 11/4/2017.
@@ -308,7 +305,7 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
         if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
             Uri videoURI = null;
             try {
-                File videoFile = ImageHelper.createTempImageFile();
+                File videoFile = ImageHelper.createTempVideoFile();
                 path = videoFile.getAbsolutePath();
                 videoURI = FileProvider.getUriForFile(HashTagSearchActivity.this,
                         getString(R.string.file_provider_authority),
@@ -378,7 +375,7 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
 
                         RestClient restClient = new RestClient();
                         try {
-                            restClient.media_upload(ConvertImagesToStringOfBytes.imageToString(imageBitmap), params, token, HashTagSearchActivity.this);
+                            restClient.media_upload(ConvertImagesToStringOfBytes.mediaToByteArray(imageBitmap), "image", params, token, HashTagSearchActivity.this);
                             recreate();
                             //restClient.media(params, token, HashTagSearchActivity.this);
                         } catch (IOException e) {
@@ -406,7 +403,14 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
 
             });
         }else if (requestCode == CAMERA_REQUEST_VIDEO && resultCode == Activity.RESULT_OK){
-            Uri uriVideo = data.getData();
+            final Uri uriVideo = data.getData();
+//            try {
+//                uriVideo = data.getData();
+//
+//            } catch (URISyntaxException e) {
+//                e.printStackTrace();
+//            }
+//            final URI javaUriVideo = uriVideo;
 
             final Dialog dialogToPost = new Dialog(this);
             dialogToPost.setContentView(R.layout.dialog_to_post);
@@ -423,26 +427,26 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
                         dialogToPost.dismiss();
                         Toast.makeText(HashTagSearchActivity.this, hashtagInput.getText().toString() + "Video Posted", Toast.LENGTH_LONG).show();
 
-                        //Map<String, String> params = new HashMap<String, String>();
-                        //params.put("hashtagLabel", hashtagInput.getText().toString());
-                        //params.put("city", mCityName);
-                        //params.put("state", mStateName);
+                        Map<String, String> params = new HashMap<String, String>();
+                        params.put("hashtagLabel", hashtagInput.getText().toString());
+                        params.put("city", mCityName);
+                        params.put("state", mStateName);
 
-                        //RestClient restClient = new RestClient();
-                        //try {
-                        //    restClient.media_upload(ConvertImagesToStringOfBytes.imageToString(imageBitmap), params, token, HashTagSearchActivity.this);
-                        //    recreate();
-                        //    //restClient.media(params, token, HashTagSearchActivity.this);
-                        //} catch (IOException e) {
-                        //    e.printStackTrace();
-                        //}
-                        //if(restClient.status == 0)
-                        //    Toast.makeText(HashTagSearchActivity.this, hashtagInput.getText().toString() + " posted", Toast.LENGTH_LONG).show();
-                        //else
-                        //    Toast.makeText(HashTagSearchActivity.this, hashtagInput.getText().toString() + " cann't be posted", Toast.LENGTH_LONG).show();
-                    //}else
-                    //{
-                    //    Toast.makeText(HashTagSearchActivity.this, "Wrong Hashtag Format", Toast.LENGTH_LONG).show();
+                        RestClient restClient = new RestClient();
+                        try {
+                            restClient.media_upload(ConvertImagesToStringOfBytes.mediaToByteArray(uriVideo),"video/mp4", params, token, HashTagSearchActivity.this);
+                            recreate();
+                            //restClient.media(params, token, HashTagSearchActivity.this);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        if(restClient.status == 0)
+                            Toast.makeText(HashTagSearchActivity.this, hashtagInput.getText().toString() + " posted", Toast.LENGTH_LONG).show();
+                        else
+                            Toast.makeText(HashTagSearchActivity.this, hashtagInput.getText().toString() + " cann't be posted", Toast.LENGTH_LONG).show();
+                    }else
+                    {
+                        Toast.makeText(HashTagSearchActivity.this, "Wrong Hashtag Format", Toast.LENGTH_LONG).show();
                     }
                 }
             });

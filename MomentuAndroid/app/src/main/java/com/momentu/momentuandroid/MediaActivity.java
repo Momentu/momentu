@@ -3,6 +3,7 @@ package com.momentu.momentuandroid;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -44,11 +45,12 @@ public class MediaActivity extends AppCompatActivity {
         iv = (VideoView) findViewById(R.id.videoCenter);
         zoomImageView = (ZoomImageView) findViewById(R.id.imageView);
 
+        Log.d("MediaActivity","Just got mediaType: " + mediaType);
         if(mediaType.equals("image")){
             iv.setVisibility(View.INVISIBLE);
             zoomImageView.setVisibility(View.VISIBLE);
             Picasso.with(this).load(url).into(zoomImageView);
-        }else if(mediaType.equals("video")){
+        }else if(mediaType.equals("video/mp4")){
             mediaController = new MediaController(this);
             zoomImageView.setVisibility(View.INVISIBLE);
             iv.setVisibility(View.VISIBLE);
