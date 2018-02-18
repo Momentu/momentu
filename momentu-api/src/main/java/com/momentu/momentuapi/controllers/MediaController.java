@@ -205,4 +205,30 @@ public class MediaController {
         mediaMetaRepository.save(currentMediaMeta);
         return Collections.singletonMap("status", "true");
     }
+
+    @RequestMapping(value = "/mediaDelete", method = RequestMethod.POST)
+    public @ResponseBody Map mediaDelete(@RequestParam Long mediaMetaId, Principal principal) {
+        User currentUser;
+        MediaMeta currentMediaMeta;
+        Optional<User> user = userRepository.getUserByPrincipal(principal);
+        Optional<MediaMeta> mediaMeta = mediaMetaRepository.findById(mediaMetaId);
+
+        if(user.equals(Optional.empty())) {
+            throw new IllegalArgumentException("User does not exist");
+        }
+        if(mediaMeta.equals(Optional.empty())) {
+            throw new IllegalArgumentException("Media Meta does not exist");
+        }
+
+        currentMediaMeta = mediaMeta.get();
+        currentUser = user.get();
+        User mediaMetaUser = currentMediaMeta.getUser();
+        if(currentUser.getId() != mediaMetaUser.getId()) {
+            throw new IllegalArgumentException("User does not own Media Meta. Cannot delete");
+        }
+
+        currentMediaMeta.setRemoved(true);
+        mediaMetaRepository.save(currentMediaMeta);
+        return Collections.singletonMap("status", "true");
+    }
 }

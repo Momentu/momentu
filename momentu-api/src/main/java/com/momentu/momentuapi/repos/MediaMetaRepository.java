@@ -16,37 +16,39 @@ import java.util.Optional;
 public interface MediaMetaRepository extends CrudRepository<MediaMeta, Long> {
 
     @Query("select m from MediaMeta m left join fetch m.location lo " +
-            "where lo.state=:state and lo.city=:city order by m.created desc")
+            "where lo.state=:state and m.removed = False " +
+            "and lo.city=:city order by m.created desc")
     List<MediaMeta> findByStateCity(@Param("state") String state, @Param("city") String city);
 
     @Query("select m from MediaMeta m left join fetch m.location lo " +
-            "where lo.state=:state order by m.created desc")
+            "where lo.state=:state  and m.removed = False " +
+            "order by m.created desc")
     List<MediaMeta> findByState(@Param("state") String state);
 
     @Query("select m from MediaMeta m left join m.location lo " +
-            "where lo.state=:state and lo.city=:city and m.hashtagLabel=:label " +
+            "where lo.state=:state and lo.city=:city and m.hashtagLabel=:label and m.removed = False " +
             "order by m.created desc")
     Page<MediaMeta> findByStateCityLabel(@Param("state") String state, @Param("city") String city,
                                          @Param("label") String label, Pageable pageable);
 
     @Query("select m from MediaMeta m left join fetch m.location lo " +
-            "where lo.state=:state and m.hashtagLabel=:label " +
+            "where lo.state=:state and m.hashtagLabel=:label and m.removed = False " +
             "order by m.created desc")
     List<MediaMeta> findByStateLabel(@Param("state") String state, @Param("label") String label);
 
     @Query("select m from MediaMeta m inner join m.user u " +
-            "where u.username=?#{principal.username} " +
+            "where u.username=?#{principal.username} and m.removed = False " +
             "order by m.created desc")
     Page<MediaMeta> findByCurrentUser(Pageable pageable);
 
     @Query("select m from MediaMeta m inner join m.userLikes u " +
-            "where u.username=?#{principal.username} " +
+            "where u.username=?#{principal.username} and m.removed = False " +
             "order by m.created desc")
     Page<MediaMeta> findByCurrentUserLikes(Pageable pageable);
 
     @RestResource(exported=false)
     @Query("select m from MediaMeta m " +
-            "where m.id=:mediaMetaId")
+            "where m.id=:mediaMetaId and m.removed = False ")
     Optional<MediaMeta> findById(@Param("mediaMetaId") Long mediaMetaId);
 
     @Override

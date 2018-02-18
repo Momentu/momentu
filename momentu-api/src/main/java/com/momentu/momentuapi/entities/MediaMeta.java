@@ -55,6 +55,8 @@ public class MediaMeta extends AbstractEntity {
 
     public MediaMeta() {}
 
+    public Long getId() { return this.id; }
+
     @JsonIgnore
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     public User getUser() {
