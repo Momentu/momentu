@@ -7,6 +7,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import static javax.persistence.CascadeType.*;
 
@@ -35,6 +36,12 @@ public class User extends AbstractEntity {
     @OneToMany(targetEntity=UserRole.class)
     @JoinColumn(name="user_id", referencedColumnName="id")
     private List<UserRole> roles;
+
+    @OneToMany(mappedBy="user", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+    private Set<MediaMeta> mediaMetas;
+
+    @ManyToMany(mappedBy="userLikes", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+    public Set<MediaMeta> mediaMetaLikes;
 
     public List<UserRole> getRoles() {
         return roles;
@@ -88,6 +95,14 @@ public class User extends AbstractEntity {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String encodedPassword = passwordEncoder.encode(password);
         this.password = encodedPassword;
+    }
+
+    public Set<MediaMeta> getMediaMetas() {
+        return mediaMetas;
+    }
+
+    public void setMediaMetas(Set<MediaMeta> mediaMetas) {
+        this.mediaMetas = mediaMetas;
     }
 
 //    @Override

@@ -87,7 +87,7 @@ public class PostMediaMetaController {
 
 //        MediaMeta mediaMeta = new MediaMeta(user.getId(), hashtagWithId.getHashtagKey().getLabel(), locationWithId.getId());
         MediaMeta mediaMeta = new MediaMeta();
-        mediaMeta.setUserId(user.getId());
+        mediaMeta.setUser(user);
         mediaMeta.setCreated(new Date());
         mediaMeta.setRemoved(false);
         mediaMeta.setHashtagLabel(hashtagAndLocation.getHashtagLabel());

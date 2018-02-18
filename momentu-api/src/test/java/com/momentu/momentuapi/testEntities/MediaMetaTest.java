@@ -3,7 +3,6 @@ package com.momentu.momentuapi.testEntities;
 import com.momentu.momentuapi.entities.Hashtag;
 import com.momentu.momentuapi.entities.Location;
 import com.momentu.momentuapi.entities.MediaMeta;
-import com.momentu.momentuapi.entities.UserLike;
 import com.momentu.momentuapi.entities.keys.UserLikeKey;
 import junit.framework.TestCase;
 import org.junit.Test;
@@ -19,42 +18,43 @@ public class MediaMetaTest {
     //This is a test object from MediaMeta class
     MediaMeta mediaMetaTest;
 
-    //Testing MediaMeta constructor without parameters
-    @Test
-    public void testMediaMeta() {
-        try {
-            mediaMetaTest = new MediaMeta();
-            assertTrue(mediaMetaTest.getUserId() == null);
-        } catch (Exception e) {
-            fail("MediaMeta constructor without parameters can't be used");
-        }
-    }
-
-    //Testing userId set method
-    @Test
-    public void testSetUserId() {
-        try {
-            mediaMetaTest = new MediaMeta();
-            Long userId = 1L;
-            mediaMetaTest.setUserId(userId);
-            assertEquals(userId, mediaMetaTest.getUserId());
-        }catch (Exception e){
-            fail("userId value has not been set correctly");
-        }
-    }
-
-    //Testing userId get method
-    @Test
-    public void testGetUserId(){
-        try {
-            mediaMetaTest = new MediaMeta();
-            Long userId = 1L;
-            mediaMetaTest.setUserId(userId);
-            assertEquals(userId, mediaMetaTest.getUserId());
-        }catch (Exception e){
-            fail("userId value has not been gotten correctly");
-        }
-    }
+    // TODO: Remove or update tests for Media Meta User updates
+//    //Testing MediaMeta constructor without parameters
+//    @Test
+//    public void testMediaMeta() {
+//        try {
+//            mediaMetaTest = new MediaMeta();
+//            assertTrue(mediaMetaTest.getUserId() == null);
+//        } catch (Exception e) {
+//            fail("MediaMeta constructor without parameters can't be used");
+//        }
+//    }
+//
+//    //Testing userId set method
+//    @Test
+//    public void testSetUserId() {
+//        try {
+//            mediaMetaTest = new MediaMeta();
+//            Long userId = 1L;
+//            mediaMetaTest.setUserId(userId);
+//            assertEquals(userId, mediaMetaTest.getUserId());
+//        }catch (Exception e){
+//            fail("userId value has not been set correctly");
+//        }
+//    }
+//
+//    //Testing userId get method
+//    @Test
+//    public void testGetUserId(){
+//        try {
+//            mediaMetaTest = new MediaMeta();
+//            Long userId = 1L;
+//            mediaMetaTest.setUserId(userId);
+//            assertEquals(userId, mediaMetaTest.getUserId());
+//        }catch (Exception e){
+//            fail("userId value has not been gotten correctly");
+//        }
+//    }
 
     //Testing locationId set method
     @Test

@@ -1,13 +1,15 @@
 package com.momentu.momentuapi.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Set;
 
 @Entity
 @Table(name="media_meta")
 public class MediaMeta extends AbstractEntity {
-    @Column(name="user_id")
-    private Long userId;
 
     @Column(name="hashtag_label")
     private String hashtagLabel;
@@ -34,14 +36,43 @@ public class MediaMeta extends AbstractEntity {
     @Column(name="mediaType")
     private String mediaType;
 
+    @ManyToOne
+    @JoinColumn(name="user_id")
+    private User user;
+
+    @ManyToMany(fetch=FetchType.LAZY)
+    @JoinTable(name="user_likes",
+        joinColumns = @JoinColumn(
+                name = "media_meta_id",
+                referencedColumnName = "id",
+                nullable = false),
+        inverseJoinColumns = @JoinColumn(
+                name = "user_id",
+                referencedColumnName = "id",
+                nullable = false
+        ))
+    public Set<User> userLikes;
+
     public MediaMeta() {}
 
-    public Long getUserId() {
-        return userId;
+    @JsonIgnore
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    @JsonIgnore
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    public Set<User> getUserLikes() {
+        return userLikes;
+    }
+
+    public void setUserLikes(Set<User> userLikes) {
+        this.userLikes = userLikes;
     }
 
     public String getHashtagLabel() {
@@ -90,7 +121,6 @@ public class MediaMeta extends AbstractEntity {
         this.imageLocation = imageLocation;
     }
 
-
     public String getVideoLocation() {
         return videoLocation;
     }
@@ -113,5 +143,9 @@ public class MediaMeta extends AbstractEntity {
 
     public void setMediaType(String mediaType) {
         this.mediaType = mediaType;
+    }
+
+    public Long getLikeCount() {
+        return getUserLikes().stream().count();
     }
 }

@@ -26,10 +26,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Map;
-import java.util.Optional;
+import java.security.Principal;
+import java.util.*;
 
 @RepositoryRestController
 @RequestMapping("/")
@@ -139,7 +137,7 @@ public class MediaController {
                 String thumbnailUrl = imageProtocol + "://" + thumbnailLocation + "/" + keyName;
 
                 MediaMeta mediaMeta = new MediaMeta();
-                mediaMeta.setUserId(user.getId());
+                mediaMeta.setUser(user);
                 mediaMeta.setCreated(new Date());
                 mediaMeta.setRemoved(false);
                 mediaMeta.setHashtagLabel(hashtagAndLocation.getHashtagLabel());
@@ -160,5 +158,51 @@ public class MediaController {
             }
         }
         return Collections.singletonMap("status", "fail");
+    }
+
+    @RequestMapping(value = "/mediaLike", method = RequestMethod.POST)
+    public @ResponseBody Map mediaLike(@RequestParam Long mediaMetaId, Principal principal) {
+        User currentUser;
+        MediaMeta currentMediaMeta;
+        Optional<User> user = userRepository.getUserByPrincipal(principal);
+        Optional<MediaMeta> mediaMeta = mediaMetaRepository.findById(mediaMetaId);
+
+        if(user.equals(Optional.empty())) {
+            throw new IllegalArgumentException("User does not exist");
+        }
+        if(mediaMeta.equals(Optional.empty())) {
+            throw new IllegalArgumentException("Media Meta does not exist");
+        }
+
+        currentMediaMeta = mediaMeta.get();
+        currentUser = user.get();
+        currentMediaMeta.getUserLikes().add(currentUser);
+        mediaMetaRepository.save(currentMediaMeta);
+        return Collections.singletonMap("status", "true");
+    }
+
+    @RequestMapping(value = "/mediaUnlike", method = RequestMethod.POST)
+    public @ResponseBody Map mediaUnlike(@RequestParam Long mediaMetaId, Principal principal) {
+        User currentUser;
+        MediaMeta currentMediaMeta;
+        Optional<User> user = userRepository.getUserByPrincipal(principal);
+        Optional<MediaMeta> mediaMeta = mediaMetaRepository.findById(mediaMetaId);
+
+        if(user.equals(Optional.empty())) {
+            throw new IllegalArgumentException("User does not exist");
+        }
+        if(mediaMeta.equals(Optional.empty())) {
+            throw new IllegalArgumentException("Media Meta does not exist");
+        }
+
+        currentMediaMeta = mediaMeta.get();
+        currentUser = user.get();
+
+        Boolean success = currentMediaMeta.getUserLikes().remove(currentUser);
+        if(!success) {
+            throw new IllegalArgumentException("No like exists for Media Meta");
+        }
+        mediaMetaRepository.save(currentMediaMeta);
+        return Collections.singletonMap("status", "true");
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
 
 import java.util.List;
+import java.util.Optional;
 
 @RepositoryRestResource
 public interface MediaMetaRepository extends CrudRepository<MediaMeta, Long> {
@@ -32,6 +33,21 @@ public interface MediaMetaRepository extends CrudRepository<MediaMeta, Long> {
             "where lo.state=:state and m.hashtagLabel=:label " +
             "order by m.created desc")
     List<MediaMeta> findByStateLabel(@Param("state") String state, @Param("label") String label);
+
+    @Query("select m from MediaMeta m inner join m.user u " +
+            "where u.username=?#{principal.username} " +
+            "order by m.created desc")
+    Page<MediaMeta> findByCurrentUser(Pageable pageable);
+
+    @Query("select m from MediaMeta m inner join m.userLikes u " +
+            "where u.username=?#{principal.username} " +
+            "order by m.created desc")
+    Page<MediaMeta> findByCurrentUserLikes(Pageable pageable);
+
+    @RestResource(exported=false)
+    @Query("select m from MediaMeta m " +
+            "where m.id=:mediaMetaId")
+    Optional<MediaMeta> findById(@Param("mediaMetaId") Long mediaMetaId);
 
     @Override
     @RestResource(exported=false)

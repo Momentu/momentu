@@ -122,3 +122,6 @@ INSERT INTO momentu.media_meta(user_id, hashtag_label, location_id, created, rem
 INSERT INTO momentu.media_meta(user_id, hashtag_label, location_id, created, removed, image_location, thumbnail_location, media_type) VALUES (1, '#trend', 1, '2017-11-14 21:59:22', FALSE, 'http://d63o2j1kvb33r.cloudfront.net/2018020253284MvTVFmzvViXA.jpeg', 'http://d374h62p1mwy1i.cloudfront.net/2018020253284MvTVFmzvViXA.jpeg', 'image');
 INSERT INTO momentu.media_meta(user_id, hashtag_label, location_id, created, removed, image_location, thumbnail_location, media_type) VALUES (2, '#trend', 1, '2017-11-14 22:00:22', FALSE, 'http://d63o2j1kvb33r.cloudfront.net/2018020249496AqSZcbNYOsZQ.jpeg', 'http://d374h62p1mwy1i.cloudfront.net/2018020249496AqSZcbNYOsZQ.jpeg', 'image');
 INSERT INTO momentu.hashtag(label, location_id, count) VALUES ('#trend', 1, 60);
+INSERT INTO momentu.user_likes(user_id, media_meta_id) VALUES (2, 3)
+INSERT INTO momentu.user_likes(user_id, media_meta_id) VALUES (3, 3)
+INSERT INTO momentu.user_likes(user_id, media_meta_id) VALUES (3, 5)
