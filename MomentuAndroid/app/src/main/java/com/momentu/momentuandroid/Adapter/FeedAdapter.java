@@ -195,7 +195,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 videoIcon.setVisibility(View.INVISIBLE);
                 ivFeedCenter.setVisibility(View.VISIBLE);
                 Picasso.with(context)
-                        .load(feedItem.getThumbnilUrl())
+                        .load(Uri.parse(feedItem.getThumbnilUrl()))
                         .into(ivFeedCenter);
             }else if (feedItem.getMedia_type().equals("video/mp4")){
                 ivFeedCenterVideo.setVisibility(View.INVISIBLE);

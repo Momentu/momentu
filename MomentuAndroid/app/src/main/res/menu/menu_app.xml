@@ -6,5 +6,20 @@
             android:checked="false"
             android:icon="@drawable/ic_logout_black_24dp"
             android:title="@string/log_out"/>
+        <item
+            android:id="@+id/profile"
+            android:checked="false"
+            android:icon="@drawable/ic_action_profile"
+            android:title="Profile"/>
+        <item
+            android:id="@+id/postsYouHaveLiked"
+            android:checked="false"
+            android:icon="@drawable/ic_heart_red"
+            android:title="Posts You've Liked"/>
+        <item
+            android:id="@+id/postsOfYou"
+            android:checked="false"
+            android:icon="@drawable/ic_camera_pink_40dp_pad5dp"
+            android:title="Posts of You"/>
     </group>
 </menu>

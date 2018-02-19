@@ -69,6 +69,10 @@ public class SlidingSearchResultsFragment extends BaseFragment {
         mSearchResultsAdapter.clear();
     }
 
+    public SearchResultsListAdapter getmSearchResultsAdapter(){
+        return mSearchResultsAdapter;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -261,6 +265,7 @@ public class SlidingSearchResultsFragment extends BaseFragment {
                 if (item.getTitle().equals("action location")) {
                     HashTagSearchActivity hashTagSearchActivity = (HashTagSearchActivity) getActivity();
                     hashTagSearchActivity.checkLocation();
+                    hashTagSearchActivity.slidingSearchResultsFragment.clear();
                 }
             }
         });

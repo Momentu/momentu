@@ -92,11 +92,10 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
 
     private String mCityName;
     private String mStateName;
-
     static String token;
 
     public String hashtag;
-
+    public Uri photoURI = null;
     private String path;
 
     @Override
@@ -238,7 +237,7 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
     private void takePicture() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            Uri photoURI = null;
+            //Uri photoURI = null;
             try {
                 File imageFile = ImageHelper.createTempImageFile();
                 path = imageFile.getAbsolutePath();
@@ -268,7 +267,7 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
 
             final Dialog dialogToPost = new Dialog(this);
             dialogToPost.setContentView(R.layout.dialog_to_post);
-            Button post = (Button) dialogToPost.findViewById(R.id.post);
+            final Button post = (Button) dialogToPost.findViewById(R.id.post);
             Button cancel = (Button) dialogToPost.findViewById(R.id.cancel);
             hashtagInput = (EditText) dialogToPost.findViewById(R.id.hashtagInput);
 
@@ -292,9 +291,18 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                        if(restClient.status == 0)
+                        if(restClient.status == 0) {
                             Toast.makeText(FeedActivity.this, hashtagInput.getText().toString() + " posted", Toast.LENGTH_LONG).show();
-                        else
+                            if(hashtagInput.getText().toString().equals(hashtag)) {
+                                FeedItem myFeed = new FeedItem(null, null,
+                                        new Hashtag(hashtagInput.getText().toString(), 1), photoURI.toString(), photoURI.toString(), "image",
+                                        "",
+                                        null, null, null,
+                                        new Like(0, false));
+                                feedAdapter.addFeed(myFeed);
+                                feedAdapter.notifyDataSetChanged();
+                            }
+                        }else
                             Toast.makeText(FeedActivity.this, hashtagInput.getText().toString() + " cann't be posted", Toast.LENGTH_LONG).show();
 
                     }else
@@ -322,7 +330,7 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
             Button post = (Button) dialogToPost.findViewById(R.id.post);
             Button cancel = (Button) dialogToPost.findViewById(R.id.cancel);
             hashtagInput = (EditText) dialogToPost.findViewById(R.id.hashtagInput);
-
+            hashtagInput.setText(hashtag);
             //On click listener for post button
             post.setOnClickListener(new View.OnClickListener(){
 
@@ -338,15 +346,24 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
 
                         RestClient restClient = new RestClient();
                         try {
-                            restClient.media_upload(ConvertImagesToStringOfBytes.mediaToByteArray(uriVideo),"video/mp4", params, token, FeedActivity.this);
-                            recreate();
+                            restClient.media_upload(ConvertImagesToStringOfBytes.mediaToByteArray(uriVideo), "video/mp4", params, token, FeedActivity.this);
+                            //recreate();
                             //restClient.media(params, token, HashTagSearchActivity.this);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                        if(restClient.status == 0)
+                        if (restClient.status == 0){
                             Toast.makeText(FeedActivity.this, hashtagInput.getText().toString() + " posted", Toast.LENGTH_LONG).show();
-                        else
+                            if(hashtagInput.getText().toString().equals(hashtag)) {
+                                FeedItem myFeed = new FeedItem(null, null,
+                                        new Hashtag(hashtagInput.getText().toString(), 1), uriVideo.toString(), uriVideo.toString(), "video/mp4",
+                                        "",
+                                        null, null, null,
+                                        new Like(0, false));
+                                feedAdapter.addFeed(myFeed);
+                                feedAdapter.notifyDataSetChanged();
+                            }
+                        }else
                             Toast.makeText(FeedActivity.this, hashtagInput.getText().toString() + " cann't be posted", Toast.LENGTH_LONG).show();
                     }else
                     {

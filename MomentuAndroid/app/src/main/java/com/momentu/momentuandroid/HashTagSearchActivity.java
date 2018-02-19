@@ -203,7 +203,6 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
                 );
 
 
-
                 mBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -221,6 +220,8 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
                                 mWhereAmI.setText(((mCityName == null) ? "Where am I" : mCityName));
                                 mViewPager.setCurrentItem(0); //ViewPager roll back to the first page (city-wide trend hashtag)
                                 loading(0, null);
+                                //mViewPager.setCurrentItem(0);
+                                mLocation=null;
                                 dialogInterface.dismiss();
                                 slidingSearchResultsFragment.clear();
                             }
@@ -297,7 +298,7 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
                         new IntentFilter(ConnectionService.MY_SERVICE_MESSAGE));
 
         //this single line populate the state array
-        loading(1,null);
+        //loading(1,null);
     }
 
     private void recordVideo() {
@@ -376,14 +377,23 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
                         RestClient restClient = new RestClient();
                         try {
                             restClient.media_upload(ConvertImagesToStringOfBytes.mediaToByteArray(imageBitmap), "image", params, token, HashTagSearchActivity.this);
-                            recreate();
-                            //restClient.media(params, token, HashTagSearchActivity.this);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                        if(restClient.status == 0)
+                        if(restClient.status == 0) {
                             Toast.makeText(HashTagSearchActivity.this, hashtagInput.getText().toString() + " posted", Toast.LENGTH_LONG).show();
-                        else
+                            if (mLocation == null){
+                                mWhereAmI.setText(((mCityName == null) ? "Where am I" : mCityName));
+                                mViewPager.setCurrentItem(0);
+                                for(int i = 0; i< 100000000; i++);
+                                loading(0,null);
+                                slidingSearchResultsFragment.clear();
+                                mViewPager.getAdapter().notifyDataSetChanged();
+                            }else{
+                                showLocation(mLocation);
+                            }
+
+                        }else
                             Toast.makeText(HashTagSearchActivity.this, hashtagInput.getText().toString() + " cann't be posted", Toast.LENGTH_LONG).show();
                     }else
                     {
@@ -404,13 +414,6 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
             });
         }else if (requestCode == CAMERA_REQUEST_VIDEO && resultCode == Activity.RESULT_OK){
             final Uri uriVideo = data.getData();
-//            try {
-//                uriVideo = data.getData();
-//
-//            } catch (URISyntaxException e) {
-//                e.printStackTrace();
-//            }
-//            final URI javaUriVideo = uriVideo;
 
             final Dialog dialogToPost = new Dialog(this);
             dialogToPost.setContentView(R.layout.dialog_to_post);
@@ -435,14 +438,22 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
                         RestClient restClient = new RestClient();
                         try {
                             restClient.media_upload(ConvertImagesToStringOfBytes.mediaToByteArray(uriVideo),"video/mp4", params, token, HashTagSearchActivity.this);
-                            recreate();
-                            //restClient.media(params, token, HashTagSearchActivity.this);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                        if(restClient.status == 0)
+                        if(restClient.status == 0) {
                             Toast.makeText(HashTagSearchActivity.this, hashtagInput.getText().toString() + " posted", Toast.LENGTH_LONG).show();
-                        else
+                            if (mLocation == null){
+                                mWhereAmI.setText(((mCityName == null) ? "Where am I" : mCityName));
+                                mViewPager.setCurrentItem(0);
+                                for(int i = 0; i< 100000000; i++);
+                                loading(0,null);
+                                slidingSearchResultsFragment.clear();
+                                mViewPager.getAdapter().notifyDataSetChanged();
+                            }else{
+                                showLocation(mLocation);
+                            }
+                        }else
                             Toast.makeText(HashTagSearchActivity.this, hashtagInput.getText().toString() + " cann't be posted", Toast.LENGTH_LONG).show();
                     }else
                     {
@@ -547,6 +558,11 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
                 showLocation(mLocation);
             } else {
                 Log.i(TAG, "Location permission was NOT granted.");
+                mLocation = new Location(LocationManager.NETWORK_PROVIDER);
+                mLocation.setLatitude(33.5055);
+                mLocation.setLongitude(-86.8557);
+                showLocation(mLocation);
+
             }
         }
     }
@@ -557,28 +573,6 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
         mViewPager.addOnPageChangeListener(new PageListener());
 
         mCardAdapter = new CardPagerAdapter();
-
-        //Hard coded tags- for demonstration if the number of hashtag is too small.
-//        cityWideHashTags[0] = "#Sixers";
-//        cityWideHashTags[1] = "#anniversary";
-//        cityWideHashTags[2] = "#Supernatural";
-//        cityWideHashTags[3] = "#scnews";
-//        cityWideHashTags[4] = "#AOMG";
-//        cityWideHashTags[5] = "#Scandal";
-//
-//        stateWideHashTags[0] = "#AOMG";
-//        stateWideHashTags[1] = "#anniversary";
-//        stateWideHashTags[2] = "#AnOpenSecret";
-//        stateWideHashTags[3] = "#Scandal";
-//        stateWideHashTags[4] = "#Sixers";
-//        stateWideHashTags[5] = "#scnews";
-
-//        nationWideHashTags[0] = "#AllStars3";
-//        nationWideHashTags[1] = "#Scandal";
-//        nationWideHashTags[2] = "#Supernatural";
-//        nationWideHashTags[3] = "#AppleMichiganAve";
-//        nationWideHashTags[4] = "#AOMG";
-//        nationWideHashTags[5] = "#anniversary";
 
         if(Storedhashtags != null) {
             int storedHashtagLength = Storedhashtags.size();
@@ -699,6 +693,8 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
                 ActivityCompat.requestPermissions(HashTagSearchActivity.this,
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSIONS_REQUEST_LOCATION);
+
+
             }
         } else {
             Log.d("Permission_Check", "Good!");
@@ -718,17 +714,20 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
 
     private void showLocation(Location location) {
         String mLocationName;
+
         if (location == null) {
             mLocationName = "Unknown";
         } else {
             Geocoder gcd = new Geocoder(this, Locale.getDefault());
             try {
+
                 mAddresses = gcd.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
             if (mAddresses != null && mAddresses.size() > 0) {
+                Log.d("address ", mAddresses.toString());
                 mCityName = mAddresses.get(0).getLocality();
                 mStateName = mAddresses.get(0).getAdminArea();
 //                mCountryName = mAddresses.get(0).getCountryName();
@@ -741,11 +740,13 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
 
         mWhereAmI.setText(((mCityName == null) ? "Where am I" : mCityName));
         mViewPager.setCurrentItem(0); //When location updated, roll back to the first page (city-wide trend hashtag)
-        Toast.makeText(getBaseContext(), "Current location:" + mLocationName,
+        Toast.makeText(getBaseContext(), "You are in" + mLocationName,
                 Toast.LENGTH_LONG).show();
 
         //call the method that passes the location to the RestClient, for retrieving hashtags
         loading(0, null);
+        arrayOfStates.clear();
+        loading(1,null);
     }
 
     //When Trend hashtag is clicked
@@ -829,6 +830,7 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
     {
         if(code == 0)
         {
+
             if(mCityName != null && mStateName != null){
                 RequestPackage requestPackage = new RequestPackage();
                 requestPackage.setEndpoint(EndPoints.HASHTAGS_ENDPOINT);
