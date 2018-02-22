@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.momentu.momentuandroid.Data.RestClient;
 import com.momentu.momentuandroid.FeedActivity;
 import com.momentu.momentuandroid.Model.FeedItem;
 import com.momentu.momentuandroid.Model.Hashtag;
@@ -30,6 +31,7 @@ import com.momentu.momentuandroid.Model.Like;
 import com.momentu.momentuandroid.R;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -96,8 +98,33 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             @Override
             public void onClick(View v) {
                 int adapterPosition = cellFeedViewHolder.getAdapterPosition();
-                feedItems.get(adapterPosition).getLike().addLikesCount();
+                FeedItem newFeedItem = feedItems.get(adapterPosition);
+                if(newFeedItem.getLike().getIsLiked()){
+                    try {
+                        new RestClient().MediaUnlike(newFeedItem.getId(), FeedActivity.token);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    newFeedItem.getLike().setIsLiked(false);
+//                    cellFeedViewHolder.btnLike.setImageResource(R.drawable.ic_heart_outline_grey);
+
+//                    newFeedItem.getLike().minusLikesCount();
+                }else{
+
+                    try {
+                        new RestClient().MediaLike(newFeedItem.getId(), FeedActivity.token);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    newFeedItem.getLike().setIsLiked(true);
+//                    cellFeedViewHolder.btnLike.setImageResource(R.drawable.ic_heart_red);
+//                    newFeedItem.getLike().addLikesCount();
+                }
+//                feedItems.get(adapterPosition).getLike().addLikesCount();
                 notifyItemChanged(adapterPosition, ACTION_LIKE_BUTTON_CLICKED);
+
                 if (context instanceof FeedActivity) {
                     ((FeedActivity) context).showLikedSnackbar();
                 }
@@ -187,6 +214,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
 
         public void bindView(FeedItem feedItem) {
+            Log.d("bindView","called");
             this.feedItem = feedItem;
             int adapterPosition = getAdapterPosition();
             Log.d("Feed Position", Integer.toString(adapterPosition));
@@ -216,6 +244,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
             ivFeedHashTag.setText(feedItem.getHashTag().getLabel());
             ivFeedDescription.setText(feedItem.getDescription());
+            Log.d("IsLike","isLike value: " + feedItem.getLike().getIsLiked());
             btnLike.setImageResource(feedItem.getLike().getIsLiked() ? R.drawable.ic_heart_red : R.drawable.ic_heart_outline_grey);
             tsLikesCounter.setCurrentText(vImageRoot.getResources().getQuantityString(
                     R.plurals.likes_count, feedItem.getLike().getLikesCount(), feedItem.getLike().getLikesCount()

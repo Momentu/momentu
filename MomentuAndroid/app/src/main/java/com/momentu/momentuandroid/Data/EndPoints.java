@@ -13,6 +13,9 @@ public class EndPoints {
     final public static String STATES_ENDPOINT = "http://www.momentu.xyz:8080/states";
     final public static String HASHTAGS_ENDPOINT = "http://www.momentu.xyz:8080/hashtags";
     final public static String MEDIA_RETRIVE ="http://www.momentu.xyz:8080/mediaMetas/search/findByStateCityLabel";
+    final public static String MEIDALIKE = "http://www.momentu.xyz:8080/mediaLike";
+    final public static String MEIDAUNLIKE = "http://www.momentu.xyz:8080/mediaUnlike";
+
 
 //    //the following are equivilant addresses mapped to the local host
 //    public static String LOCATION_ENDPOINT = "http://10.0.2.2:8080/locations";

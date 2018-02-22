@@ -78,6 +78,7 @@ public class JSONParser {
                 }
             }
             else if(code == 3){
+                Log.d("XJSONPARSERX", "got in with code 3; \"Not supposed to be in here\"");
                 JSONObject obj = new JSONObject(jason);
                 Log.d("JSON2ARRAYNothingyet", obj.toString());
                 JSONObject newJson = obj.getJSONObject("_embedded");
@@ -87,8 +88,9 @@ public class JSONParser {
                 Log.d("JSON2ARRAYCities", newArr.toString());
                 MediaUrlStorage imageUrls;
                 for (int i = 0; i < newArr.length(); i++) {
-                    imageUrls = new MediaUrlStorage(newArr.getJSONObject(i).getString("imageLocation"),newArr.getJSONObject(i).getString("thumbnailLocation")
-                            ,newArr.getJSONObject(i).getString("mediaType"));
+                    JSONObject newObj = newArr.getJSONObject(i);
+                    imageUrls = new MediaUrlStorage(newObj.getString("imageLocation"),newObj.getString("thumbnailLocation")
+                            ,newObj.getString("mediaType"),newObj.getInt("likeCount"), newObj.getLong("id"));
                     objArray.add(imageUrls);
                 }
 

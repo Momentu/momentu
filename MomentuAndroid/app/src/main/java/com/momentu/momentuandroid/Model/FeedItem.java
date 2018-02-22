@@ -10,7 +10,7 @@ import java.util.Date;
  */
 
 public class FeedItem {
-    private BigInteger id;
+    private long id;
     private BigInteger userID;
     private Hashtag hashTag;
     private String description;
@@ -22,7 +22,7 @@ public class FeedItem {
     private Boolean removed;
     private Like likeFeed;
 
-    public FeedItem(BigInteger id, BigInteger userID, Hashtag hashTag, String orginalUrl, String thumbnilUrl,String media_type, String description, BigInteger locationID, Date createdTime, Boolean removed, Like likeFeed) {
+    public FeedItem(long id, BigInteger userID, Hashtag hashTag, String orginalUrl, String thumbnilUrl,String media_type, String description, BigInteger locationID, Date createdTime, Boolean removed, Like likeFeed) {
         this.id = id;
         this.userID = userID;
         this.hashTag = hashTag;
@@ -60,4 +60,7 @@ public class FeedItem {
         return likeFeed;
     }
 
+    public long getId() {
+        return id;
+    }
 }

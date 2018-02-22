@@ -298,4 +298,110 @@ public class RestClient {
         }
 
     }
+    public void MediaLike(final long mediaId, final String newToken) throws IOException {
+
+        Log.d("MediaLike","just got in like");
+
+        new AsyncTask<String, Void, Response>() {
+            public Request request;
+            //            String path_external = Environment.getExternalStorageDirectory() + File.separator + "temporary_file.jpg";
+//            File file;
+            @Override
+            protected void onPreExecute() {
+            /* Called before task execution; from UI thread, so you can access your widgets */
+                // Optionally do some stuff like showing progress bar
+            }
+            @Override
+            protected Response doInBackground(String... url) {
+            /* Called from background thread, so you're NOT allowed to interact with UI */
+                // Perform heavy task to get YourObject by string
+                // Stay clear & functional, just convert input to output and return it
+                OkHttpClient client = new OkHttpClient();
+                RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                        .addFormDataPart("", "")
+                        .build();
+
+                request = new Request.Builder().url(EndPoints.MEIDALIKE+"?mediaMetaId="+mediaId)
+                        .addHeader("content-type", "application/json; charset=utf-8")
+                        .addHeader("authorization", newToken)
+                        .post(requestBody).build();
+                ///*****************************************************************\\\\\
+                Response response = null;
+                try {
+                    response = client.newCall(request).execute();
+                    Log.d("Response_M_U",response.code() + "");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.d("Response_M_U"," it failed");
+
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+                return response;
+            }
+
+            @Override
+            protected void onPostExecute(Response result) {
+            /* Called once task is done; from UI thread, so you can access your widgets */
+
+                // Process result as you like
+
+                status = 0;
+            }
+        }.execute();
+    }
+    public void MediaUnlike(final long mediaId, final String newToken) throws IOException {
+
+        Log.d("MediaLike","just got in unlike");
+
+        new AsyncTask<String, Void, Response>() {
+            public Request request;
+            //            String path_external = Environment.getExternalStorageDirectory() + File.separator + "temporary_file.jpg";
+//            File file;
+            @Override
+            protected void onPreExecute() {
+            /* Called before task execution; from UI thread, so you can access your widgets */
+                // Optionally do some stuff like showing progress bar
+            }
+            @Override
+            protected Response doInBackground(String... url) {
+            /* Called from background thread, so you're NOT allowed to interact with UI */
+                // Perform heavy task to get YourObject by string
+                // Stay clear & functional, just convert input to output and return it
+                OkHttpClient client = new OkHttpClient();
+                RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                        .addFormDataPart("", "")
+                        .build();
+
+                request = new Request.Builder().url(EndPoints.MEIDAUNLIKE+"?mediaMetaId="+mediaId)
+                        .addHeader("content-type", "application/json; charset=utf-8")
+                        .addHeader("authorization", newToken)
+                        .post(requestBody).build();
+                ///*****************************************************************\\\\\
+                Response response = null;
+                try {
+                    response = client.newCall(request).execute();
+                    Log.d("Response_M_U",response.code() + "");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.d("Response_M_U"," it failed");
+
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+                return response;
+            }
+
+            @Override
+            protected void onPostExecute(Response result) {
+            /* Called once task is done; from UI thread, so you can access your widgets */
+
+                // Process result as you like
+
+                status = 0;
+            }
+        }.execute();
+    }
 }

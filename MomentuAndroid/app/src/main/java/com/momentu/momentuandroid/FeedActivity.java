@@ -92,7 +92,7 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
 
     private String mCityName;
     private String mStateName;
-    static String token;
+    public static String token;
 
     public String hashtag;
     public Uri photoURI = null;
@@ -205,7 +205,7 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
 
             else {
                 convertURL(temp);
-                Log.d("IMAGE_Feed", " just got this: " + temp.get(0));
+//                Log.d("IMAGE_Feed", " just got this: " + temp.get(0));
             }
         }
     };
@@ -294,7 +294,7 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
                         if(restClient.status == 0) {
                             Toast.makeText(FeedActivity.this, hashtagInput.getText().toString() + " posted", Toast.LENGTH_LONG).show();
                             if(hashtagInput.getText().toString().equals(hashtag)) {
-                                FeedItem myFeed = new FeedItem(null, null,
+                                FeedItem myFeed = new FeedItem(0, null,
                                         new Hashtag(hashtagInput.getText().toString(), 1), photoURI.toString(), photoURI.toString(), "image",
                                         "",
                                         null, null, null,
@@ -355,7 +355,7 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
                         if (restClient.status == 0){
                             Toast.makeText(FeedActivity.this, hashtagInput.getText().toString() + " posted", Toast.LENGTH_LONG).show();
                             if(hashtagInput.getText().toString().equals(hashtag)) {
-                                FeedItem myFeed = new FeedItem(null, null,
+                                FeedItem myFeed = new FeedItem(0, null,
                                         new Hashtag(hashtagInput.getText().toString(), 1), uriVideo.toString(), uriVideo.toString(), "video/mp4",
                                         "",
                                         null, null, null,
@@ -493,19 +493,17 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
 
     public void convertURL(final ArrayList<MediaUrlStorage> response){
 
-        Log.d("ConverURLToImage", "Just got in with an array");
-
         new AsyncTask<String, Void, Response>() {
             @Override
             protected Response doInBackground(String... strings) {
                 try {
 
                     for (MediaUrlStorage imageUrls : response) {
-                        FeedItem myFeed = new FeedItem(null, null,
+                        FeedItem myFeed = new FeedItem(imageUrls.getId(), null,
                                 new Hashtag(hashtag, 1), imageUrls.getOriginalUrl(),imageUrls.getThumbnilUrl(), imageUrls.getMedia_type(),
                                 "",
                                 null, null, null,
-                                new Like(93, false));
+                                new Like(imageUrls.getNumberOfLikes(), true));
                         feedAdapter.addFeed(myFeed);
 
 
