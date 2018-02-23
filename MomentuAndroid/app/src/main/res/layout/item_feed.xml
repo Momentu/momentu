@@ -92,11 +92,19 @@
                 android:background="@android:color/transparent"
                 android:src="@drawable/ic_heart_outline_grey" />
 
+            <ImageButton
+                android:id="@+id/commentButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_weight="0"
+                android:background="@color/white"
+                card_view:srcCompat="@android:drawable/sym_action_chat" />
+
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="150dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:gravity="center_vertical|right">
+                android:gravity="center_vertical|center_horizontal">
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -124,6 +132,7 @@
                         android:textColor="@color/colorAccent" />
                 </TextSwitcher>
             </LinearLayout>
+
         </LinearLayout>
 
     </LinearLayout>

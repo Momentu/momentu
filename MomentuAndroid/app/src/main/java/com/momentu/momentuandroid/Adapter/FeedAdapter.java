@@ -92,6 +92,18 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
         });
 
+        // When clicking the like button, like the feed
+        cellFeedViewHolder.commentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int adapterPosition = cellFeedViewHolder.getAdapterPosition();
+                if (context instanceof FeedActivity) {
+                    ((FeedActivity) context).goToCommentsActivity(adapterPosition, feedItems.get(adapterPosition).getOrginalUrl(),feedItems.get(adapterPosition).getThumbnilUrl(), feedItems.get(adapterPosition).getMedia_type());
+
+                }
+            }
+        });
+
         //TODO: increment Likes and send it to the backend
         // When clicking the like button, like the feed
         cellFeedViewHolder.btnLike.setOnClickListener(new View.OnClickListener() {
@@ -187,6 +199,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public static class CellFeedViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.ivFeedCenterVideo)
         VideoView ivFeedCenterVideo;
+        @BindView(R.id.commentButton)
+        ImageButton commentButton;
         @BindView(R.id.videoIcon)
         ImageButton videoIcon;
         @BindView(R.id.ivFeedCenter)

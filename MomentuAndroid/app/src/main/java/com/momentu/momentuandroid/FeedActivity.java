@@ -491,6 +491,18 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
         startActivity(itemIntent);
     }
 
+    public void goToCommentsActivity(int position, String originalUrl, String thumbnailUrl, String mediaType){
+
+        Intent commentIntent = new Intent(this, CommentsActivity.class);
+        commentIntent.putExtra("token", token);
+        commentIntent.putExtra("hashtag", hashtag);
+        commentIntent.putExtra("position", position);
+        commentIntent.putExtra("mediaType", mediaType);
+        commentIntent.putExtra("originalUrl", originalUrl);
+        commentIntent.putExtra("thumbnailUrl", thumbnailUrl);
+        startActivity(commentIntent);
+    }
+
     public void convertURL(final ArrayList<MediaUrlStorage> response){
 
         new AsyncTask<String, Void, Response>() {

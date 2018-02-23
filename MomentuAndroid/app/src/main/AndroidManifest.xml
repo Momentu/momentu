@@ -33,7 +33,7 @@
             android:name=".Services.GetMediaService"
             android:exported="false" />
 
-        <activity android:name=".MediaActivity"></activity>
+        <activity android:name=".MediaActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -45,6 +45,7 @@
                 android:resource="@xml/file_provider_paths" />
         </provider>
 
+        <activity android:name=".CommentsActivity"></activity>
     </application>
 
 </manifest>
