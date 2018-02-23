@@ -2,6 +2,9 @@ package com.momentu.momentuapi.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.momentu.momentuapi.security.model.UserContext;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -149,5 +152,13 @@ public class MediaMeta extends AbstractEntity {
 
     public Long getLikeCount() {
         return getUserLikes().stream().count();
+    }
+
+    public Boolean isLiked() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserContext userContext = (UserContext) auth.getPrincipal();
+        String currentUsername = userContext.getUsername();
+        return getUserLikes().stream().anyMatch(
+                user1 -> { return user1.getUsername().equals(currentUsername); });
     }
 }
