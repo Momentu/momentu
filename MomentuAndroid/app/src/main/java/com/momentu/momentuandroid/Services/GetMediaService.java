@@ -80,8 +80,8 @@ public class GetMediaService extends IntentService {
                     newObj.getString("thumbnailLocation"),
                     newObj.getString("mediaType"),
                     newObj.getInt("likeCount"),
-                    newObj.getLong("id"));
-                    //newArr.getJSONObject(i).getBoolean("isLike"));
+                    newObj.getLong("id"),
+                    newObj.getBoolean("liked"));
             objArray.add(imageUrls);
             }
         } catch (JSONException e) {

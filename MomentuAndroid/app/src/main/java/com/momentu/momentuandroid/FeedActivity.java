@@ -515,7 +515,7 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
                                 new Hashtag(hashtag, 1), imageUrls.getOriginalUrl(),imageUrls.getThumbnilUrl(), imageUrls.getMedia_type(),
                                 "",
                                 null, null, null,
-                                new Like(imageUrls.getNumberOfLikes(), true));
+                                new Like(imageUrls.getNumberOfLikes(), imageUrls.isLiked()));
                         feedAdapter.addFeed(myFeed);
 
 

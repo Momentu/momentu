@@ -90,7 +90,7 @@ public class JSONParser {
                 for (int i = 0; i < newArr.length(); i++) {
                     JSONObject newObj = newArr.getJSONObject(i);
                     imageUrls = new MediaUrlStorage(newObj.getString("imageLocation"),newObj.getString("thumbnailLocation")
-                            ,newObj.getString("mediaType"),newObj.getInt("likeCount"), newObj.getLong("id"));
+                            ,newObj.getString("mediaType"),newObj.getInt("likeCount"), newObj.getLong("id"), newObj.getBoolean("liked"));
                     objArray.add(imageUrls);
                 }
 
