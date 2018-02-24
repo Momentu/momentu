@@ -43,6 +43,9 @@ public class User extends AbstractEntity {
     @ManyToMany(mappedBy="userLikes", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
     public Set<MediaMeta> mediaMetaLikes;
 
+    @OneToMany(fetch=FetchType.LAZY, mappedBy="key.user")
+    public Set<MediaComment> mediaComments;
+
     public List<UserRole> getRoles() {
         return roles;
     }
@@ -103,6 +106,14 @@ public class User extends AbstractEntity {
 
     public void setMediaMetas(Set<MediaMeta> mediaMetas) {
         this.mediaMetas = mediaMetas;
+    }
+
+    public Set<MediaComment> getMediaComments() {
+        return mediaComments;
+    }
+
+    public void setMediaComments(Set<MediaComment> mediaComments) {
+        this.mediaComments = mediaComments;
     }
 
 //    @Override

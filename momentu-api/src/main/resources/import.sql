@@ -125,3 +125,7 @@ INSERT INTO momentu.hashtag(label, location_id, count) VALUES ('#trend', 1, 60);
 INSERT INTO momentu.user_likes(user_id, media_meta_id) VALUES (2, 3)
 INSERT INTO momentu.user_likes(user_id, media_meta_id) VALUES (3, 3)
 INSERT INTO momentu.user_likes(user_id, media_meta_id) VALUES (3, 5)
+INSERT INTO momentu.media_comments(user_id, media_meta_id, created_date, comment) VALUES (3, 3, '2017-11-14 22:00:22', 'Interesting Post!')
+INSERT INTO momentu.media_comments(user_id, media_meta_id, created_date, comment) VALUES (4, 3, '2017-11-14 22:01:22', 'I think so too..')
+INSERT INTO momentu.media_comments(user_id, media_meta_id, created_date, comment) VALUES (1, 3, '2017-11-14 22:02:22', 'me three!')
+INSERT INTO momentu.media_comments(user_id, media_meta_id, created_date, comment) VALUES (3, 3, '2017-11-14 22:03:22', 'testuser again')

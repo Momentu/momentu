@@ -56,6 +56,9 @@ public class MediaMeta extends AbstractEntity {
         ))
     public Set<User> userLikes;
 
+    @OneToMany(fetch=FetchType.LAZY, mappedBy="key.mediaMeta", cascade=CascadeType.PERSIST)
+    public Set<MediaComment> mediaComments;
+
     public MediaMeta() {}
 
     public Long getId() { return this.id; }
@@ -160,5 +163,13 @@ public class MediaMeta extends AbstractEntity {
         String currentUsername = userContext.getUsername();
         return getUserLikes().stream().anyMatch(
                 user1 -> { return user1.getUsername().equals(currentUsername); });
+    }
+
+    public Set<MediaComment> getMediaComments() {
+        return mediaComments;
+    }
+
+    public void setMediaComments(Set<MediaComment> mediaComments) {
+        this.mediaComments = mediaComments;
     }
 }

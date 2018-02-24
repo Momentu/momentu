@@ -3,16 +3,10 @@ package com.momentu.momentuapi.controllers;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.momentu.momentuapi.entities.Hashtag;
-import com.momentu.momentuapi.entities.Location;
-import com.momentu.momentuapi.entities.MediaMeta;
-import com.momentu.momentuapi.entities.User;
+import com.momentu.momentuapi.entities.*;
 import com.momentu.momentuapi.entities.keys.HashtagKey;
 import com.momentu.momentuapi.models.HashtagAndLocation;
-import com.momentu.momentuapi.repos.HashtagRepository;
-import com.momentu.momentuapi.repos.LocationRepository;
-import com.momentu.momentuapi.repos.MediaMetaRepository;
-import com.momentu.momentuapi.repos.UserRepository;
+import com.momentu.momentuapi.repos.*;
 import com.momentu.momentuapi.security.auth.jwt.extractor.ClaimExtractor;
 import com.momentu.momentuapi.storage.config.S3Settings;
 import com.momentu.momentuapi.storage.key.S3KeyGenerator;
@@ -37,6 +31,7 @@ public class MediaController {
     private final HashtagRepository hashtagRepository;
     private final LocationRepository locationRepository;
     private final UserRepository userRepository;
+    private final MediaCommentRepository commentRepository;
     private final S3Manager s3Manager;
     private final S3Settings s3Settings;
     private final S3KeyGenerator s3KeyGenerator;
@@ -52,8 +47,8 @@ public class MediaController {
 
     @Autowired
     MediaController(ClaimExtractor claimExtractor, MediaMetaRepository mediaMetaRepository, HashtagRepository hashtagRepository,
-                    LocationRepository locationRepository, UserRepository userRepository, S3Manager s3Manager, S3Settings s3Settings,
-                    S3KeyGenerator s3KeyGenerator) {
+                    LocationRepository locationRepository, UserRepository userRepository, MediaCommentRepository commentRepository,
+                    S3Manager s3Manager, S3Settings s3Settings, S3KeyGenerator s3KeyGenerator) {
         this.claimExtractor = claimExtractor;
         this.mediaMetaRepository = mediaMetaRepository;
         this.hashtagRepository = hashtagRepository;
@@ -62,6 +57,7 @@ public class MediaController {
         this.s3Manager = s3Manager;
         this.s3Settings = s3Settings;
         this.s3KeyGenerator = s3KeyGenerator;
+        this.commentRepository = commentRepository;
     }
 
     @RequestMapping(value = "/media_upload", method = RequestMethod.POST)
@@ -229,6 +225,41 @@ public class MediaController {
 
         currentMediaMeta.setRemoved(true);
         mediaMetaRepository.save(currentMediaMeta);
+        return Collections.singletonMap("status", "true");
+    }
+
+    @RequestMapping(value = "/postComment", method = RequestMethod.POST)
+    public @ResponseBody Map postComment(@RequestParam Long mediaMetaId, @RequestParam String comment,
+                                          Principal principal) {
+        User currentUser;
+        MediaMeta currentMediaMeta;
+        MediaComment mediaComment;
+
+        if(comment == null) {
+            throw new IllegalArgumentException("comment key needs a value");
+        }
+        if(mediaMetaId == null) {
+            throw new IllegalArgumentException("mediaMetaId key needs a value");
+        }
+
+        Optional<User> user = userRepository.getUserByPrincipal(principal);
+        Optional<MediaMeta> mediaMeta = mediaMetaRepository.findById(mediaMetaId);
+        if(user.equals(Optional.empty())) {
+            throw new IllegalArgumentException("User does not exist");
+        }
+        if(mediaMeta.equals(Optional.empty())) {
+            throw new IllegalArgumentException("Media Meta does not exist");
+        }
+
+        currentMediaMeta = mediaMeta.get();
+        currentUser = user.get();
+        mediaComment = new MediaComment();
+        mediaComment.setComment(comment);
+        mediaComment.setCreatedDate(new Date());
+        mediaComment.setUser(currentUser);
+        mediaComment.setMediaMeta(currentMediaMeta);
+        commentRepository.save(mediaComment);
+
         return Collections.singletonMap("status", "true");
     }
 }
