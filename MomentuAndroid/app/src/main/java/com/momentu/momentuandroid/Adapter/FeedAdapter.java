@@ -121,7 +121,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     newFeedItem.getLike().setIsLiked(false);
 //                    cellFeedViewHolder.btnLike.setImageResource(R.drawable.ic_heart_outline_grey);
 
-//                    newFeedItem.getLike().minusLikesCount();
+                    newFeedItem.getLike().minusLikesCount();
                 }else{
 
                     try {
@@ -132,7 +132,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
                     newFeedItem.getLike().setIsLiked(true);
 //                    cellFeedViewHolder.btnLike.setImageResource(R.drawable.ic_heart_red);
-//                    newFeedItem.getLike().addLikesCount();
+                    newFeedItem.getLike().addLikesCount();
                 }
 //                feedItems.get(adapterPosition).getLike().addLikesCount();
                 notifyItemChanged(adapterPosition, ACTION_LIKE_BUTTON_CLICKED);
