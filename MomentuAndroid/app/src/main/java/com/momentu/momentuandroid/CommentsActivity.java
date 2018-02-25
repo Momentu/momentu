@@ -20,6 +20,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.OvershootInterpolator;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -99,12 +100,12 @@ public class CommentsActivity extends FeedBaseActivity {
         comment= (EditText)  findViewById(R.id.comment);;
         send = (ImageButton)  findViewById(R.id.send);;
 
+        numberOfLikes.setText(getIntent().getIntExtra("likesCount",0)+ " Likes");
         Picasso.with(this).load(thumbnailUrl).into(imageView);
         ivFeedHashTag.setText(hashtag);
-
+        ivFeedDescription.setText("");
 
         setupComments();
-
 
         Intent intent = new Intent(this, GetCommentsService.class);
         intent.putExtra("mediaId", mediaId);
@@ -128,9 +129,11 @@ public class CommentsActivity extends FeedBaseActivity {
                         int statudCode = new RestClient().post_comment(params);
                         Log.d("StatusCode","code="+ statudCode);
                         if(statudCode == 200){
-                            commentAdapter.addComment(new CommentRow(comment.getText().toString(),HashTagSearchActivity.username));
+                            commentAdapter.addCommentAtFirst(new CommentRow(comment.getText().toString(),HashTagSearchActivity.username));
                             commentAdapter.notifyDataSetChanged();
                             comment.setText("");
+                            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                            imm.hideSoftInputFromWindow(comment.getWindowToken(), 0);
                         }
                     } catch (IOException e) {
                         e.printStackTrace();

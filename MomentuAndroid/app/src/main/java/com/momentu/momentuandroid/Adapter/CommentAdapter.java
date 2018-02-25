@@ -143,4 +143,8 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void addComment(CommentRow myComment){
         commentRow.add(myComment);
     }
+
+    public void addCommentAtFirst(CommentRow myComment){
+        commentRow.add(0,myComment);
+    }
 }

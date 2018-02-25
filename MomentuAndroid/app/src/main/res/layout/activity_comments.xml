@@ -26,23 +26,30 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:layout_weight="0"
             android:background="@color/light_gray"
             android:orientation="horizontal"
             android:padding="3dp">
 
             <ImageView
+
                 android:id="@+id/imageView"
-                android:layout_width="80dp"
-                android:layout_height="65dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:layout_weight="5"
                 android:cropToPadding="false"
-                android:padding="5dp"
-                android:scaleType="centerCrop"/>
+                android:scaleType="centerCrop"
+                android:bottomLeftRadius="30dp"
+                android:bottomRightRadius="30dp"
+                android:radius="60dp"
+                android:topLeftRadius="30dp"
+                android:topRightRadius="30dp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="5dp"
+                android:layout_weight="1"
                 android:orientation="vertical">
 
                 <TextView

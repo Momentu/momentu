@@ -99,7 +99,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 int adapterPosition = cellFeedViewHolder.getAdapterPosition();
                 if (context instanceof FeedActivity) {
                     FeedItem currentFeedItem = feedItems.get(adapterPosition);
-                    ((FeedActivity) context).goToCommentsActivity(adapterPosition, currentFeedItem.getOrginalUrl(),currentFeedItem.getThumbnilUrl(), currentFeedItem.getMedia_type(),currentFeedItem.getId());
+                    ((FeedActivity) context).goToCommentsActivity(adapterPosition, currentFeedItem.getOrginalUrl(),currentFeedItem.getThumbnilUrl(), currentFeedItem.getMedia_type(),currentFeedItem.getId(),currentFeedItem.getLike().getLikesCount());
 
                 }
             }
@@ -272,8 +272,13 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 
     }
+
     public void addFeed(FeedItem myFeed){
         feedItems.add(myFeed);
+    }
+
+    public void addFeedAtFirst(FeedItem myFeed){
+        feedItems.add(0,myFeed);
     }
     public static Bitmap getVideoThumbnail(String path) {
         Bitmap bitmap = null;

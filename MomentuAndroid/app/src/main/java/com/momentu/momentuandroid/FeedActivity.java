@@ -299,7 +299,7 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
                                         "",
                                         null, null, null,
                                         new Like(0, false));
-                                feedAdapter.addFeed(myFeed);
+                                feedAdapter.addFeedAtFirst(myFeed);
                                 feedAdapter.notifyDataSetChanged();
                             }
                         }else
@@ -347,8 +347,7 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
                         RestClient restClient = new RestClient();
                         try {
                             restClient.media_upload(ConvertImagesToStringOfBytes.mediaToByteArray(uriVideo), "video/mp4", params, token, FeedActivity.this);
-                            //recreate();
-                            //restClient.media(params, token, HashTagSearchActivity.this);
+
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -360,7 +359,7 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
                                         "",
                                         null, null, null,
                                         new Like(0, false));
-                                feedAdapter.addFeed(myFeed);
+                                feedAdapter.addFeedAtFirst(myFeed);
                                 feedAdapter.notifyDataSetChanged();
                             }
                         }else
@@ -491,7 +490,7 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
         startActivity(itemIntent);
     }
 
-    public void goToCommentsActivity(int position, String originalUrl, String thumbnailUrl, String mediaType, long mediaId){
+    public void goToCommentsActivity(int position, String originalUrl, String thumbnailUrl, String mediaType, long mediaId, int likesCount){
 
         Intent commentIntent = new Intent(this, CommentsActivity.class);
         commentIntent.putExtra("token", token);
@@ -501,6 +500,7 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
         commentIntent.putExtra("originalUrl", originalUrl);
         commentIntent.putExtra("thumbnailUrl", thumbnailUrl);
         commentIntent.putExtra("mediaId", mediaId);
+        commentIntent.putExtra("likesCount", likesCount);
         Log.d("goToCommentsActivity","" + mediaId);
         startActivity(commentIntent);
     }
