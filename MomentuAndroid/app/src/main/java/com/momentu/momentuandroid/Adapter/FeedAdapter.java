@@ -98,7 +98,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             public void onClick(View v) {
                 int adapterPosition = cellFeedViewHolder.getAdapterPosition();
                 if (context instanceof FeedActivity) {
-                    ((FeedActivity) context).goToCommentsActivity(adapterPosition, feedItems.get(adapterPosition).getOrginalUrl(),feedItems.get(adapterPosition).getThumbnilUrl(), feedItems.get(adapterPosition).getMedia_type());
+                    FeedItem currentFeedItem = feedItems.get(adapterPosition);
+                    ((FeedActivity) context).goToCommentsActivity(adapterPosition, currentFeedItem.getOrginalUrl(),currentFeedItem.getThumbnilUrl(), currentFeedItem.getMedia_type(),currentFeedItem.getId());
 
                 }
             }

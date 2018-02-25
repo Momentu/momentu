@@ -61,32 +61,32 @@ public class GetMediaService extends IntentService {
         messageIntent.putExtra(MY_IMAGE_SERVICE_PAYLOAD, objectArray);
 
         //**************
-        ArrayList<MediaUrlStorage> objArray = new ArrayList<MediaUrlStorage>();
-        JSONObject obj = null;
-        try {
-            obj = new JSONObject(response);
+//        ArrayList<MediaUrlStorage> objArray = new ArrayList<MediaUrlStorage>();
+//        JSONObject obj = null;
+//        try {
+//            obj = new JSONObject(response);
+//
+//        Log.d("JSON2ARRAYNothingyet", obj.toString());
+//        JSONObject newJson = obj.getJSONObject("_embedded");
+//        Log.d("JSON2ARRAYNewJASON", newJson.toString());
+//
+//        JSONArray newArr = newJson.getJSONArray("mediaMetas");
+//        Log.d("JSON2ARRAYCities", newArr.toString());
+//        MediaUrlStorage imageUrls;
 
-        Log.d("JSON2ARRAYNothingyet", obj.toString());
-        JSONObject newJson = obj.getJSONObject("_embedded");
-        Log.d("JSON2ARRAYNewJASON", newJson.toString());
-
-        JSONArray newArr = newJson.getJSONArray("mediaMetas");
-        Log.d("JSON2ARRAYCities", newArr.toString());
-        MediaUrlStorage imageUrls;
-
-        for (int i = 0; i < newArr.length(); i++) {
-            JSONObject newObj = newArr.getJSONObject(i);
-            imageUrls = new MediaUrlStorage(newObj.getString("imageLocation"),
-                    newObj.getString("thumbnailLocation"),
-                    newObj.getString("mediaType"),
-                    newObj.getInt("likeCount"),
-                    newObj.getLong("id"),
-                    newObj.getBoolean("liked"));
-            objArray.add(imageUrls);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+//        for (int i = 0; i < newArr.length(); i++) {
+//            JSONObject newObj = newArr.getJSONObject(i);
+//            imageUrls = new MediaUrlStorage(newObj.getString("imageLocation"),
+//                    newObj.getString("thumbnailLocation"),
+//                    newObj.getString("mediaType"),
+//                    newObj.getInt("likeCount"),
+//                    newObj.getLong("id"),
+//                    newObj.getBoolean("liked"));
+//            objArray.add(imageUrls);
+//            }
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
         //**************
 
         LocalBroadcastManager manager =

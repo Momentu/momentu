@@ -491,7 +491,7 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
         startActivity(itemIntent);
     }
 
-    public void goToCommentsActivity(int position, String originalUrl, String thumbnailUrl, String mediaType){
+    public void goToCommentsActivity(int position, String originalUrl, String thumbnailUrl, String mediaType, long mediaId){
 
         Intent commentIntent = new Intent(this, CommentsActivity.class);
         commentIntent.putExtra("token", token);
@@ -500,6 +500,8 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
         commentIntent.putExtra("mediaType", mediaType);
         commentIntent.putExtra("originalUrl", originalUrl);
         commentIntent.putExtra("thumbnailUrl", thumbnailUrl);
+        commentIntent.putExtra("mediaId", mediaId);
+        Log.d("goToCommentsActivity","" + mediaId);
         startActivity(commentIntent);
     }
 

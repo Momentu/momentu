@@ -8,6 +8,7 @@ import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.momentu.momentuandroid.FeedActivity;
 import com.momentu.momentuandroid.HashTagSearchActivity;
 import com.momentu.momentuandroid.LoginActivity;
 import com.momentu.momentuandroid.Utility.RequestPackage;
@@ -16,6 +17,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -67,6 +69,7 @@ public class RestClient {
                 if (response.code() == 200) {
                     Intent intent = new Intent(currentActivity, HashTagSearchActivity.class);
                     intent.putExtra("token", token);
+                    intent.putExtra("username", params.get("username"));
                     currentActivity.getApplicationContext().startActivity(intent);
                 } else {
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
@@ -403,5 +406,94 @@ public class RestClient {
                 status = 0;
             }
         }.execute();
+    }
+
+    public static String retrieve_comments(final long mediaId, final String token) throws IOException {
+        Response response;
+
+        String address = String.format("%s?%s", EndPoints.RETRIEVECOMMENTS, "mediaMetaId=" + mediaId);
+
+        Log.d("Adress_retreive", address);
+
+        OkHttpClient client = new OkHttpClient();
+
+        Request.Builder requestBuilder = new Request.Builder()
+                .addHeader("authorization", token)
+                .url(address);
+
+        Request request = requestBuilder.build();
+        response = null;
+        try {
+            response = client.newCall(request).execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (response.isSuccessful()) {
+            try {
+                return response.body().string();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            throw new IOException("Exception: response code " + response.code());
+        }
+        return null;
+    }
+    public int post_comment(final Map<String, String> params) throws IOException, ExecutionException, InterruptedException {
+
+        Log.d("post_comment","got in " + params.toString());
+        final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+
+        final JSONObject parameter = new JSONObject(params);
+        Response response = new AsyncTask<String, Void, Response>() {
+            public Request request;
+
+            @Override
+            protected void onPreExecute() {
+            /* Called before task execution; from UI thread, so you can access your widgets */
+
+                // Optionally do some stuff like showing progress bar
+
+                RequestBody body = RequestBody.create(JSON, "");
+
+                request = new Request.Builder()
+                        .url(EndPoints.POSTCOMMENT+"?mediaMetaId="+ params.get("mediaMetaId")+"&comment="+ params.get("comment"))
+                        .post(body)
+                        .addHeader("content-type", "application/json; charset=utf-8")
+                        .addHeader("authorization", FeedActivity.token)
+                        .build();
+            }
+
+            ;
+
+            @Override
+            protected Response doInBackground(String... url) {
+            /* Called from background thread, so you're NOT allowed to interact with UI */
+
+                // Perform heavy task to get YourObject by string
+                // Stay clear & functional, just convert input to output and return it
+                OkHttpClient client = new OkHttpClient();
+                Response response = null;
+                try {
+                    response = client.newCall(request).execute();
+                    Log.d("Response_Post_Comm",response.code() + "");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return response;
+            }
+
+
+            @Override
+            protected void onPostExecute(Response result) {
+            /* Called once task is done; from UI thread, so you can access your widgets */
+
+                // Process result as you like
+
+                status = 0;
+            }
+        }.execute().get();
+        return response.code();
     }
 }

@@ -131,6 +131,8 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
 
     private String path;
 
+    public static String username;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -141,6 +143,7 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
         final PermissionsManager permissionsManager = new PermissionsManager();
         Intent intent = getIntent();
         token = intent.getStringExtra("token");
+        username = intent.getStringExtra("username");
 
         Log.d("SearchPage", "" +token);
 

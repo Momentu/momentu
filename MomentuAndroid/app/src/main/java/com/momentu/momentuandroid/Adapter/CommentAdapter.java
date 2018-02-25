@@ -68,40 +68,40 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     public void updateItems(boolean animated) {
-        commentRow.clear();
-        Log.d("before data", "ok!");
-        commentRow.addAll(Arrays.asList(
-                //TODO: Hard Coded feed item
-                new CommentRow("falharbi88","This is a nice comment"),
-                new CommentRow("falharbi88","This is a nice comment"),
-                new CommentRow("falharbi88","This is a nice comment"),
-                new CommentRow("falharbi88","This is a nice comment"),
-                new CommentRow("falharbi88","This is a nice comment"),
-                new CommentRow("falharbi88","This is a nice comment"),
-                new CommentRow("falharbi88","This is a nice comment"),
-                new CommentRow("falharbi88","This is a nice comment"),
-                new CommentRow("falharbi88","This is a nice comment"),
-                new CommentRow("falharbi88","This is a nice comment"),
-                new CommentRow("falharbi88","This is a nice comment"),
-                new CommentRow("falharbi88","This is a nice comment"),
-                new CommentRow("falharbi88","This is a nice comment"),
-                new CommentRow("falharbi88","This is a nice comment"),
-                new CommentRow("falharbi88","This is a nice comment"),
-                new CommentRow("falharbi88","This is a nice comment"),
-                new CommentRow("falharbi88","This is a nice comment"),
-                new CommentRow("falharbi88","This is a nice comment"),
-                new CommentRow("falharbi88","This is a nice comment"),
-                new CommentRow("falharbi88","This is a nice comment"),
-                new CommentRow("falharbi88","This is a nice comment"),
-                new CommentRow("falharbi88","This is a nice comment"),
-                new CommentRow("falharbi88","This is a nice comment"),
-                new CommentRow("falharbi88","This is a nice comment"),
-                new CommentRow("falharbi88","This is a nice comment"),
-                new CommentRow("falharbi88","This is a nice comment"),
-                new CommentRow("falharbi88","This is a nice comment"),
-                new CommentRow("falharbi88","This is a nice comment"),
-                new CommentRow("falharbi88","This is a nice comment")));
-        Log.d("After data", "ok!");
+//        commentRow.clear();
+//        Log.d("before data", "ok!");
+//        commentRow.addAll(Arrays.asList(
+//                //TODO: Hard Coded feed item
+//                new CommentRow("falharbi88","This is a nice comment"),
+//                new CommentRow("falharbi88","This is a nice comment"),
+//                new CommentRow("falharbi88","This is a nice comment"),
+//                new CommentRow("falharbi88","This is a nice comment"),
+//                new CommentRow("falharbi88","This is a nice comment"),
+//                new CommentRow("falharbi88","This is a nice comment"),
+//                new CommentRow("falharbi88","This is a nice comment"),
+//                new CommentRow("falharbi88","This is a nice comment"),
+//                new CommentRow("falharbi88","This is a nice comment"),
+//                new CommentRow("falharbi88","This is a nice comment"),
+//                new CommentRow("falharbi88","This is a nice comment"),
+//                new CommentRow("falharbi88","This is a nice comment"),
+//                new CommentRow("falharbi88","This is a nice comment"),
+//                new CommentRow("falharbi88","This is a nice comment"),
+//                new CommentRow("falharbi88","This is a nice comment"),
+//                new CommentRow("falharbi88","This is a nice comment"),
+//                new CommentRow("falharbi88","This is a nice comment"),
+//                new CommentRow("falharbi88","This is a nice comment"),
+//                new CommentRow("falharbi88","This is a nice comment"),
+//                new CommentRow("falharbi88","This is a nice comment"),
+//                new CommentRow("falharbi88","This is a nice comment"),
+//                new CommentRow("falharbi88","This is a nice comment"),
+//                new CommentRow("falharbi88","This is a nice comment"),
+//                new CommentRow("falharbi88","This is a nice comment"),
+//                new CommentRow("falharbi88","This is a nice comment"),
+//                new CommentRow("falharbi88","This is a nice comment"),
+//                new CommentRow("falharbi88","This is a nice comment"),
+//                new CommentRow("falharbi88","This is a nice comment"),
+//                new CommentRow("falharbi88","This is a nice comment")));
+//        Log.d("After data", "ok!");
         if (animated) {
             notifyItemRangeInserted(0, commentRow.size());
         } else {

@@ -2,15 +2,23 @@ package com.momentu.momentuandroid;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.os.Handler;
+import android.os.Parcelable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.OvershootInterpolator;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -23,13 +31,27 @@ import com.momentu.momentuandroid.Adapter.CommentRowAnimator;
 import com.momentu.momentuandroid.Adapter.FeedAdapter;
 import com.momentu.momentuandroid.Adapter.FeedItemAnimator;
 import com.momentu.momentuandroid.BaseActivity.FeedBaseActivity;
+import com.momentu.momentuandroid.Data.RestClient;
 import com.momentu.momentuandroid.Model.CommentRow;
+import com.momentu.momentuandroid.Model.FeedItem;
+import com.momentu.momentuandroid.Model.Hashtag;
+import com.momentu.momentuandroid.Model.Like;
+import com.momentu.momentuandroid.Model.MediaUrlStorage;
+import com.momentu.momentuandroid.Services.GetCommentsService;
 import com.momentu.momentuandroid.Utility.DeviceParameterTools;
 import com.momentu.momentuandroid.View.CommentContextMenuManager;
 import com.momentu.momentuandroid.View.FeedContextMenuManager;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+
 import butterknife.BindView;
+import okhttp3.Response;
 
 public class CommentsActivity extends FeedBaseActivity {
     private static final int ANIM_DURATION_TOOLBAR = 300;
@@ -37,7 +59,7 @@ public class CommentsActivity extends FeedBaseActivity {
 
     @BindView(R.id.rvCommentList)
     RecyclerView rvCommentList;
-    public CommentAdapter commentAdapter;
+    public static CommentAdapter commentAdapter;
     private boolean pendingIntroAnimation;
     public ImageView imageView;
     public TextView ivFeedHashTag;
@@ -49,6 +71,7 @@ public class CommentsActivity extends FeedBaseActivity {
     static String token;
     public String hashtag;
     public String mediaType ="";
+    public long mediaId;
     public String originalUrl;
     public String thumbnailUrl;
     int position = 0;
@@ -64,6 +87,9 @@ public class CommentsActivity extends FeedBaseActivity {
         originalUrl = getIntent().getStringExtra("originalUrl");
         thumbnailUrl = getIntent().getStringExtra("thumbnailUrl");
         mediaType = getIntent().getStringExtra("mediaType");
+        mediaId = getIntent().getLongExtra("mediaId",0);
+
+        Log.d("onCreate","" + mediaId);
 
         imageView = (ImageView) findViewById(R.id.imageView);
         ivFeedHashTag = (TextView)  findViewById(R.id.ivFeedHashTag);
@@ -79,6 +105,10 @@ public class CommentsActivity extends FeedBaseActivity {
 
         setupComments();
 
+
+        Intent intent = new Intent(this, GetCommentsService.class);
+        intent.putExtra("mediaId", mediaId);
+        startService(intent);
         if (savedInstanceState == null) {
             Log.d("savedInstanceState:", "null");
             pendingIntroAnimation = true;
@@ -90,10 +120,29 @@ public class CommentsActivity extends FeedBaseActivity {
             @Override
             public void onClick(View v) {
                 if (comment.getText().length()>0){
+                    Map<String, String> params = new HashMap<String, String>();
+
+                    params.put("mediaMetaId",mediaId+"");
+                    params.put("comment",comment.getText().toString());
+                    try {
+                        int statudCode = new RestClient().post_comment(params);
+                        Log.d("StatusCode","code="+ statudCode);
+                        if(statudCode == 200){
+                            commentAdapter.addComment(new CommentRow(comment.getText().toString(),HashTagSearchActivity.username));
+                            commentAdapter.notifyDataSetChanged();
+                            comment.setText("");
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
                     //TODO send the comment to the backend along with token and media id
-                    commentAdapter.addComment(new CommentRow(token,comment.getText().toString()));
-                    Toast.makeText(CommentsActivity.this, comment.getText().toString() + "sent", Toast.LENGTH_LONG).show();
-                    commentAdapter.notifyDataSetChanged();
+                    //Toast.makeText(CommentsActivity.this, comment.getText().toString() + "sent", Toast.LENGTH_LONG).show();
+//                    commentAdapter.notifyDataSetChanged();
+
                 }
             }
 
@@ -108,6 +157,48 @@ public class CommentsActivity extends FeedBaseActivity {
 
         });
 
+        LocalBroadcastManager.getInstance(getApplicationContext())
+                .registerReceiver(mBroadcastReceiver,
+                        new IntentFilter(GetCommentsService.MY_COMMENTS_SERVICE_MESSAGE));
+
+    }
+
+    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            Log.d("CommentsFeed","jsut got in the reciever");
+
+            ArrayList<CommentRow> comments = intent
+                    .getParcelableArrayListExtra(GetCommentsService.MY_COMMENTS_SERVICE_PAYLOAD);
+
+            if (comments == null) {
+                Log.d("CommentsFeed","temp is null");
+            }
+
+            else {
+                gotSomeComments(comments);
+//                Log.d("IMAGE_Feed", " just got this: " + temp.get(0));
+            }
+        }
+    };
+
+    public void gotSomeComments(final ArrayList<CommentRow> comments){
+
+        new AsyncTask<String, Void, Response>() {
+            @Override
+            protected Response doInBackground(String... strings) {
+                try {
+
+                    for (CommentRow aComment : comments) {
+                        commentAdapter.addComment(aComment);
+                    }
+                } catch(Exception e){
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        }.execute();
     }
 
     private void setupComments() {
@@ -194,5 +285,16 @@ public class CommentsActivity extends FeedBaseActivity {
         itemIntent.putExtra("mediaType", mediaType);
         itemIntent.putExtra("url", url);
         startActivity(itemIntent);
+    }
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+        if ((keyCode == KeyEvent.KEYCODE_BACK))
+        {
+
+            LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(mBroadcastReceiver);
+            finish();
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }
