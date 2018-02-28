@@ -66,6 +66,7 @@ public class MediaController {
                                          @RequestParam("state") String state,
                                          @RequestParam(value = "mediaType", required = false) String mediaType) {
         HashtagAndLocation hashtagAndLocation = new HashtagAndLocation(hashtagLabel, city, state);
+        Map<String, String> response = new HashMap<>();
         InputStream inputStream = null;
 
         if(hashtagAndLocation.isValid() == false) {
@@ -147,13 +148,15 @@ public class MediaController {
                     mediaMeta.setMediaType("image");
                 }
                 mediaMeta = mediaMetaRepository.save(mediaMeta);
-
-                return Collections.singletonMap("status", "success");
+                response.put("status", "success");
+                response.put("mediaMetaId", mediaMeta.getId().toString());
+                return response;
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        return Collections.singletonMap("status", "fail");
+        response.put("status", "fail");
+        return response;
     }
 
     @RequestMapping(value = "/mediaLike", method = RequestMethod.POST)
