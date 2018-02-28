@@ -46,6 +46,24 @@ public interface MediaMetaRepository extends CrudRepository<MediaMeta, Long> {
             "order by m.created desc")
     Page<MediaMeta> findByCurrentUserLikes(Pageable pageable);
 
+    @Query("select m from MediaMeta m " +
+            "inner join m.user u " +
+            "inner join m.location lo " +
+            "where u.username=?#{principal.username} and m.removed = False " +
+            "and lo.state=:state and lo.city=:city " +
+            "order by m.created desc")
+    Page<MediaMeta> findByCurrentUserStateCity(Pageable pageable,
+                                               @Param("state") String state, @Param("city") String city);
+
+    @Query("select m from MediaMeta m " +
+            "inner join m.userLikes u " +
+            "inner join m.location lo " +
+            "where u.username=?#{principal.username} and m.removed = False " +
+            "and lo.state=:state and lo.city=:city " +
+            "order by m.created desc")
+    Page<MediaMeta> findByCurrentUserLikesStateCity(Pageable pageable,
+                                                    @Param("state") String state, @Param("city") String city);
+
     @RestResource(exported=false)
     @Query("select m from MediaMeta m " +
             "where m.id=:mediaMetaId and m.removed = False ")
