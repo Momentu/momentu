@@ -21,6 +21,7 @@
     <string name="title_location_permission">Oops! Where are you?</string>
     <string name="text_location_permission">Momentu will ask for your permission to access your location.</string>
     <string name="ask_log_out">Are you sure you want to exit?</string>
+    <string name="confirm_delete">Are you sure you want to delete this post?</string>
 
     <!-- Example strings for example state and city-->
     <string-array name="States">

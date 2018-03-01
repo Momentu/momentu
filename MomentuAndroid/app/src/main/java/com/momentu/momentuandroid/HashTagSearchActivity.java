@@ -510,6 +510,19 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
                 alert.show();
 
                 return true;
+
+            case R.id.postsOfYou:
+                Intent postsOfYou = new Intent(HashTagSearchActivity.this, PostsOfYouActivity.class);
+                postsOfYou.putExtra("token", token);
+                startActivity(postsOfYou);
+                return true;
+
+            case R.id.postsYouHaveLiked:
+                Intent postsYouHaveLiked = new Intent(HashTagSearchActivity.this, PostsYouHaveLikedActivity.class);
+                postsYouHaveLiked.putExtra("token", token);
+                startActivity(postsYouHaveLiked);
+                return true;
+
             default:
                 return true;
         }

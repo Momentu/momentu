@@ -48,7 +48,9 @@
                 android:resource="@xml/file_provider_paths" />
         </provider>
 
-        <activity android:name=".CommentsActivity"></activity>
+        <activity android:name=".CommentsActivity" />
+        <activity android:name=".PostsOfYouActivity" />
+        <activity android:name=".PostsYouHaveLikedActivity"></activity>
     </application>
 
 </manifest>
