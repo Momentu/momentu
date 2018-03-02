@@ -99,6 +99,14 @@ public class MediaMeta extends AbstractEntity {
         this.location.setId(locationId);
     }
 
+    public String getState() {
+        return location.getState();
+    }
+
+    public String getCity() {
+        return location.getCity();
+    }
+
     public Location getLocation() { return this.location; }
 
     public void setLocation(Location location) {
