@@ -6,6 +6,7 @@ import android.util.Log;
 import com.momentu.momentuandroid.Model.City;
 import com.momentu.momentuandroid.Model.Hashtag;
 import com.momentu.momentuandroid.Model.MediaUrlStorage;
+import com.momentu.momentuandroid.Model.MyPostsItem;
 import com.momentu.momentuandroid.Model.State;
 import com.momentu.momentuandroid.Model.StatesAndCities;
 
@@ -26,12 +27,8 @@ public class JSONParser {
         try {
             if(code == 0) {
                 JSONObject obj = new JSONObject(jason);
-                Log.d("JSON2ARRAYNothingyet", obj.toString());
                 JSONObject newJson = obj.getJSONObject("_embedded");
-                Log.d("JSON2ARRAYNewJASON", newJson.toString());
-
                 JSONArray newArr = newJson.getJSONArray("hashtags");//.getJSONArray("locations");
-                Log.d("JSON2ARRAY4NewARR", newArr.toString());
                 Hashtag hashtag;
                 for (int i = 0; i < newArr.length(); i++) {
                     hashtag = new Hashtag(newArr.getJSONObject(i).getString("label"), newArr.getJSONObject(i).getInt("count"));
@@ -39,21 +36,15 @@ public class JSONParser {
                 }
             }
             else if(code == 1){
-                Log.d("JSON2ARRAY","Just got in 2");
                 JSONObject obj = new JSONObject(jason);
                 JSONObject newJson = obj.getJSONObject("_embedded");
-                Log.d("JSON2ARRAYNewJASON", newJson.toString());
 
                 JSONArray newArr = newJson.getJSONArray("locations");
-                Log.d("JSON2ARRAY4NewARR", newArr.toString());
                 StatesAndCities locations = new StatesAndCities();
                 for (int i = 0; i < newArr.length(); i++) {
                     String state = newArr.getJSONObject(i).getString("state");
-                    Log.d("ParserStep:", i + " state:" + state);
                     String city = newArr.getJSONObject(i).getString("city");
-                    Log.d("ParserStep:", i + " city:" + city);
                     if (locations.getStates().contains(new State(state))) {
-                        Log.d("ParserStep:", i + " Found:" + state);
                         int indx = locations.getStates().indexOf(new State(state));
                         if(!locations.getStates().get(indx).getCities().contains(city)){
                             locations.getStates().get(indx).addCity(city);}
@@ -65,12 +56,9 @@ public class JSONParser {
             }
             else if(code == 2){
                 JSONObject obj = new JSONObject(jason);
-                Log.d("JSON2ARRAYNothingyet", obj.toString());
                 JSONObject newJson = obj.getJSONObject("_embedded");
-                Log.d("JSON2ARRAYNewJASON", newJson.toString());
 
                 JSONArray newArr = newJson.getJSONArray("locations");
-                Log.d("JSON2ARRAYCities", newArr.toString());
                 City city;
                 for (int i = 0; i < newArr.length(); i++) {
                     city = new City(newArr.getJSONObject(i).getString("city"));
@@ -78,14 +66,10 @@ public class JSONParser {
                 }
             }
             else if(code == 3){
-                Log.d("XJSONPARSERX", "got in with code 3; \"Not supposed to be in here\"");
                 JSONObject obj = new JSONObject(jason);
-                Log.d("JSON2ARRAYNothingyet", obj.toString());
                 JSONObject newJson = obj.getJSONObject("_embedded");
-                Log.d("JSON2ARRAYNewJASON", newJson.toString());
 
                 JSONArray newArr = newJson.getJSONArray("mediaMetas");
-                Log.d("JSON2ARRAYCities", newArr.toString());
                 MediaUrlStorage imageUrls;
                 for (int i = 0; i < newArr.length(); i++) {
                     JSONObject newObj = newArr.getJSONObject(i);
@@ -93,12 +77,23 @@ public class JSONParser {
                             ,newObj.getString("mediaType"),newObj.getInt("likeCount"), newObj.getLong("id"), newObj.getBoolean("liked"));
                     objArray.add(imageUrls);
                 }
+            }
+            else if(code == 4){
+                JSONObject obj = new JSONObject(jason);
+                JSONObject newJson = obj.getJSONObject("_embedded");
 
+                JSONArray newArr = newJson.getJSONArray("mediaMetas");
+                MyPostsItem myPostsItem;
+                for (int i = 0; i < newArr.length(); i++) {
+                    JSONObject newObj = newArr.getJSONObject(i);
+                    myPostsItem = new MyPostsItem(newObj.getLong("id"), newObj.getString("hashtagLabel"), newObj.getString("imageLocation"),
+                            newObj.getString("thumbnailLocation"),newObj.getString("mediaType"),newObj.getInt("likeCount"), newObj.getString("city"),
+                            newObj.getString("state"));
+                    objArray.add(myPostsItem);
+                }
             }
             else
                 Log.d("JSONParserOTHER", "THE CODE IS NOT RECOGNIZED");
-
-
         }
         catch (JSONException e) {
             return null;

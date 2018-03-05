@@ -10,6 +10,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.momentu.momentuandroid.Model.MyPostsItem;
 import com.momentu.momentuandroid.Model.PostsYouHaveLikedItem;
 import com.momentu.momentuandroid.PostsYouHaveLikedActivity;
 import com.momentu.momentuandroid.R;
@@ -24,10 +25,10 @@ import java.util.List;
 public class MyLikesAdapter extends BaseAdapter {
 
     private LayoutInflater layoutinflater;
-    private List<PostsYouHaveLikedItem> listOfMyLikes;
+    private List<MyPostsItem> listOfMyLikes;
     private Context context;
 
-    public MyLikesAdapter(Context context, List<PostsYouHaveLikedItem> customizedListView) {
+    public MyLikesAdapter(Context context, List<MyPostsItem> customizedListView) {
         this.context = context;
         layoutinflater =(LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         listOfMyLikes = customizedListView;
@@ -74,7 +75,7 @@ public class MyLikesAdapter extends BaseAdapter {
     }
 
 
-    private void setupClickableViews(final View view, final ViewHolder listViewHolder, final PostsYouHaveLikedItem postsYouHaveLikedItem, final int position) {
+    private void setupClickableViews(final View view, final ViewHolder listViewHolder, final MyPostsItem postsYouHaveLikedItem, final int position) {
 
         listViewHolder.imageInListView.setOnClickListener(new View.OnClickListener() {
             @Override

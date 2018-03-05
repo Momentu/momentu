@@ -285,16 +285,18 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
                         params.put("state", mStateName);
 
                         RestClient restClient = new RestClient();
+                        long mediaId = 0;
                         try {
-                            restClient.media_upload(ConvertImagesToStringOfBytes.mediaToByteArray(imageBitmap), "image", params, token, FeedActivity.this);
+                            mediaId =  restClient.media_upload(ConvertImagesToStringOfBytes.mediaToByteArray(imageBitmap), "image", params, token, FeedActivity.this);
                             //restClient.media(params, token, FeedActivity.this);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                         if(restClient.status == 0) {
+
                             Toast.makeText(FeedActivity.this, hashtagInput.getText().toString() + " posted", Toast.LENGTH_LONG).show();
                             if(hashtagInput.getText().toString().equals(hashtag)) {
-                                FeedItem myFeed = new FeedItem(0, null,
+                                FeedItem myFeed = new FeedItem(mediaId, null,
                                         new Hashtag(hashtagInput.getText().toString(), 1), photoURI.toString(), photoURI.toString(), "image",
                                         "",
                                         null, null, null,

@@ -17,6 +17,9 @@ public class EndPoints {
     final public static String MEIDAUNLIKE = "http://www.momentu.xyz:8080/mediaUnlike";
     final  public static String RETRIEVECOMMENTS = "http://www.momentu.xyz:8080/mediaComments/search/findByMediaMetaId";
     final  public static String POSTCOMMENT = "http://www.momentu.xyz:8080/postComment";
+    final  public static String FINDMEDIAUSERLIKED = "http://www.momentu.xyz:8080/mediaMetas/search/findByCurrentUserLikes";
+    final  public static String FINDMEDIAUSERPOSTED = "http://www.momentu.xyz:8080/mediaMetas/search/findByCurrentUser";
+    final  public static String DELETEMEDIA = "http://www.momentu.xyz:8080/mediaDelete";
 
 //    //the following are equivilant addresses mapped to the local host
 //    public static String LOCATION_ENDPOINT = "http://10.0.2.2:8080/locations";

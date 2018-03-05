@@ -1,10 +1,13 @@
 package com.momentu.momentuandroid.Model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by Fahad on 2/25/18.
  */
 
-public class MyPostsItem {
+public class MyPostsItem implements Parcelable {
     private long mediaId;
     private String hashtagLabel;
     private String originalUrl;
@@ -24,6 +27,29 @@ public class MyPostsItem {
         this.city = city;
         this.state = state;
     }
+
+    protected MyPostsItem(Parcel in) {
+        mediaId = in.readLong();
+        hashtagLabel = in.readString();
+        originalUrl = in.readString();
+        thumbnailUrl = in.readString();
+        mediaType = in.readString();
+        likesCount = in.readInt();
+        city = in.readString();
+        state = in.readString();
+    }
+
+    public static final Creator<MyPostsItem> CREATOR = new Creator<MyPostsItem>() {
+        @Override
+        public MyPostsItem createFromParcel(Parcel in) {
+            return new MyPostsItem(in);
+        }
+
+        @Override
+        public MyPostsItem[] newArray(int size) {
+            return new MyPostsItem[size];
+        }
+    };
 
     public long getMediaId() {
         return mediaId;
@@ -55,5 +81,22 @@ public class MyPostsItem {
 
     public String getState() {
         return state;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(mediaId);
+        dest.writeString(hashtagLabel);
+        dest.writeString(originalUrl);
+        dest.writeString(thumbnailUrl);
+        dest.writeString(mediaType);
+        dest.writeInt(likesCount);
+        dest.writeString(city);
+        dest.writeString(state);
     }
 }

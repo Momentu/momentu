@@ -13,6 +13,7 @@ import com.momentu.momentuandroid.HashTagSearchActivity;
 import com.momentu.momentuandroid.LoginActivity;
 import com.momentu.momentuandroid.Utility.RequestPackage;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -169,7 +170,7 @@ public class RestClient {
                 Response response = null;
                 try {
                     response = client.newCall(request).execute();
-                    Log.d("Response_M",response.code() + "");
+                    Log.d("Response_M", response.code() + "");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -215,63 +216,85 @@ public class RestClient {
         }
     }
 
-    public void media_upload(final byte[] media, final String mediaType,final Map<String, String> params, final String userToken, final Activity currentActivity) throws IOException {
-        final MediaType MEDIA_TYPE_JPEG = MediaType.parse(mediaType=="image"? "image/JPEG":"video/mp4");//"image/JPEG"
+    public long media_upload(final byte[] media, final String mediaType, final Map<String, String> params, final String userToken, final Activity currentActivity) throws IOException {
+        final MediaType MEDIA_TYPE_JPEG = MediaType.parse(mediaType == "image" ? "image/JPEG" : "video/mp4");//"image/JPEG"
         OkHttpClient client = new OkHttpClient();
         Log.d("Response_M_U_Not_yet", "just got in");
 
-        new AsyncTask<String, Void, Response>() {
-            public Request request;
-//            String path_external = Environment.getExternalStorageDirectory() + File.separator + "temporary_file.jpg";
-//            File file;
-            @Override
-            protected void onPreExecute() {
-            /* Called before task execution; from UI thread, so you can access your widgets */
-                // Optionally do some stuff like showing progress bar
-                      }
-            @Override
-            protected Response doInBackground(String... url) {
-            /* Called from background thread, so you're NOT allowed to interact with UI */
-            // Perform heavy task to get YourObject by string
-                // Stay clear & functional, just convert input to output and return it
-                OkHttpClient client = new OkHttpClient();
-                RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
-                        .addFormDataPart("file","",RequestBody.create(MEDIA_TYPE_JPEG, media))
-                        .addFormDataPart("mediaType",mediaType)
-                        .addFormDataPart("city",params.get("city"))
-                        .addFormDataPart("hashtagLabel",params.get("hashtagLabel"))
-                        .addFormDataPart("state",params.get("state"))
-                        .build();
+        String response = null;
+        try {
+            response = new AsyncTask<String, Void, String>() {
+                 public Request request;
 
-                request = new Request.Builder().url(EndPoints.MEDIA_UPLOAD_ENDPOINT)
-                        .addHeader("content-type", "application/json; charset=utf-8")
-                        .addHeader("authorization", userToken)
-                        .post(requestBody).build();
-                ///*****************************************************************\\\\\
-                Response response = null;
-                try {
-                    response = client.newCall(request).execute();
-                    Log.d("Response_M_U",response.code() + "");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Log.d("Response_M_U"," it failed");
+                 //            String path_external = Environment.getExternalStorageDirectory() + File.separator + "temporary_file.jpg";
+     //            File file;
+                 @Override
+                 protected void onPreExecute() {
+                 /* Called before task execution; from UI thread, so you can access your widgets */
+                     // Optionally do some stuff like showing progress bar
+                 }
 
-                }
-                catch (Exception e){
-                    e.printStackTrace();
-                }
-                return response;
-            }
+                 @Override
+                 protected String doInBackground(String... url) {
+                 /* Called from background thread, so you're NOT allowed to interact with UI */
+                     // Perform heavy task to get YourObject by string
+                     // Stay clear & functional, just convert input to output and return it
+                     OkHttpClient client = new OkHttpClient();
+                     RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                             .addFormDataPart("file", "", RequestBody.create(MEDIA_TYPE_JPEG, media))
+                             .addFormDataPart("mediaType", mediaType)
+                             .addFormDataPart("city", params.get("city"))
+                             .addFormDataPart("hashtagLabel", params.get("hashtagLabel"))
+                             .addFormDataPart("state", params.get("state"))
+                             .build();
 
-            @Override
-            protected void onPostExecute(Response result) {
-            /* Called once task is done; from UI thread, so you can access your widgets */
+                     request = new Request.Builder().url(EndPoints.MEDIA_UPLOAD_ENDPOINT)
+                             .addHeader("content-type", "application/json; charset=utf-8")
+                             .addHeader("authorization", userToken)
+                             .post(requestBody).build();
+                     ///*****************************************************************\\\\\
+                     Response response = null;
+                     String returnedId = null;
+                     try {
+                         response = client.newCall(request).execute();
+                         Log.d("Response_M_U", response.code() + "");
+                         returnedId = response.body().string();
 
-                // Process result as you like
+                     } catch (IOException e) {
+                         e.printStackTrace();
+                         Log.d("Response_M_U", " it failed");
 
-                status = 0;
-            }
-        }.execute();
+                     } catch (Exception e) {
+                         e.printStackTrace();
+                     }
+                     return returnedId;
+                 }
+
+                 @Override
+                 protected void onPostExecute(String result) {
+                 /* Called once task is done; from UI thread, so you can access your widgets */
+
+                     // Process result as you like
+
+                     status = 0;
+                 }
+             }.execute().get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        JSONObject obj = null;
+        String mediaMetaId = null;
+        try {
+            obj = new JSONObject(response);
+            mediaMetaId = obj.getString("mediaMetaId");
+            Log.d("MediaUpload","mediaId " + mediaMetaId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return Long.valueOf(mediaMetaId);
     }
 
     public static String retrieve_media(final RequestPackage requestPackage)
@@ -301,12 +324,14 @@ public class RestClient {
         }
 
     }
+
     public void MediaLike(final long mediaId, final String newToken) throws IOException {
 
-        Log.d("MediaLike","just got in like");
+        Log.d("MediaLike", "just got in like");
 
         new AsyncTask<String, Void, Response>() {
             public Request request;
+
             //            String path_external = Environment.getExternalStorageDirectory() + File.separator + "temporary_file.jpg";
 //            File file;
             @Override
@@ -314,6 +339,7 @@ public class RestClient {
             /* Called before task execution; from UI thread, so you can access your widgets */
                 // Optionally do some stuff like showing progress bar
             }
+
             @Override
             protected Response doInBackground(String... url) {
             /* Called from background thread, so you're NOT allowed to interact with UI */
@@ -324,7 +350,7 @@ public class RestClient {
                         .addFormDataPart("", "")
                         .build();
 
-                request = new Request.Builder().url(EndPoints.MEIDALIKE+"?mediaMetaId="+mediaId)
+                request = new Request.Builder().url(EndPoints.MEIDALIKE + "?mediaMetaId=" + mediaId)
                         .addHeader("content-type", "application/json; charset=utf-8")
                         .addHeader("authorization", newToken)
                         .post(requestBody).build();
@@ -332,13 +358,12 @@ public class RestClient {
                 Response response = null;
                 try {
                     response = client.newCall(request).execute();
-                    Log.d("Response_M_U",response.code() + "");
+                    Log.d("Response_M_U", response.code() + "");
                 } catch (IOException e) {
                     e.printStackTrace();
-                    Log.d("Response_M_U"," it failed");
+                    Log.d("Response_M_U", " it failed");
 
-                }
-                catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 return response;
@@ -354,12 +379,14 @@ public class RestClient {
             }
         }.execute();
     }
+
     public void MediaUnlike(final long mediaId, final String newToken) throws IOException {
 
-        Log.d("MediaLike","just got in unlike");
+        Log.d("MediaLike", "just got in unlike");
 
         new AsyncTask<String, Void, Response>() {
             public Request request;
+
             //            String path_external = Environment.getExternalStorageDirectory() + File.separator + "temporary_file.jpg";
 //            File file;
             @Override
@@ -367,6 +394,7 @@ public class RestClient {
             /* Called before task execution; from UI thread, so you can access your widgets */
                 // Optionally do some stuff like showing progress bar
             }
+
             @Override
             protected Response doInBackground(String... url) {
             /* Called from background thread, so you're NOT allowed to interact with UI */
@@ -377,7 +405,7 @@ public class RestClient {
                         .addFormDataPart("", "")
                         .build();
 
-                request = new Request.Builder().url(EndPoints.MEIDAUNLIKE+"?mediaMetaId="+mediaId)
+                request = new Request.Builder().url(EndPoints.MEIDAUNLIKE + "?mediaMetaId=" + mediaId)
                         .addHeader("content-type", "application/json; charset=utf-8")
                         .addHeader("authorization", newToken)
                         .post(requestBody).build();
@@ -385,13 +413,12 @@ public class RestClient {
                 Response response = null;
                 try {
                     response = client.newCall(request).execute();
-                    Log.d("Response_M_U",response.code() + "");
+                    Log.d("Response_M_U", response.code() + "");
                 } catch (IOException e) {
                     e.printStackTrace();
-                    Log.d("Response_M_U"," it failed");
+                    Log.d("Response_M_U", " it failed");
 
-                }
-                catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 return response;
@@ -440,9 +467,10 @@ public class RestClient {
         }
         return null;
     }
+
     public int post_comment(final Map<String, String> params) throws IOException, ExecutionException, InterruptedException {
 
-        Log.d("post_comment","got in " + params.toString());
+        Log.d("post_comment", "got in " + params.toString());
         final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
         final JSONObject parameter = new JSONObject(params);
@@ -458,7 +486,7 @@ public class RestClient {
                 RequestBody body = RequestBody.create(JSON, "");
 
                 request = new Request.Builder()
-                        .url(EndPoints.POSTCOMMENT+"?mediaMetaId="+ params.get("mediaMetaId")+"&comment="+ params.get("comment"))
+                        .url(EndPoints.POSTCOMMENT + "?mediaMetaId=" + params.get("mediaMetaId") + "&comment=" + params.get("comment"))
                         .post(body)
                         .addHeader("content-type", "application/json; charset=utf-8")
                         .addHeader("authorization", FeedActivity.token)
@@ -477,7 +505,7 @@ public class RestClient {
                 Response response = null;
                 try {
                     response = client.newCall(request).execute();
-                    Log.d("Response_Post_Comm",response.code() + "");
+                    Log.d("Response_Post_Comm", response.code() + "");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -494,6 +522,173 @@ public class RestClient {
                 status = 0;
             }
         }.execute().get();
+        return response.code();
+    }
+
+    public String findMediaCurrentUserPosted() throws IOException, ExecutionException, InterruptedException {
+
+        Response response = new AsyncTask<String, Void, Response>() {
+            public Request request;
+
+            @Override
+            protected void onPreExecute() {
+            /* Called before task execution; from UI thread, so you can access your widgets */
+
+                // Optionally do some stuff like showing progress bar
+
+
+                request = new Request.Builder()
+                        .url(EndPoints.FINDMEDIAUSERPOSTED)
+                        .get()
+                        .addHeader("authorization", HashTagSearchActivity.token)
+                        .build();
+            }
+
+            ;
+
+            @Override
+            protected Response doInBackground(String... url) {
+            /* Called from background thread, so you're NOT allowed to interact with UI */
+
+                // Perform heavy task to get YourObject by string
+                // Stay clear & functional, just convert input to output and return it
+                OkHttpClient client = new OkHttpClient();
+                Response response = null;
+                try {
+                    response = client.newCall(request).execute();
+                    Log.d("Response_Post_Comm", response.code() + "");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return response;
+            }
+
+
+            @Override
+            protected void onPostExecute(Response result) {
+            /* Called once task is done; from UI thread, so you can access your widgets */
+
+                // Process result as you like
+
+                status = 0;
+            }
+        }.execute().get();
+        return response.body().string();
+    }
+    public String findMediaCurrentUserLiked() throws IOException, ExecutionException, InterruptedException {
+
+        Response response = new AsyncTask<String, Void, Response>() {
+            public Request request;
+
+            @Override
+            protected void onPreExecute() {
+            /* Called before task execution; from UI thread, so you can access your widgets */
+
+                // Optionally do some stuff like showing progress bar
+
+
+                request = new Request.Builder()
+                        .url(EndPoints.FINDMEDIAUSERLIKED)
+                        .get()
+                        .addHeader("authorization", HashTagSearchActivity.token)
+                        .build();
+            }
+
+            ;
+
+            @Override
+            protected Response doInBackground(String... url) {
+            /* Called from background thread, so you're NOT allowed to interact with UI */
+
+                // Perform heavy task to get YourObject by string
+                // Stay clear & functional, just convert input to output and return it
+                OkHttpClient client = new OkHttpClient();
+                Response response = null;
+                try {
+                    response = client.newCall(request).execute();
+                    Log.d("Response_Post_Comm", response.code() + "");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return response;
+            }
+
+
+            @Override
+            protected void onPostExecute(Response result) {
+            /* Called once task is done; from UI thread, so you can access your widgets */
+
+                // Process result as you like
+
+                status = 0;
+            }
+        }.execute().get();
+        return response.body().string();
+    }
+    public int deleteMedia(final long mediaId) {
+
+        Response response = null;
+        final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+
+        final JSONObject parameter = new JSONObject();
+        try {
+            parameter.put("mediaMetaId",mediaId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            response = new AsyncTask<String, Void, Response>() {
+                public Request request;
+
+                @Override
+                protected void onPreExecute() {
+                /* Called before task execution; from UI thread, so you can access your widgets */
+
+                    // Optionally do some stuff like showing progress bar
+
+                    RequestBody body = RequestBody.create(JSON, parameter.toString());
+
+                    request = new Request.Builder()
+                            .url(EndPoints.DELETEMEDIA +"?mediaMetaId="+ mediaId)
+                            .post(body)
+                            .addHeader("content-type", "application/json; charset=utf-8")
+                            .addHeader("authorization", HashTagSearchActivity.token)
+                            .build();
+                }
+
+                ;
+
+                @Override
+                protected Response doInBackground(String... url) {
+                /* Called from background thread, so you're NOT allowed to interact with UI */
+
+                    // Perform heavy task to get YourObject by string
+                    // Stay clear & functional, just convert input to output and return it
+                    OkHttpClient client = new OkHttpClient();
+                    Response response = null;
+                    try {
+                        response = client.newCall(request).execute();
+                        Log.d("Response_M", response.code() + "");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return response;
+                }
+
+                @Override
+                protected void onPostExecute(Response result) {
+                /* Called once task is done; from UI thread, so you can access your widgets */
+
+                    // Process result as you like
+
+                    status = 0;
+                }
+            }.execute().get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
         return response.code();
     }
 }

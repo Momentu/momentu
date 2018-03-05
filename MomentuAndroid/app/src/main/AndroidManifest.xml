@@ -35,7 +35,9 @@
         <service
             android:name=".Services.GetCommentsService"
             android:exported="false" />
-
+        <service
+            android:name=".Services.GetPersonalMediaService"
+            android:exported="false" />
         <activity android:name=".MediaActivity" />
 
         <provider

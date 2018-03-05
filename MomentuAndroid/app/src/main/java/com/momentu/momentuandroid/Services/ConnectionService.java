@@ -21,7 +21,6 @@ import java.util.ArrayList;
 public class ConnectionService extends IntentService {
 
     public static final String MY_SERVICE_MESSAGE = "myServiceMessage";
-    public static final String MY_SERVICE_MESSAGE_STATE = "myServiceMessage_State";
     public static final String REQUEST_PACKAGE = "requestPackage";
     public static final String MY_SERVICE_PAYLOAD = "myServicePayload";
     private static final String TAG = "ConnectionService";
