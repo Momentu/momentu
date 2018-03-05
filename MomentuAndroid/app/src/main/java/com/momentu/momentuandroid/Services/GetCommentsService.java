@@ -11,6 +11,7 @@ import android.util.Log;
 import com.momentu.momentuandroid.CommentsActivity;
 import com.momentu.momentuandroid.Data.RestClient;
 import com.momentu.momentuandroid.FeedActivity;
+import com.momentu.momentuandroid.HashTagSearchActivity;
 import com.momentu.momentuandroid.Model.CommentRow;
 import com.momentu.momentuandroid.Model.MediaUrlStorage;
 import com.momentu.momentuandroid.Utility.JSONParser;
@@ -45,7 +46,7 @@ public class GetCommentsService extends IntentService {
 
         String response;
         try {
-            response = RestClient.retrieve_comments(mediaId, FeedActivity.token);
+            response = RestClient.retrieve_comments(mediaId, HashTagSearchActivity.token);
         } catch (IOException e) {
             e.printStackTrace();
             return;

@@ -28,7 +28,7 @@ public class PostsYouHaveLikedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_posts_you_have_liked);
 
-//        token = getIntent().getStringExtra("token");
+        token = getIntent().getStringExtra("token");
 
         gridview = (GridView) findViewById(R.id.gridviewMyLikes);
 
@@ -62,7 +62,6 @@ public class PostsYouHaveLikedActivity extends AppCompatActivity {
 
             else {
                 getAllItemObject(items);
-//                Log.d("IMAGE_Feed", " just got this: " + temp.get(0));
             }
         }
     };
@@ -70,50 +69,9 @@ public class PostsYouHaveLikedActivity extends AppCompatActivity {
 
     private void getAllItemObject(ArrayList<MyPostsItem> items){
 
-//        List<MyPostsItem> allItems = items;
         MyLikesAdapter myLikesAdapter = new MyLikesAdapter(PostsYouHaveLikedActivity.this, items);
         gridview.setAdapter(myLikesAdapter);
 
-
-//        MyPostsItem myLikes = null;
-//        List<PostsYouHaveLikedItem> items = new ArrayList<>();
-//        items.add(new PostsYouHaveLikedItem(0,"#Halloween",
-//                "http://kb4images.com/images/image/37185176-image.jpg",
-//                "http://kb4images.com/images/image/37185176-image.jpg","image",1000,
-//                "Chicago","IL"));
-//
-//        items.add(new PostsYouHaveLikedItem(0,"#Halloween",
-//                "http://kb4images.com/images/image/37185176-image.jpg",
-//                "http://kb4images.com/images/image/37185176-image.jpg","image",1000,
-//                "Chicago","IL"));
-//
-//        items.add(new PostsYouHaveLikedItem(0,"#Halloween",
-//                "http://kb4images.com/images/image/37185176-image.jpg",
-//                "http://kb4images.com/images/image/37185176-image.jpg","image",1000,
-//                "Chicago","IL"));
-//
-//        items.add(new PostsYouHaveLikedItem(0,"#Halloween",
-//                "http://kb4images.com/images/image/37185176-image.jpg",
-//                "http://kb4images.com/images/image/37185176-image.jpg","image",1000,
-//                "Chicago","IL"));
-//
-//        items.add(new PostsYouHaveLikedItem(0,"#Halloween",
-//                "http://kb4images.com/images/image/37185176-image.jpg",
-//                "http://kb4images.com/images/image/37185176-image.jpg","image",1000,
-//                "Chicago","IL"));
-//
-//        items.add(new PostsYouHaveLikedItem(0,"#Halloween",
-//                "http://kb4images.com/images/image/37185176-image.jpg",
-//                "http://kb4images.com/images/image/37185176-image.jpg","image",1000,
-//                "Chicago","IL"));
-//
-//        items.add(new PostsYouHaveLikedItem(0,"#Halloween",
-//                "http://kb4images.com/images/image/37185176-image.jpg",
-//                "http://kb4images.com/images/image/37185176-image.jpg","image",1000,
-//                "Chicago","IL"));
-//
-//
-//        return items;
     }
 
     public void goToMediaActivity(String mediaType, String url) {

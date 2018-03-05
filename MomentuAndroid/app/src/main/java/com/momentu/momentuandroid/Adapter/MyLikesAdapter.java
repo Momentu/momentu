@@ -63,14 +63,13 @@ public class MyLikesAdapter extends BaseAdapter {
         }else{
             listViewHolder = (MyLikesAdapter.ViewHolder)convertView.getTag();
         }
-
         listViewHolder.textInListView.setText(listOfMyLikes.get(position).getHashtagLabel());
 
         Picasso.with(context)
                 .load(Uri.parse(listOfMyLikes.get(position).getThumbnailUrl()))
                 .into(listViewHolder.imageInListView);
 
-        setupClickableViews(convertView,listViewHolder,listOfMyLikes.get(position), position);
+        setupClickableViews(convertView, listViewHolder, listOfMyLikes.get(position), position);
         return convertView;
     }
 
@@ -90,7 +89,7 @@ public class MyLikesAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 if (context instanceof PostsYouHaveLikedActivity) {
-                    //((PostsYouHaveLikedActivity) context).goToFeedActivity(postsYouHaveLikedItem.getState(),postsYouHaveLikedItem.getCity(),postsYouHaveLikedItem.getHashtagLabel());
+                    ((PostsYouHaveLikedActivity) context).goToFeedActivity(postsYouHaveLikedItem.getState(),postsYouHaveLikedItem.getCity(),postsYouHaveLikedItem.getHashtagLabel());
                 }
             }
         });
@@ -99,7 +98,7 @@ public class MyLikesAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 if (context instanceof PostsYouHaveLikedActivity) {
-                    //((PostsYouHaveLikedActivity) context).goToCommentsActivity(position, postsYouHaveLikedItem.getOriginalUrl(),postsYouHaveLikedItem.getThumbnailUrl(),postsYouHaveLikedItem.getMediaType(),postsYouHaveLikedItem.getMediaId(),postsYouHaveLikedItem.getLikesCount(), postsYouHaveLikedItem.getHashtagLabel());
+                    ((PostsYouHaveLikedActivity) context).goToCommentsActivity(position, postsYouHaveLikedItem.getOriginalUrl(),postsYouHaveLikedItem.getThumbnailUrl(),postsYouHaveLikedItem.getMediaType(),postsYouHaveLikedItem.getMediaId(),postsYouHaveLikedItem.getLikesCount(), postsYouHaveLikedItem.getHashtagLabel());
                 }
             }
         });

@@ -63,15 +63,12 @@ public class MyPostsAdapter extends BaseAdapter {
         }else{
             listViewHolder = (ViewHolder)convertView.getTag();
         }
-
         listViewHolder.textInListView.setText(listOfMyPost.get(position).getHashtagLabel());
-
         Picasso.with(context)
                 .load(Uri.parse(listOfMyPost.get(position).getThumbnailUrl()))
                 .into(listViewHolder.imageInListView);
 
         setupClickableViews(convertView,listViewHolder,listOfMyPost.get(position),position);
-
         return convertView;
     }
 
@@ -90,7 +87,7 @@ public class MyPostsAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 if (context instanceof PostsOfYouActivity) {
-                    //((PostsOfYouActivity) context).goToFeedActivity(myPostsItem.getState(),myPostsItem.getCity(),myPostsItem.getHashtagLabel());
+                    ((PostsOfYouActivity) context).goToFeedActivity(myPostsItem.getState(),myPostsItem.getCity(),myPostsItem.getHashtagLabel());
                 }
             }
         });
@@ -108,7 +105,7 @@ public class MyPostsAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 if (context instanceof PostsOfYouActivity) {
-                    //((PostsOfYouActivity) context).goToCommentsActivity(position, myPostsItem.getOriginalUrl(),myPostsItem.getThumbnailUrl(),myPostsItem.getMediaType(),myPostsItem.getMediaId(),myPostsItem.getLikesCount(), myPostsItem.getHashtagLabel());
+                    ((PostsOfYouActivity) context).goToCommentsActivity(position, myPostsItem.getOriginalUrl(),myPostsItem.getThumbnailUrl(),myPostsItem.getMediaType(),myPostsItem.getMediaId(),myPostsItem.getLikesCount(), myPostsItem.getHashtagLabel());
                 }
             }
         });

@@ -43,7 +43,7 @@ public class PostsOfYouActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_posts_of_you);
 
-//        token = getIntent().getStringExtra("token");
+        token = getIntent().getStringExtra("token");
 
         gridview = (GridView) findViewById(R.id.gridviewMyPosts);
 
@@ -81,55 +81,9 @@ public class PostsOfYouActivity extends AppCompatActivity {
 
 
     private void getAllItemObject(ArrayList<MyPostsItem> myPostsItemArrayList){
-
-
-
-//        items.add(new MyPostsItem(0,"#Halloween",
-//                "http://kb4images.com/images/image/37185176-image.jpg",
-//                "http://kb4images.com/images/image/37185176-image.jpg","image",1000,
-//                "Chicago","IL"));
-//
-//        items.add(new MyPostsItem(0,"#Halloween",
-//                "http://kb4images.com/images/image/37185176-image.jpg",
-//                "http://kb4images.com/images/image/37185176-image.jpg","image",1000,
-//                "Chicago","IL"));
-//
-//        items.add(new MyPostsItem(0,"#Halloween",
-//                "http://kb4images.com/images/image/37185176-image.jpg",
-//                "http://kb4images.com/images/image/37185176-image.jpg","image",1000,
-//                "Chicago","IL"));
-//
-//        items.add(new MyPostsItem(0,"#Halloween",
-//                "http://kb4images.com/images/image/37185176-image.jpg",
-//                "http://kb4images.com/images/image/37185176-image.jpg","image",1000,
-//                "Chicago","IL"));
-//
-//        items.add(new MyPostsItem(0,"#Halloween",
-//                "http://kb4images.com/images/image/37185176-image.jpg",
-//                "http://kb4images.com/images/image/37185176-image.jpg","image",1000,
-//                "Chicago","IL"));
-//
-//        items.add(new MyPostsItem(0,"#Halloween",
-//                "http://kb4images.com/images/image/37185176-image.jpg",
-//                "http://kb4images.com/images/image/37185176-image.jpg","image",1000,
-//                "Chicago","IL"));
-//
-//        items.add(new MyPostsItem(0,"#Halloween",
-//                "http://kb4images.com/images/image/37185176-image.jpg",
-//                "http://kb4images.com/images/image/37185176-image.jpg","image",1000,
-//                "Chicago","IL"));
-//
-//        items.add(new MyPostsItem(121,"#Halloween",
-//                "http://kb4images.com/images/image/37185176-image.jpg",
-//                "http://kb4images.com/images/image/37185176-image.jpg","image",1000,
-//                "Chicago","IL"));
-
-
         allItems = myPostsItemArrayList;
         myPostsAdapter = new MyPostsAdapter(PostsOfYouActivity.this, allItems);
         gridview.setAdapter(myPostsAdapter);
-
-//        return items;
     }
 
     public void goToMediaActivity(String mediaType, String url) {
@@ -150,7 +104,6 @@ public class PostsOfYouActivity extends AppCompatActivity {
     }
 
     public void goToCommentsActivity(int position, String originalUrl, String thumbnailUrl, String mediaType, long mediaId, int likesCount, String hashtag){
-
         Intent commentIntent = new Intent(this, CommentsActivity.class);
         commentIntent.putExtra("token", token);
         commentIntent.putExtra("hashtag", hashtag);
@@ -188,6 +141,5 @@ public class PostsOfYouActivity extends AppCompatActivity {
                 });
         AlertDialog alert = builder.create();
         alert.show();
-
     }
 }
