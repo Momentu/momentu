@@ -345,10 +345,10 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
                         params.put("hashtagLabel", hashtagInput.getText().toString());
                         params.put("city", mCityName);
                         params.put("state", mStateName);
-
+                        long mediaId =0;
                         RestClient restClient = new RestClient();
                         try {
-                            restClient.media_upload(ConvertImagesToStringOfBytes.mediaToByteArray(uriVideo), "video/mp4", params, token, FeedActivity.this);
+                            mediaId=restClient.media_upload(ConvertImagesToStringOfBytes.mediaToByteArray(uriVideo), "video/mp4", params, token, FeedActivity.this);
 
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -356,7 +356,7 @@ public class FeedActivity extends FeedBaseActivity implements FeedAdapter.OnFeed
                         if (restClient.status == 0){
                             Toast.makeText(FeedActivity.this, hashtagInput.getText().toString() + " posted", Toast.LENGTH_LONG).show();
                             if(hashtagInput.getText().toString().equals(hashtag)) {
-                                FeedItem myFeed = new FeedItem(0, null,
+                                FeedItem myFeed = new FeedItem(mediaId, null,
                                         new Hashtag(hashtagInput.getText().toString(), 1), uriVideo.toString(), uriVideo.toString(), "video/mp4",
                                         "",
                                         null, null, null,

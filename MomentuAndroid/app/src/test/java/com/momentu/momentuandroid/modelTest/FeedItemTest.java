@@ -34,7 +34,7 @@ public class FeedItemTest {
     public void TestFeedItem() throws Exception {
         try {
             assertNull(feedItem);
-            BigInteger id= BigInteger.valueOf(1L);
+            long id= 1L;
             BigInteger userID= BigInteger.valueOf(1L);
             Hashtag hashTag = new Hashtag("#event", 10) ;
             String description = "This is a test description";
@@ -55,7 +55,7 @@ public class FeedItemTest {
     public void TestGetHashTag() throws Exception {
         try {
             assertNull(feedItem);
-            BigInteger id= BigInteger.valueOf(1L);
+            long id= 1L;
             BigInteger userID= BigInteger.valueOf(1L);
             Hashtag hashTag = new Hashtag("#event", 10) ;
             String description = "This is a test description";
@@ -76,7 +76,7 @@ public class FeedItemTest {
     public void TestGetDescription() throws Exception {
         try {
             assertNull(feedItem);
-            BigInteger id= BigInteger.valueOf(1L);
+            long id= 1L;
             BigInteger userID= BigInteger.valueOf(1L);
             Hashtag hashTag = new Hashtag("#event", 10) ;
             String description = "This is a test description";
@@ -97,7 +97,7 @@ public class FeedItemTest {
     public void TestGetMedia() throws Exception {
         try {
             assertNull(feedItem);
-            BigInteger id= BigInteger.valueOf(1L);
+            long id= 1L;
             BigInteger userID= BigInteger.valueOf(1L);
             Hashtag hashTag = new Hashtag("#event", 10) ;
             String description = "This is a test description";
@@ -118,7 +118,7 @@ public class FeedItemTest {
     public void TestGetLike() throws Exception {
         try {
             assertNull(feedItem);
-            BigInteger id= BigInteger.valueOf(1L);
+            long id= 1L;
             BigInteger userID= BigInteger.valueOf(1L);
             Hashtag hashTag = new Hashtag("#event", 10) ;
             String description = "This is a test description";

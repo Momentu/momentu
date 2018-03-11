@@ -8,9 +8,11 @@
     android:layout_marginLeft="5dp"
     android:layout_marginRight="5dp"
     android:layout_marginStart="5dp"
-    android:layout_marginTop="15dp"
+    android:layout_marginTop="5dp"
     android:background="@color/light_gray"
     android:gravity="center"
     android:numColumns="3"
+    android:padding="5dp"
     android:stretchMode="columnWidth"
-    android:verticalSpacing="5dp" />
+    android:verticalSpacing="3dp"
+    android:horizontalSpacing="3dp" />

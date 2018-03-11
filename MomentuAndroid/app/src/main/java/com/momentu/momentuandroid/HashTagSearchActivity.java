@@ -378,8 +378,9 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
                         params.put("state", mStateName);
 
                         RestClient restClient = new RestClient();
+                        long mediaId = 0;
                         try {
-                            restClient.media_upload(ConvertImagesToStringOfBytes.mediaToByteArray(imageBitmap), "image", params, token, HashTagSearchActivity.this);
+                            mediaId = restClient.media_upload(ConvertImagesToStringOfBytes.mediaToByteArray(imageBitmap), "image", params, token, HashTagSearchActivity.this);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -437,10 +438,10 @@ public class HashTagSearchActivity extends AppCompatActivity implements BaseFrag
                         params.put("hashtagLabel", hashtagInput.getText().toString());
                         params.put("city", mCityName);
                         params.put("state", mStateName);
-
+                        long mediaId = 0;
                         RestClient restClient = new RestClient();
                         try {
-                            restClient.media_upload(ConvertImagesToStringOfBytes.mediaToByteArray(uriVideo),"video/mp4", params, token, HashTagSearchActivity.this);
+                            mediaId = restClient.media_upload(ConvertImagesToStringOfBytes.mediaToByteArray(uriVideo),"video/mp4", params, token, HashTagSearchActivity.this);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
