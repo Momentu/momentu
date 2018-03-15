@@ -23,7 +23,7 @@ public class UserSecurityServiceImpl implements UserSecurityService {
     private PasswordResetRequestRepository passwordResetRequestRepository;
 
     @Override
-    public boolean validPasswordResetToken(String resetToken, String currentPassword) {
+    public boolean validPasswordResetToken(String resetToken) {
         String hashedToken = this.hashToken(resetToken);
 
         Optional<PasswordResetRequest> fetchedPasswordResetRequest = passwordResetRequestRepository.findByHashedToken(hashedToken);
@@ -34,11 +34,6 @@ public class UserSecurityServiceImpl implements UserSecurityService {
 
         Date date = new Date();
         if(!date.before(passwordResetRequest.getExpiryDate())) {
-            return false;
-        }
-
-        User currentUser = passwordResetRequest.getUser();
-        if(!validPassword(currentUser, currentPassword)) {
             return false;
         }
 

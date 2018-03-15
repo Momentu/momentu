@@ -1,6 +1,7 @@
 package com.momentu.momentuapi.controllers;
 
 import com.momentu.momentuapi.emailer.AmazonSESEmailer;
+import com.momentu.momentuapi.emailer.config.EMailerSettings;
 import com.momentu.momentuapi.emailer.models.EmailMessage;
 import com.momentu.momentuapi.emailer.models.templates.PasswordResetEmailMessage;
 import com.momentu.momentuapi.entities.PasswordResetRequest;
@@ -39,6 +40,9 @@ public class RegisterUserController {
 
     @Autowired
     private UserSecurityService userSecurityService;
+
+    @Autowired
+    private EMailerSettings eMailerSettings;
 
     @RequestMapping(value = "register", method = RequestMethod.POST)
     public ResponseEntity<PersistentEntityResource> register(@RequestBody User user
@@ -79,22 +83,21 @@ public class RegisterUserController {
         PasswordResetRequest passwordResetRequest = new PasswordResetRequest(user, hashedToken);
         passwordResetRequestRepository.save(passwordResetRequest);
 
-        String link = "http://momentu/" + resetToken;
+        String link = eMailerSettings.getResetLinkPrefix() + resetToken;
         EmailMessage emailMessage = new PasswordResetEmailMessage("no-reply@momentu.xyz", emailAddress, link);
         amazonSESEmailer.sendEmail(emailMessage);
         return Collections.singletonMap("status", "true");
     }
 
     @RequestMapping(value = "changePassword", method = RequestMethod.POST)
-    public @ResponseBody Map changePassword(@RequestParam String resetToken, @RequestParam String currentPassword,
-                                            @RequestParam String newPassword) {
+    public @ResponseBody Map changePassword(@RequestParam String resetToken, @RequestParam String newPassword) {
         String hashedToken = userSecurityService.hashToken(resetToken);
         Optional<PasswordResetRequest> fetchedPasswordResetRequest = passwordResetRequestRepository.findByHashedToken(hashedToken);
         if(fetchedPasswordResetRequest.equals(Optional.empty())) {
             return Collections.singletonMap("status", "true");
         }
         PasswordResetRequest passwordResetRequest = fetchedPasswordResetRequest.get();
-        if(userSecurityService.validPasswordResetToken(resetToken, currentPassword)) {
+        if(userSecurityService.validPasswordResetToken(resetToken)) {
             User currentUser = passwordResetRequest.getUser();
             currentUser.setPassword(newPassword);
             userRepository.save(currentUser);
