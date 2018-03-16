@@ -30,7 +30,6 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class RestClient {
-    private String token;
     public int status = 0;
 
 
@@ -64,6 +63,8 @@ public class RestClient {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                String token;
+
                 token = response.body().string();
                 token = token.split(",")[0].split(":")[1];
                 token = "Bearer " + token.substring(1, token.length() - 1);
@@ -690,5 +691,97 @@ public class RestClient {
             e.printStackTrace();
         }
         return response.code();
+    }
+
+    public void forgotPassword(final String email) throws IOException {
+
+        Log.d("forgotPassword", "just got in");
+
+        new AsyncTask<String, Void, Response>() {
+            public Request request;
+            @Override
+            protected Response doInBackground(String... url) {
+            /* Called from background thread, so you're NOT allowed to interact with UI */
+                // Perform heavy task to get YourObject by string
+                // Stay clear & functional, just convert input to output and return it
+                OkHttpClient client = new OkHttpClient();
+                RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                        .addFormDataPart("emailAddress", email)
+                        .build();
+
+                request = new Request.Builder().url(EndPoints.FORGOTPASSWORD)
+                        .addHeader("content-type", "application/json; charset=utf-8")
+                        .post(requestBody).build();
+                ///*****************************************************************\\\\\
+                Response response = null;
+                try {
+                    response = client.newCall(request).execute();
+                    Log.d("forgotPassword", response.code() + "");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.d("forgotPassword", " it failed");
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return response;
+            }
+
+            @Override
+            protected void onPostExecute(Response result) {
+            /* Called once task is done; from UI thread, so you can access your widgets */
+
+                // Process result as you like
+
+                status = 0;
+            }
+        }.execute();
+    }
+
+    public void resetPassword(final String newPassword, final String token) throws IOException {
+
+        Log.d("forgotPassword", "just got in with a token: " + token);
+
+        new AsyncTask<String, Void, Response>() {
+            public Request request;
+            @Override
+            protected Response doInBackground(String... url) {
+            /* Called from background thread, so you're NOT allowed to interact with UI */
+                // Perform heavy task to get YourObject by string
+                // Stay clear & functional, just convert input to output and return it
+                OkHttpClient client = new OkHttpClient();
+                RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                        .addFormDataPart("newPassword", newPassword)
+                        .addFormDataPart("resetToken", token)
+                        .build();
+
+                request = new Request.Builder().url(EndPoints.RESETPASSWORD)
+                        .addHeader("content-type", "application/json; charset=utf-8")
+//                        .addHeader("authorization", token)
+                        .post(requestBody).build();
+                ///*****************************************************************\\\\\
+                Response response = null;
+                try {
+                    response = client.newCall(request).execute();
+                    Log.d("forgotPassword", response.code() + "");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.d("forgotPassword", " it failed");
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return response;
+            }
+
+            @Override
+            protected void onPostExecute(Response result) {
+            /* Called once task is done; from UI thread, so you can access your widgets */
+
+                // Process result as you like
+
+                status = 0;
+            }
+        }.execute();
     }
 }

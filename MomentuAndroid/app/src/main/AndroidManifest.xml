@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.momentu.momentuandroid">
-    //Ibrahim Added this line:(this to allow the app to connect to the internet)
+
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
@@ -38,6 +38,7 @@
         <service
             android:name=".Services.GetPersonalMediaService"
             android:exported="false" />
+
         <activity android:name=".MediaActivity" />
 
         <provider
@@ -52,7 +53,24 @@
 
         <activity android:name=".CommentsActivity" />
         <activity android:name=".PostsOfYouActivity" />
-        <activity android:name=".PostsYouHaveLikedActivity"></activity>
+        <activity android:name=".PostsYouHaveLikedActivity" />
+        <activity
+            android:name=".ResetPasswordActivity"
+            android:label="@string/title_activity_reset_password"
+            android:theme="@style/AppTheme">
+            <intent-filter android:label="@string/app_name">
+                <data
+                    android:host="momentuandroid"
+                    android:pathPrefix="/resetpassword"
+                    android:scheme="http" />
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".ForgotPassword"></activity>
     </application>
 
 </manifest>

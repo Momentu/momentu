@@ -35,5 +35,10 @@ public class WelcomeActivity extends Activity {
         Intent termAndPolicy = new Intent(this, TermAndPolicyActivity.class);
         startActivity(termAndPolicy);
     }
+    //On Click method to go to term and policy activity
+    public void onClickForgotPassword(View v){
+        Intent forgotPassword = new Intent(this, ForgotPassword.class);
+        startActivity(forgotPassword);
+    }
 
 }

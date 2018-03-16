@@ -5,7 +5,12 @@
     <string name="login_title">Momentu</string>
     <string name="prompt_username">Username</string>
     <string name="prompt_password">Password</string>
+    <string name="prompt_new_password">New Password</string>
+    <string name="prompt_confirm_new_password">Confirm Password</string>
+    <string name="prompt_entering_email_for_reset_password">Your registered email</string>
     <string name="action_log_in">Login</string>
+    <string name="action_reset_password">Reset Password</string>
+    <string name="action_request_reset_password">Reset Password</string>
     <string name="username_not_exist">This user does not exist</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
@@ -96,4 +101,5 @@
     </string>
 
     <string name="file_provider_authority" translatable="false">com.momentu.momentuandroid.fileprovider</string>
+    <string name="title_activity_reset_password">ResetPasswordActivity</string>
 </resources>
