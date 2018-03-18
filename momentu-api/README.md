@@ -15,4 +15,13 @@ aws.s3.mediaBucketName=[S3 bucket]
 aws.s3.accessKeyId=[S3 Access Key]
 aws.s3.secretAccessKey=[S3 Secret Key]
 
+aws.s3.cloudfront.image.protocol=[Protocol]
+aws.s3.cloudfront.image.location=[Cloudfront Domain]
+aws.s3.cloudfront.imageresized.location=[Cloudfront Domain (Resized)]
+
+aws.ses.region=[Region]
+aws.ses.accessKeyId=[SES Access Key]
+aws.ses.secretAccessKey=[SES Secret Key]
+momentu.emailer.resetLinkPrefix=[Reset Link Prefix]
+
 ```
